@@ -1,0 +1,31 @@
+@startuml
+
+class SnippetController {
+    - snippetService: SnippetService
+    + getSnippetById(id: Long): Snippet
+    + createSnippet(name: String, content: String, language: String): Snippet
+    + editSnippet(id: Long, content: String): Snippet
+}
+
+class SnippetService {
+    - snippetRepository: SnippetRepository
+    + getSnippetById(id: Long): Snippet
+    + createSnippet(name: String, content: String, language: String): Snippet
+    + editSnippet(id: Long, content: String): Snippet
+}
+
+interface SnippetRepository {
+    + findById(id: Long): Snippet
+    + save(snippet: Snippet): Snippet
+    + deleteById(id: Long): void
+}
+
+SnippetController --> SnippetService : uses
+SnippetService --> SnippetRepository : uses
+SnippetRepository --> DataBase : Persists on
+
+class DataBase {
+    - tables
+}
+
+@enduml
