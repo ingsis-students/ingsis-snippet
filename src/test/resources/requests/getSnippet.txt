@@ -1,0 +1,5 @@
+get/1
+
+#####
+
+{"id":1,"name":"My Snippet","content":"println(\"New edited world!\");","language":"PrintScript","owner":"admin","guests":[]}

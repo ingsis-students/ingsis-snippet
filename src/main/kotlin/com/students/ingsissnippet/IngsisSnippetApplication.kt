@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class IngsisSnippetApplication
 
 fun main(args: Array<String>) {
-	runApplication<IngsisSnippetApplication>(*args)
+    runApplication<IngsisSnippetApplication>(*args)
 }

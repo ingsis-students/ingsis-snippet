@@ -8,8 +8,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     ports:
-      - '5002:5002'
+      - '5002:5432'
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data-snippets:/var/lib/postgresql/data
 volumes:
-  db-data:
+  db-data-snippets:

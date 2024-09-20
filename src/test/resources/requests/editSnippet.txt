@@ -1,0 +1,16 @@
+edit/2
+
+#####
+
+{"content": "println(\"New edited world!\");"}
+
+#####
+
+{
+  "id" : 2,
+  "name" : "My Snippet",
+  "content" : "println(\"New edited world!\");",
+  "language" : "PrintScript",
+  "owner" : "admin",
+  "guests" : [ ]
+}

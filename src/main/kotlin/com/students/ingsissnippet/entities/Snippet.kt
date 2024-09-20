@@ -1,19 +1,22 @@
 package com.students.ingsissnippet.entities
 
-class Snippet(
-    val id: Long,
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+
+@Entity
+data class Snippet(
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: Long = 0,
     val name: String,
     val content: String,
-    val lenguaje: String,
-    val historial: List<Snippet>,
+    val language: String,
     val owner: String,
-    val guests: List<User>
-)
-
-class User (
-    val id: Long,
-    val name: String,
-    val email: String,
-    val password: String,
-    val snippets: List<Snippet>
-)
+    @ElementCollection
+    val guests: List<String> = emptyList()
+) {
+    constructor() : this(0, "", "", "", "", emptyList())
+}

@@ -1,0 +1,16 @@
+create
+
+#####
+
+{"name":"My Snippet","content":"println(\"New snippet created!\");","language":"PrintScript"}
+
+#####
+
+{
+  "id" : 152,
+  "name" : "My Snippet",
+  "content" : "println(\"New snippet created!\");",
+  "language" : "PrintScript",
+  "owner" : "admin",
+  "guests" : [ ]
+}
