@@ -29,4 +29,32 @@ class SnippetService(private val snippetRepository: SnippetRepository) {
             throw NoSuchElementException("Snippet not found when trying to edit it")
         }
     }
+
+    fun deleteSnippet(id: Long) {
+        if (snippetRepository.existsById(id)) {
+            snippetRepository.deleteById(id)
+        } else {
+            throw NoSuchElementException("Snippet not found when trying to delete it")
+        }
+    }
+
+    fun executeSnippet(id: Long): Snippet {
+        // TODO Call ExecutorService to execute the snippet
+        return getSnippetOfId(id)
+    }
+
+    fun validateSnippet(id: Long): Snippet {
+        // TODO Call ValidatorService to validate the snippet
+        return getSnippetOfId(id)
+    }
+
+    fun formatSnippet(id: Long): Snippet {
+        // TODO Call ParserService to format the snippet
+        return getSnippetOfId(id)
+    }
+
+    fun shareSnippet(id: Long, string: String): Snippet {
+        // TODO Call permissionService to share the snippet (Add to guests list)
+        return getSnippetOfId(id)
+    }
 }

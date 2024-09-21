@@ -32,6 +32,31 @@ class SnippetController(private val snippetService: SnippetService) {
     ): Snippet? {
         return snippetService.editSnippet(id, req.content)
     }
+
+    @PostMapping("/delete/{id}")
+    fun deleteSnippet(@PathVariable id: Long) {
+        snippetService.deleteSnippet(id)
+    }
+
+    @PostMapping("/format/{id}")
+    fun formatSnippet(@PathVariable id: Long): Snippet {
+        return snippetService.formatSnippet(id)
+    }
+
+    @PostMapping("/execute/{id}")
+    fun executeSnippet(@PathVariable id: Long): Snippet {
+        return snippetService.executeSnippet(id)
+    }
+
+    @PostMapping("/validate/{id}")
+    fun validateSnippet(@PathVariable id: Long): Snippet {
+        return snippetService.validateSnippet(id)
+    }
+
+    @PostMapping("/share/{id}")
+    fun shareSnippet(@PathVariable id: Long, @RequestBody guest: String): Snippet {
+        return snippetService.shareSnippet(id, guest)
+    }
 }
 
 data class SnippetRequest(
