@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.controllers
 
+import org.springframework.web.bind.annotation.*
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/snippets")
-class SnippetController(private val snippetService: SnippetService) {
+class SnippetController(
+    private val snippetService: SnippetService,
+) {
 
     @GetMapping("/get/{id}")
     fun getSnippet(@PathVariable id: Long): Snippet {
@@ -38,19 +41,28 @@ class SnippetController(private val snippetService: SnippetService) {
         snippetService.deleteSnippet(id)
     }
 
+
     @PostMapping("/format/{id}")
-    fun formatSnippet(@PathVariable id: Long): Snippet {
-        return snippetService.formatSnippet(id)
+    fun formatSnippet(@PathVariable id: Long): Snippet? {
+        val formattedCode = snippetService.formatSnippet(id)
+
+        // Edit the snippet with the formatted code to save it
+        return snippetService.editSnippet(id, formattedCode)
     }
 
     @PostMapping("/execute/{id}")
-    fun executeSnippet(@PathVariable id: Long): Snippet {
+    fun executeSnippet(@PathVariable id: Long): String {
         return snippetService.executeSnippet(id)
     }
 
     @PostMapping("/validate/{id}")
     fun validateSnippet(@PathVariable id: Long): Snippet {
         return snippetService.validateSnippet(id)
+    }
+
+    @PostMapping("/lint/{id}")
+    fun lintSnippet(@PathVariable id: Long): String {
+        return snippetService.analyzeSnippet(id)
     }
 
     @PostMapping("/share/{id}")
@@ -66,3 +78,4 @@ data class SnippetRequest(
 )
 
 data class ContentRequest(val content: String)
+
