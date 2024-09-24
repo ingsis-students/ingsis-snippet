@@ -33,8 +33,7 @@ class WebMockTest {
                 "My Snippet",
                 "println(\"New edited world!\");",
                 "PrintScript",
-                "admin",
-                emptyList()
+                "admin"
             )
         )
 

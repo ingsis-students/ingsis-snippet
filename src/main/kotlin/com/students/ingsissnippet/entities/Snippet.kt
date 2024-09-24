@@ -1,6 +1,5 @@
 package com.students.ingsissnippet.entities
 
-import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -15,8 +14,6 @@ data class Snippet(
     val content: String,
     val language: String,
     val owner: String,
-    @ElementCollection
-    val guests: List<String> = emptyList()
 ) {
-    constructor() : this(0, "", "", "", "", emptyList())
+    constructor() : this(0, "", "", "", "")
 }

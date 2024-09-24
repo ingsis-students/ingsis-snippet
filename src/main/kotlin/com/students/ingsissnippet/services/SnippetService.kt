@@ -1,6 +1,5 @@
 package com.students.ingsissnippet.services
 
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.students.ingsissnippet.entities.dto.FormatDTO
@@ -11,7 +10,9 @@ import com.students.ingsissnippet.entities.dto.LinterDTO
 import com.students.ingsissnippet.repositories.SnippetRepository
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -23,10 +24,10 @@ class SnippetService(
     private val objectMapper: ObjectMapper
 ) {
 
-    fun createSnippet(name: String, content: String, language: String): Snippet {
-        val snippet =
-            Snippet(name = name, content = content, language = language, owner = "admin", guests = emptyList())
+    fun createSnippet(name: String, content: String, language: String, owner: String): Snippet {
+        val snippet = Snippet(name = name, content = content, language = language, owner = owner)
         snippetRepository.save(snippet)
+        addSnippetToUser(owner, snippet.id, "Owner")
         return snippet
     }
 
@@ -58,7 +59,7 @@ class SnippetService(
             code = snippet.content
         )
         val entity = createHTTPEntity(interpretDTO)
-        return executePostFor(entity, "/interpret")
+        return executePostForParseService(entity, "/interpret")
     }
 
     // FIXME Como todavía no sabemos como nos van a mandar las rules lo dejo así
@@ -76,7 +77,7 @@ class SnippetService(
         )
 
         val entity = createHTTPEntity(linterDTO)
-        return executePostFor(entity, "/analyze")
+        return executePostForParseService(entity, "/analyze")
     }
 
     fun formatSnippet(id: Long): String {
@@ -93,36 +94,61 @@ class SnippetService(
                     "space_before_colon": true,
                     "space_after_colon": true
                 }
-            """.trimIndent()
+                """.trimIndent()
             )
         )
 
         val entity = createHTTPEntity(formatDto)
 
-        val formattedCode = executePostFor(entity, "/format")
+        val formattedCode = executePostForParseService(entity, "/format")
 
         return formattedCode
     }
 
+    fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
+        checkIfExists(snippetId, "share")
+        if (!checkIfOwner(snippetId, fromEmail)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not the owner of the snippet")
+        }
+        addSnippetToUser(toEmail, snippetId, "Guest")
+        return ResponseEntity.ok("Snippet shared with $toEmail")
+    }
 
-    fun shareSnippet(id: Long, string: String): Snippet {
-        // TODO Call permissionService to share the snippet (Add to guests list)
-        return getSnippetOfId(id)
+    private fun checkIfOwner(snippetId: Long, email: String): Boolean {
+        val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
+        val entity = HttpEntity(body, getJsonHeaders())
+        val response = executePostForPermissionService(entity, "/check-owner")
+        return response == "User is the owner of the snippet"
     }
 
     fun validateSnippet(id: Long): Snippet {
-        // TODO Call ValidatorService to validate the snippet
+        // TODO Call ValidatorService to validate the snippet, missing impl on parse service
         return getSnippetOfId(id)
     }
 
     // ~ PRIVATE FUNCTIONS ~ //
 
-    private fun executePostFor(entity: HttpEntity<DTO>, route: String): String {
+    private fun addSnippetToUser(email: String, id: Long, role: String) {
+        checkIfExists(id, "adding")
+        val body: Map<String, Any> = mapOf("snippetId" to id, "role" to role)
+        val entity = HttpEntity(body, getJsonHeaders())
+        executePostForPermissionService(entity, "/add-snippet/$email")
+    }
+
+    private fun executePostForParseService(entity: HttpEntity<DTO>, route: String): String {
         return restTemplate.postForObject(
             "http://localhost:8081$route",
             entity,
             String::class.java
         ).toString()
+    }
+
+    private fun executePostForPermissionService(entity: HttpEntity<Map<String, Any>>, string: String): String? {
+        return restTemplate.postForObject(
+            "http://localhost:8082/api/user$string",
+            entity,
+            String::class.java
+        )
     }
 
     private fun createHTTPEntity(dto: DTO): HttpEntity<DTO> {
@@ -141,7 +167,7 @@ class SnippetService(
         }
     }
 
-    // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests
+    // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests del linter
     private fun getDefaultRule(): Map<String, JsonNode> {
         val jsonNode = objectMapper.readTree(
             """
@@ -154,9 +180,9 @@ class SnippetService(
         )
 
         val rules: Map<String, JsonNode> = objectMapper.convertValue(
-            jsonNode, objectMapper.typeFactory.constructMapType(Map::class.java, String::class.java, JsonNode::class.java)
+            jsonNode,
+            objectMapper.typeFactory.constructMapType(Map::class.java, String::class.java, JsonNode::class.java)
         )
         return rules
     }
 }
-

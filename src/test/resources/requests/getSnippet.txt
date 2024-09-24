@@ -2,4 +2,4 @@ get/1
 
 #####
 
-{"id":1,"name":"My Snippet","content":"println(\"New edited world!\");","language":"PrintScript","owner":"admin","guests":[]}
+{"id":1,"name":"My Snippet","content":"let a : string = "hello";","language":"PrintScript","owner":"admin"}

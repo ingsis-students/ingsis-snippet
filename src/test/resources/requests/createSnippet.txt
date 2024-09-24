@@ -11,6 +11,5 @@ create
   "name" : "My Snippet",
   "content" : "println(\"New snippet created!\");",
   "language" : "PrintScript",
-  "owner" : "admin",
-  "guests" : [ ]
+  "owner" : "admin"
 }

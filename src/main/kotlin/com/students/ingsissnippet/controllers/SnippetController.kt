@@ -1,8 +1,8 @@
 package com.students.ingsissnippet.controllers
 
-import org.springframework.web.bind.annotation.*
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.SnippetService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,7 +24,7 @@ class SnippetController(
     @PostMapping("/create")
     fun createSnippet(@RequestBody snippetRequest: SnippetRequest): Snippet {
         return snippetService.createSnippet(
-            snippetRequest.name, snippetRequest.content, snippetRequest.language
+            snippetRequest.name, snippetRequest.content, snippetRequest.language, snippetRequest.owner
         )
     }
 
@@ -41,12 +41,11 @@ class SnippetController(
         snippetService.deleteSnippet(id)
     }
 
-
     @PostMapping("/format/{id}")
     fun formatSnippet(@PathVariable id: Long): Snippet? {
         val formattedCode = snippetService.formatSnippet(id)
 
-        // Edit the snippet with the formatted code to save it
+        // Edit the snippet with the formatted code to save it ~ ¿We want this?
         return snippetService.editSnippet(id, formattedCode)
     }
 
@@ -66,16 +65,21 @@ class SnippetController(
     }
 
     @PostMapping("/share/{id}")
-    fun shareSnippet(@PathVariable id: Long, @RequestBody guest: String): Snippet {
-        return snippetService.shareSnippet(id, guest)
+    fun shareSnippet(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
+        return snippetService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
 }
 
 data class SnippetRequest(
     val name: String,
     val content: String,
-    val language: String
+    val language: String,
+    val owner: String
 )
 
 data class ContentRequest(val content: String)
 
+data class ShareRequest(
+    val fromEmail: String,
+    val toEmail: String
+)
