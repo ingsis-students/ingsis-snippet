@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  # Spring app service
+  snippet_api:
+    build:
+      context: . #ubicación del dockerfile
+      dockerfile: Dockerfile.multi
+    ports:
+      - '8082:8080' #puerto del contenedor:puerto del host
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME} #url comunican via docker (INTERNO)
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  #Postgres Database
+  ingsis-snippet-db:
+    image: postgres:12 #dockerhub
+    ports:
+      - '5002:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db-data-ingsis-snippet:/var/lib/postgresql/data
+
+
+volumes:
+  db-data-ingsis-snippet:
+    external: false
