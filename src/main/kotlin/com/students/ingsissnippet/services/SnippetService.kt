@@ -37,7 +37,7 @@ class SnippetService(
 
     fun editSnippet(id: Long, content: String): Snippet? {
         val snippetOptional = snippetRepository.findById(id)
-        checkIfExists(id, "delete")
+        checkIfExists(id, "edit")
 
         val snippet = snippetOptional.get()
         val updatedSnippet = snippet.copy(content = content)
@@ -126,14 +126,14 @@ class SnippetService(
         return getSnippetOfId(id)
     }
 
-    // ~ PRIVATE FUNCTIONS ~ //
-
-    private fun addSnippetToUser(email: String, id: Long, role: String) {
-        checkIfExists(id, "adding")
+    fun addSnippetToUser(email: String, id: Long, role: String) {
+        checkIfExists(id, "add")
         val body: Map<String, Any> = mapOf("snippetId" to id, "role" to role)
         val entity = HttpEntity(body, getJsonHeaders())
         executePostForPermissionService(entity, "/add-snippet/$email")
     }
+
+    // ~ PRIVATE FUNCTIONS ~ //
 
     private fun executePostForParseService(entity: HttpEntity<DTO>, route: String): String {
         return restTemplate.postForObject(

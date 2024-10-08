@@ -1,4 +1,4 @@
-edit/2
+edit/1
 
 #####
 
@@ -7,7 +7,7 @@ edit/2
 #####
 
 {
-  "id" : 2,
+  "id" : 1,
   "name" : "My Snippet",
   "content" : "println(\"New edited world!\");",
   "language" : "PrintScript",

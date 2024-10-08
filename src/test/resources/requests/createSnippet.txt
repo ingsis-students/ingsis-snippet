@@ -2,14 +2,14 @@ create
 
 #####
 
-{"name":"My Snippet","content":"println(\"New snippet created!\");","language":"PrintScript"}
+{"name":"My Snippet","content":"println(\"Hello World!\");","language":"PrintScript","owner":"admin"}
 
 #####
 
 {
-  "id" : 152,
+  "id" : 1,
   "name" : "My Snippet",
-  "content" : "println(\"New snippet created!\");",
+  "content" : "println(\"Hello World!\");",
   "language" : "PrintScript",
   "owner" : "admin"
 }

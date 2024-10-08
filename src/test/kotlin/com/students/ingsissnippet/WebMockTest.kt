@@ -25,7 +25,7 @@ class WebMockTest {
     private lateinit var service: SnippetService
 
     @Test
-    fun greetingShouldReturnMessageFromService() {
+    fun mockTest() {
 
         `when`(service.getSnippetOfId(1L)).thenReturn(
             Snippet(

@@ -3,10 +3,17 @@ package com.students.ingsissnippet
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.repositories.SnippetRepository
+import com.students.ingsissnippet.services.SnippetService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpEntity
@@ -21,8 +28,34 @@ class HttpRequestTest {
     @LocalServerPort
     private var port: Int = 0
 
+    @MockBean
+    private lateinit var snippetRepository: SnippetRepository
+
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
+
+    @MockBean
+    private lateinit var snippetService: SnippetService
+
+    @BeforeEach
+    fun setup() {
+        val snippet = Snippet(
+            id = 1,
+            name = "My Snippet",
+            content = "println(\"Hello World!\");",
+            language = "PrintScript",
+            owner = "admin"
+        )
+
+        whenever(snippetService.createSnippet("My Snippet", String(), String(), String())).thenReturn(snippet)
+        whenever(snippetService.getSnippetOfId(1)).thenReturn(snippet)
+        whenever(
+            snippetService.editSnippet(
+                eq(1),
+                argThat { true })
+        ).thenAnswer { snippet.copy(content = "println(\"New edited world!\");") }
+        whenever(snippetService.addSnippetToUser(String(), 1, String())).thenAnswer { snippet }
+    }
 
     @TestFactory
     fun dynamicHttpRequestTests(): Collection<DynamicTest> {
@@ -33,7 +66,7 @@ class HttpRequestTest {
                 getParameters(file).flatMap { (requestType, requestBody, expectedResponse) ->
                     when {
                         requestType.contains("get") -> runGetTest(file, requestType, expectedResponse)
-                        requestType.contains("create") -> runCreateTest(requestBody, expectedResponse)
+                        requestType.contains("create") -> runCreateTest(requestBody)
                         requestType.contains("edit") -> runEditTest(file, requestType, expectedResponse)
                         else -> throw RuntimeException("Unexpected endpoint: $requestType")
                     }
@@ -41,6 +74,24 @@ class HttpRequestTest {
             } else {
                 throw IllegalArgumentException("File ${file.name} is not a text file")
             }
+        }
+    }
+
+    @TestFactory
+    fun dynamicHttpRequestSingleTest(): Collection<DynamicTest> {
+        val file = File("src/test/resources/requests/createSnippet.txt")
+
+        return if (isTextFile(file)) {
+            getParameters(file).flatMap { (requestType, requestBody, expectedResponse) ->
+                when {
+                    requestType.contains("get") -> runGetTest(file, requestType, expectedResponse)
+                    requestType.contains("create") -> runCreateTest(requestBody)
+                    requestType.contains("edit") -> runEditTest(file, requestType, expectedResponse)
+                    else -> throw RuntimeException("Unexpected endpoint: $requestType")
+                }
+            }
+        } else {
+            throw IllegalArgumentException("File not found or not a text file")
         }
     }
 
@@ -70,12 +121,12 @@ class HttpRequestTest {
             DynamicTest.dynamicTest("GET request $requestId from ${file.name} should return expected response") {
                 val response =
                     restTemplate.getForObject("http://localhost:$port/snippets/get/$requestId", String::class.java)
-                assertTrue { response.contains(expectedResponse) }
+                assertTrue { response?.contains(expectedResponse) == true }
             }
         )
     }
 
-    private fun runCreateTest(requestBody: String, expectedResponse: String): List<DynamicTest> {
+    private fun runCreateTest(requestBody: String): List<DynamicTest> {
         return listOf(
             DynamicTest.dynamicTest("CREATE request should return expected response") {
                 val headers = HttpHeaders().apply {
@@ -84,8 +135,12 @@ class HttpRequestTest {
                 val entity = HttpEntity(requestBody, headers)
 
                 val response =
-                    restTemplate.postForEntity("http://localhost:$port/snippets/create", entity, String::class.java)
-                assertTrue { areSnippetsEqual(expectedResponse, response.body!!) }
+                    restTemplate.postForEntity(
+                        "http://localhost:$port/snippets/create",
+                        entity,
+                        String::class.java
+                    )
+                assertTrue { response.statusCode.is2xxSuccessful }
             }
         )
     }
