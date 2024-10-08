@@ -52,7 +52,8 @@ class HttpRequestTest {
         whenever(
             snippetService.editSnippet(
                 eq(1),
-                argThat { true })
+                argThat { true }
+            )
         ).thenAnswer { snippet.copy(content = "println(\"New edited world!\");") }
         whenever(snippetService.addSnippetToUser(String(), 1, String())).thenAnswer { snippet }
     }
