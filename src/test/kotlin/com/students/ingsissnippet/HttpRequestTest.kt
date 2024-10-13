@@ -3,13 +3,12 @@ package com.students.ingsissnippet
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.services.SnippetService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
-import org.mockito.kotlin.argThat
-import org.mockito.kotlin.eq
+import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -29,13 +28,10 @@ class HttpRequestTest {
     private var port: Int = 0
 
     @MockBean
-    private lateinit var snippetRepository: SnippetRepository
+    private lateinit var snippetService: SnippetService
 
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
-
-    @MockBean
-    private lateinit var snippetService: SnippetService
 
     @BeforeEach
     fun setup() {
@@ -51,8 +47,8 @@ class HttpRequestTest {
         whenever(snippetService.getSnippetOfId(1)).thenReturn(snippet)
         whenever(
             snippetService.editSnippet(
-                eq(1),
-                argThat { true }
+                anyLong(),
+                anyString(),
             )
         ).thenAnswer { snippet.copy(content = "println(\"New edited world!\");") }
         whenever(snippetService.addSnippetToUser(String(), 1, String())).thenAnswer { snippet }
@@ -80,7 +76,7 @@ class HttpRequestTest {
 
     @TestFactory
     fun dynamicHttpRequestSingleTest(): Collection<DynamicTest> {
-        val file = File("src/test/resources/requests/createSnippet.txt")
+        val file = File("src/test/resources/requests/editSnippet.txt")
 
         return if (isTextFile(file)) {
             getParameters(file).flatMap { (requestType, requestBody, expectedResponse) ->

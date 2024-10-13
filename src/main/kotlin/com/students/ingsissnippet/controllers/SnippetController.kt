@@ -29,10 +29,7 @@ class SnippetController(
     }
 
     @PostMapping("/edit/{id}")
-    fun editSnippet(
-        @PathVariable id: Long,
-        @RequestBody req: ContentRequest
-    ): Snippet? {
+    fun editSnippet(@PathVariable id: Long, @RequestBody req: ContentRequest): Snippet? {
         return snippetService.editSnippet(id, req.content)
     }
 
