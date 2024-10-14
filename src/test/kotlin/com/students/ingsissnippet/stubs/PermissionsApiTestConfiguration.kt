@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
+import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
 @Profile("test")
@@ -34,5 +35,12 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
     override fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
         permissionDb.find { it.ownerEmail == fromEmail && it.snippetIds.add(snippetId) }
         return ResponseEntity.ok("Snippet shared with $toEmail")
+    }
+
+    override fun executePost(
+        entity: HttpEntity<Map<String, Any>>,
+        string: String
+    ): String? {
+        return "Post request executed"
     }
 }

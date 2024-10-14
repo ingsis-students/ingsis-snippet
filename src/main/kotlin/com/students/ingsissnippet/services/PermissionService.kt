@@ -16,13 +16,13 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
     override fun addSnippetToUser(email: String, snippetId: Long, role: String) {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "role" to role)
         val entity = HttpEntity(body, getJsonHeaders())
-        executePostForPermissionService(entity, "/add-snippet/$email")
+        executePost(entity, "/add-snippet/$email")
     }
 
     override fun checkIfOwner(snippetId: Long, email: String): Boolean {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
         val entity = HttpEntity(body, getJsonHeaders())
-        val response = executePostForPermissionService(entity, "/check-owner")
+        val response = executePost(entity, "/check-owner")
         return response == "User is the owner of the snippet"
     }
 
@@ -40,7 +40,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         }
     }
 
-    fun executePostForPermissionService(entity: HttpEntity<Map<String, Any>>, string: String): String? {
+    override fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String? {
         return restTemplate.postForObject(
             "http://localhost:8082/api/user$string",
             entity,

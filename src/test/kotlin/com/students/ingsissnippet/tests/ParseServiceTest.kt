@@ -3,7 +3,7 @@ package com.students.ingsissnippet.tests
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.entities.request_dtos.DTO
 import com.students.ingsissnippet.repositories.SnippetRepository
-import com.students.ingsissnippet.services.SnippetService
+import com.students.ingsissnippet.services.ParseService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
@@ -24,7 +24,7 @@ import kotlin.test.Test
 class ParseServiceTest {
 
     @Autowired
-    lateinit var snippetService: SnippetService
+    lateinit var parseService: ParseService
 
     @MockBean
     lateinit var restTemplate: RestTemplate
@@ -73,6 +73,16 @@ class ParseServiceTest {
         ).thenAnswer {
             "Validate snippet successfully"
         }
+
+        whenever(
+            restTemplate.postForObject(
+                argThat { url: String? -> url?.contains("interpret") == true },
+                any<HttpEntity<DTO>>(),
+                eq(String::class.java)
+            )
+        ).thenAnswer {
+            "Executed snippet successfully"
+        }
     }
 
     @AfterEach
@@ -82,19 +92,25 @@ class ParseServiceTest {
 
     @Test
     fun `can format snippet`() {
-        val content = snippetService.formatSnippet(1L)
+        val content = parseService.formatSnippet(1L)
         assert(content == "Formatted snippet successfully")
     }
 
     @Test
     fun `can analyze snippet`() {
-        val content = snippetService.analyzeSnippet(1L)
+        val content = parseService.analyzeSnippet(1L)
         assert(content == "Analyzed snippet successfully")
     }
 
     @Test
     fun `can validate snippet`() {
-        val content = snippetService.validateSnippet(1L)
+        val content = parseService.validateSnippet(1L)
         assert(content == "Validate snippet successfully")
+    }
+
+    @Test
+    fun `can execute snippet`() {
+        val content = parseService.executeSnippet(1L)
+        assert(content == "Executed snippet successfully")
     }
 }

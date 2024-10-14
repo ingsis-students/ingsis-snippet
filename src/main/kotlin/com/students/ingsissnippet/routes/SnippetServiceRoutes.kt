@@ -8,16 +8,10 @@ interface SnippetServiceRoutes {
     fun createSnippet(name: String, content: String, language: String, owner: String): Snippet
     /** Route to get a specific snippet by its id */
     fun getSnippetOfId(id: Long): Snippet
-    /** Route to edit a snippet if it exists, else it throws a @NoSuchElementException */
+    /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception */
     fun editSnippet(id: Long, content: String): Snippet?
-    /** Route to edit a snippet if it exists, else it throws a @NoSuchElementException */
+    /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception */
     fun deleteSnippet(id: Long)
-    /** Route that uses parse service to execute a snippet of code */
-    fun executeSnippet(id: Long): String
-    /** Route that uses parse service to analyze a snippet of code */
-    fun analyzeSnippet(id: Long): String
-    /** Route that uses parse service to format a snippet of code */
-    fun formatSnippet(id: Long): String
-    /** Route that uses parse service to check if a snippet compiles and returns errors */
-    fun validateSnippet(id: Long): String
+    /** Route to check if a snippet exists, if it doesn't it throws a @SnippetNotFound exception */
+    fun checkIfExists(id: Long, operation: String)
 }

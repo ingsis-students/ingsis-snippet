@@ -4,6 +4,7 @@ import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.entities.request_types.ContentRequest
 import com.students.ingsissnippet.entities.request_types.ShareRequest
 import com.students.ingsissnippet.entities.request_types.SnippetRequest
+import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/snippets")
 class SnippetController(
     private val snippetService: SnippetService,
-    private val permissionService: PermissionService
+    private val permissionService: PermissionService,
+    private val parseService: ParseService
 ) {
 
     @GetMapping("/get/{id}")
@@ -45,7 +47,7 @@ class SnippetController(
 
     @PostMapping("/format/{id}")
     fun formatSnippet(@PathVariable id: Long): Snippet? {
-        val formattedCode = snippetService.formatSnippet(id)
+        val formattedCode = parseService.formatSnippet(id)
 
         // Edit the snippet with the formatted code to save it ~ ¿We want this?
         return snippetService.editSnippet(id, formattedCode)
@@ -53,17 +55,17 @@ class SnippetController(
 
     @PostMapping("/execute/{id}")
     fun executeSnippet(@PathVariable id: Long): String {
-        return snippetService.executeSnippet(id)
+        return parseService.executeSnippet(id)
     }
 
     @PostMapping("/validate/{id}")
     fun validateSnippet(@PathVariable id: Long): String {
-        return snippetService.validateSnippet(id)
+        return parseService.validateSnippet(id)
     }
 
     @PostMapping("/lint/{id}")
     fun lintSnippet(@PathVariable id: Long): String {
-        return snippetService.analyzeSnippet(id)
+        return parseService.analyzeSnippet(id)
     }
 
     @PostMapping("/share/{id}")

@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.routes
 
+import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
 /** This class is intended to have an overview of the Permissions Service */
@@ -10,4 +11,6 @@ interface PermissionServiceRoutes {
     fun addSnippetToUser(email: String, snippetId: Long, role: String)
     /** Route that uses permission service to share a snippet of code to other user*/
     fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String>
+    /** This method is used to execute a post request to the permission service */
+    fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String?
 }
