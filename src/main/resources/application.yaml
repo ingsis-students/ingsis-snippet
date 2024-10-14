@@ -1,10 +1,12 @@
 spring:
+  application:
+    name: ingsis-snippet
+
   datasource:
-    url: jdbc:postgresql://localhost:5002/postgres-snippet #url a la que le pego desde tests/insomnia. (EXT)
+    url: jdbc:postgresql://localhost:5002/postgres-snippet
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: password
-    platform: postgres
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -12,3 +14,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+
+  sql:
+    init:
+      platform: postgres

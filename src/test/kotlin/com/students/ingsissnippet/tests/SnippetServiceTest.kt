@@ -60,6 +60,11 @@ class SnippetServiceTest {
         }
     }
 
+    @AfterEach
+    fun tearDown() {
+        snippetRepository.deleteAll()
+    }
+
     @Test
     fun `can get snippet by id`() {
         val snippet = snippetService.getSnippetOfId(1)
@@ -90,10 +95,5 @@ class SnippetServiceTest {
         assert(snippet.content == "println(\"Hello World!\");")
         assert(snippet.language == "PrintScript")
         assert(snippet.owner == "admin")
-    }
-
-    @AfterEach
-    fun tearDown() {
-        snippetRepository.deleteAll()
     }
 }

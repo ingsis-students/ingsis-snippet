@@ -1,7 +1,10 @@
 package com.students.ingsissnippet.tests
 
+import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.entities.dto.DTO
+import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.services.SnippetService
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argThat
@@ -13,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
+import java.util.Optional
 import kotlin.test.Test
 
 @SpringBootTest
@@ -25,8 +29,21 @@ class ParseServiceTest {
     @MockBean
     lateinit var restTemplate: RestTemplate
 
+    @MockBean
+    lateinit var snippetRepository: SnippetRepository
+
     @BeforeEach
     fun setup() {
+        val snippet = Snippet(
+            id = 1,
+            name = "My Snippet",
+            content = "println(\"Hello World!\");",
+            language = "PrintScript",
+            owner = "admin"
+        )
+        whenever(snippetRepository.existsById(any())).thenReturn(true)
+        whenever(snippetRepository.findById(any())).thenReturn(Optional.of(snippet))
+        whenever(snippetRepository.save(snippet)).thenReturn(snippet)
         whenever(
             restTemplate.postForObject(
                 argThat { url: String? -> url?.contains("format") == true },
@@ -56,6 +73,11 @@ class ParseServiceTest {
         ).thenAnswer {
             "Validate snippet successfully"
         }
+    }
+
+    @AfterEach
+    fun tearDown() {
+        snippetRepository.deleteAll()
     }
 
     @Test
