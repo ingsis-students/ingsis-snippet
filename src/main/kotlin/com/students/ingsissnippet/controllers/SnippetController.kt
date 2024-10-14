@@ -1,6 +1,9 @@
 package com.students.ingsissnippet.controllers
 
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.entities.request_types.ContentRequest
+import com.students.ingsissnippet.entities.request_types.ShareRequest
+import com.students.ingsissnippet.entities.request_types.SnippetRequest
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
@@ -68,17 +71,3 @@ class SnippetController(
         return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
 }
-
-data class SnippetRequest(
-    val name: String,
-    val content: String,
-    val language: String,
-    val owner: String
-)
-
-data class ContentRequest(val content: String)
-
-data class ShareRequest(
-    val fromEmail: String,
-    val toEmail: String
-)

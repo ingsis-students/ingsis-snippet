@@ -1,7 +1,7 @@
 package com.students.ingsissnippet.tests
 
 import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.entities.dto.DTO
+import com.students.ingsissnippet.entities.request_dtos.DTO
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.services.SnippetService
 import org.junit.jupiter.api.AfterEach

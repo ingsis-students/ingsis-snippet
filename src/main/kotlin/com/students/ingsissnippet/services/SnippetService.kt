@@ -2,12 +2,12 @@ package com.students.ingsissnippet.services
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.students.ingsissnippet.entities.dto.FormatDTO
+import com.students.ingsissnippet.entities.request_dtos.FormatDTO
 import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.entities.dto.DTO
-import com.students.ingsissnippet.entities.dto.InterpretDTO
-import com.students.ingsissnippet.entities.dto.LinterDTO
-import com.students.ingsissnippet.entities.dto.ValidateDTO
+import com.students.ingsissnippet.entities.request_dtos.DTO
+import com.students.ingsissnippet.entities.request_dtos.InterpretDTO
+import com.students.ingsissnippet.entities.request_dtos.LinterDTO
+import com.students.ingsissnippet.entities.request_dtos.ValidateDTO
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
 import org.springframework.http.HttpEntity

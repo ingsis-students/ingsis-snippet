@@ -1,9 +1,9 @@
-package com.students.ingsissnippet.entities.dto
+package com.students.ingsissnippet.entities.request_dtos
 
 import com.fasterxml.jackson.databind.JsonNode
 
-data class FormatDTO(
+data class LinterDTO(
     override val version: String,
     override val code: String,
-    val rules: JsonNode
+    val rules: Map<String, JsonNode>
 ) : DTO

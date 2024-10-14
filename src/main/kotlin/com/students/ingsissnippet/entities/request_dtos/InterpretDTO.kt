@@ -1,4 +1,4 @@
-package com.students.ingsissnippet.entities.dto
+package com.students.ingsissnippet.entities.request_dtos
 
 data class InterpretDTO(
     override val version: String,
