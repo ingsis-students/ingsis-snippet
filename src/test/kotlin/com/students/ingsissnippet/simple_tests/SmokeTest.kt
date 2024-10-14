@@ -1,4 +1,4 @@
-package com.students.ingsissnippet
+package com.students.ingsissnippet.simple_tests
 
 import com.students.ingsissnippet.controllers.SnippetController
 import org.assertj.core.api.Assertions.assertThat

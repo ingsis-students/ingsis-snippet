@@ -1,9 +1,10 @@
-package com.students.ingsissnippet
+package com.students.ingsissnippet.simple_tests
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.SnippetService
+import com.students.ingsissnippet.stubs.InMemoryPermissionsApi
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
@@ -30,6 +31,9 @@ class HttpRequestTest {
     @MockBean
     private lateinit var snippetService: SnippetService
 
+    @MockBean
+    private lateinit var permissionService: InMemoryPermissionsApi
+
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
@@ -51,7 +55,7 @@ class HttpRequestTest {
                 anyString(),
             )
         ).thenAnswer { snippet.copy(content = "println(\"New edited world!\");") }
-        whenever(snippetService.addSnippetToUser(String(), 1, String())).thenAnswer { snippet }
+        whenever(permissionService.addSnippetToUser(String(), 1, String())).thenAnswer { snippet }
     }
 
     @TestFactory

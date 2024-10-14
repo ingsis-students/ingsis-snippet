@@ -1,6 +1,7 @@
 package com.students.ingsissnippet.controllers
 
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/snippets")
 class SnippetController(
     private val snippetService: SnippetService,
+    private val permissionService: PermissionService
 ) {
 
     @GetMapping("/get/{id}")
@@ -63,7 +65,7 @@ class SnippetController(
 
     @PostMapping("/share/{id}")
     fun shareSnippet(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
-        return snippetService.shareSnippet(id, emails.fromEmail, emails.toEmail)
+        return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
 }
 

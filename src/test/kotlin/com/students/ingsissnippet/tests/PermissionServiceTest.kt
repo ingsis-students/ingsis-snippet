@@ -1,47 +1,65 @@
 package com.students.ingsissnippet.tests
 
-import com.students.ingsissnippet.repositories.SnippetRepository
-import com.students.ingsissnippet.services.SnippetService
-import org.junit.jupiter.api.AfterEach
+import com.students.ingsissnippet.entities.dto.DTO
+import com.students.ingsissnippet.services.PermissionService
 import org.junit.jupiter.api.BeforeEach
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.ComponentScan
+import org.springframework.http.HttpEntity
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
+import org.springframework.web.client.RestTemplate
 import kotlin.test.Test
 
 @SpringBootTest
 @ActiveProfiles("test")
-@EnableAutoConfiguration
-@ContextConfiguration(classes = [SnippetService::class])
-@ComponentScan(basePackages = ["com.students.ingsissnippet"])
 class PermissionServiceTest {
 
     @Autowired
-    //   lateinit var snippetService: SnippetService
+    lateinit var permissionService: PermissionService
 
     @MockBean
-    lateinit var snippetRepository: SnippetRepository
-
-    //   @MockBean
-    //   lateinit var permissionService: InMemoryPermissionsApi
-
-    //  @MockBean
-    //   lateinit var restTemplate: RestTemplate
+    lateinit var restTemplate: RestTemplate
 
     @BeforeEach
     fun setup() {
-    }
+        whenever(
+            restTemplate.postForObject(
+                argThat { url: String? -> url?.contains("add-snippet") == true },
+                any<HttpEntity<DTO>>(),
+                eq(String::class.java)
+            )
+        ).thenAnswer {
+            "Added snippet to user successfully"
+        }
 
-    @AfterEach
-    fun tearDown() {
-        snippetRepository.deleteAll()
+        whenever(
+            restTemplate.postForObject(
+                argThat { url: String? -> url?.contains("check-owner") == true },
+                any<HttpEntity<Map<String, Any>>>(),
+                eq(String::class.java)
+            )
+        ).thenReturn("User is the owner of the snippet")
     }
 
     @Test
     fun `can check if owner`() {
+        val content = permissionService.checkIfOwner(1L, "example@gmail.com")
+        assert(content)
+    }
+
+    @Test
+    fun `can add snippet to user`() {
+        permissionService.addSnippetToUser("admin", 1L, "Owner")
+    }
+
+    @Test
+    fun `can share snippet to user`() {
+        val response = permissionService.shareSnippet(1L, "example@gmail.com", "otherexample@gmail.com")
+        assert(response.body == "Snippet shared with otherexample@gmail.com")
     }
 }

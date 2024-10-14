@@ -1,4 +1,4 @@
-package com.students.ingsissnippet
+package com.students.ingsissnippet.simple_tests
 
 import com.students.ingsissnippet.controllers.SnippetController
 import com.students.ingsissnippet.entities.Snippet
@@ -14,8 +14,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.hamcrest.Matchers.containsString
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 
 @WebMvcTest(SnippetController::class)
+@ActiveProfiles("test")
+@ContextConfiguration(classes = [SnippetService::class])
+@ComponentScan(basePackages = ["com.students.ingsissnippet"])
 class WebMockTest {
 
     @Autowired

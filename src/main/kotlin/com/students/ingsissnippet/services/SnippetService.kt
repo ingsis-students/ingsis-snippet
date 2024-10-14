@@ -7,13 +7,12 @@ import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.entities.dto.DTO
 import com.students.ingsissnippet.entities.dto.InterpretDTO
 import com.students.ingsissnippet.entities.dto.LinterDTO
+import com.students.ingsissnippet.entities.dto.ValidateDTO
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -22,13 +21,14 @@ import org.springframework.web.client.RestTemplate
 class SnippetService(
     private val snippetRepository: SnippetRepository,
     private val restTemplate: RestTemplate,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val permissionService: PermissionService
 ) : SnippetServiceRoutes {
 
     override fun createSnippet(name: String, content: String, language: String, owner: String): Snippet {
         val snippet = Snippet(name = name, content = content, language = language, owner = owner)
         snippetRepository.save(snippet)
-        addSnippetToUser(owner, snippet.id, "Owner")
+        permissionService.addSnippetToUser(owner, snippet.id, "Owner")
         return snippet
     }
 
@@ -104,35 +104,12 @@ class SnippetService(
         return formattedCode
     }
 
-    override fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
-        checkIfExists(snippetId, "share")
-        if (!checkIfOwner(snippetId, fromEmail)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not the owner of the snippet")
-        }
-        addSnippetToUser(toEmail, snippetId, "Guest")
-        return ResponseEntity.ok("Snippet shared with $toEmail")
-    }
-
-    override fun checkIfOwner(snippetId: Long, email: String): Boolean {
-        val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
-        val entity = HttpEntity(body, getJsonHeaders())
-        val response = executePostForPermissionService(entity, "/check-owner")
-        return response == "User is the owner of the snippet"
-    }
-
     override fun validateSnippet(id: Long): String {
         // TODO Call ValidatorService to validate the snippet, missing impl on parse service
-        val body: Map<String, Any> = emptyMap()
+        val body: DTO = ValidateDTO("", "")
         val entity = HttpEntity(body, getJsonHeaders())
-        val response = executePostForPermissionService(entity, "/validate")
+        val response = executePostForParseService(entity, "/validate")
         return response.toString()
-    }
-
-    override fun addSnippetToUser(email: String, id: Long, role: String) {
-        checkIfExists(id, "add")
-        val body: Map<String, Any> = mapOf("snippetId" to id, "role" to role)
-        val entity = HttpEntity(body, getJsonHeaders())
-        executePostForPermissionService(entity, "/add-snippet/$email")
     }
 
     // ~ PRIVATE FUNCTIONS ~ //
@@ -143,14 +120,6 @@ class SnippetService(
             entity,
             String::class.java
         ).toString()
-    }
-
-    fun executePostForPermissionService(entity: HttpEntity<Map<String, Any>>, string: String): String? {
-        return restTemplate.postForObject(
-            "http://localhost:8082/api/user$string",
-            entity,
-            String::class.java
-        )
     }
 
     private fun createHTTPEntity(dto: DTO): HttpEntity<DTO> {
