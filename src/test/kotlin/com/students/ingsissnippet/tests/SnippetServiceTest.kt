@@ -64,17 +64,6 @@ class SnippetServiceTest {
             permissionService.addSnippetToUser("admin", 1, "Owner")
             "Success"
         }
-        /*
-        whenever(
-            restTemplate.postForObject(
-                argThat { url: String -> url.contains("format") },
-                any<HttpEntity<DTO>>(),
-                eq(String::class.java)
-            )
-        ).thenAnswer {
-            ParseApi().format(1L)
-        }
-         */
     }
 
     @Test
@@ -108,15 +97,6 @@ class SnippetServiceTest {
         assert(snippet.language == "PrintScript")
         assert(snippet.owner == "admin")
     }
-/*
-    @Test
-    fun `can format snippet`() {
-        val content = snippetService.formatSnippet(1L)
-
-        assert(content == "println(\"Hello World!\");")
-    }
-
- */
 
     @AfterEach
     fun tearDown() {

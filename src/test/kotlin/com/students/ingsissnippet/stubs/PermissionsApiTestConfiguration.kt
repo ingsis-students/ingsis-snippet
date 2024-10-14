@@ -12,12 +12,12 @@ class PermissionsApiTestConfiguration {
 
     @Bean
     @Primary
-    fun createTestPermissionsApi(): PermissionsApi {
+    fun createTestPermissionsApi(): PermissionsServiceRoutes {
         return InMemoryPermissionsApi()
     }
 }
 
-class InMemoryPermissionsApi : PermissionsApi {
+class InMemoryPermissionsApi : PermissionsServiceRoutes {
 
     private var permissionDb = UserFixtures.all()
 
@@ -31,7 +31,7 @@ class InMemoryPermissionsApi : PermissionsApi {
     }
 }
 
-interface PermissionsApi {
+interface PermissionsServiceRoutes {
     fun checkIfOwner(snippetId: Long, email: String): Boolean
     fun addSnippetToUser(owner: String, snippetId: Long, role: String)
 }

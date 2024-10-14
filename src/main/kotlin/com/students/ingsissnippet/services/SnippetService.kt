@@ -120,9 +120,12 @@ class SnippetService(
         return response == "User is the owner of the snippet"
     }
 
-    override fun validateSnippet(id: Long): Snippet {
+    override fun validateSnippet(id: Long): String {
         // TODO Call ValidatorService to validate the snippet, missing impl on parse service
-        return getSnippetOfId(id)
+        val body: Map<String, Any> = emptyMap()
+        val entity = HttpEntity(body, getJsonHeaders())
+        val response = executePostForPermissionService(entity, "/validate")
+        return response.toString()
     }
 
     override fun addSnippetToUser(email: String, id: Long, role: String) {

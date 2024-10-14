@@ -52,7 +52,7 @@ class SnippetController(
     }
 
     @PostMapping("/validate/{id}")
-    fun validateSnippet(@PathVariable id: Long): Snippet {
+    fun validateSnippet(@PathVariable id: Long): String {
         return snippetService.validateSnippet(id)
     }
 
