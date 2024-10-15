@@ -23,7 +23,7 @@ jobs:
       packages: write
     with:
       actor: ${{ github.actor }}
-      package_name: ${{ github.ref_name == 'main' && 'ingsis-parse' || 'ingsis-parse-prod' }}
+      package_name: ${{ github.ref_name == 'main' && 'ingsis-snippet' || 'ingsis-snippet-prod' }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -37,7 +37,7 @@ jobs:
       id-token: write
     with:
       registry: ghcr.io
-      image_name: ${{ github.ref_name == 'main' && 'ingsis-students/ingsis-parse' || 'ingsis-students/ingsis-parse-prod' }}
+      image_name: ${{ github.ref_name == 'main' && 'ingsis-students/ingsis-snippet' || 'ingsis-students/ingsis-snippet-prod' }}
       actor: ${{ github.actor }}
     secrets:
       token: ${{ secrets.PAT }}
