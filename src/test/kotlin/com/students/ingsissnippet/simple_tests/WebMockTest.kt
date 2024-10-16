@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.hamcrest.Matchers.containsString
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
@@ -31,8 +32,8 @@ class WebMockTest {
     private lateinit var service: SnippetService
 
     @Test
+    @WithMockUser(authorities = ["SCOPE_read:snippets"])
     fun mockTest() {
-
         `when`(service.getSnippetOfId(1L)).thenReturn(
             Snippet(
                 1,

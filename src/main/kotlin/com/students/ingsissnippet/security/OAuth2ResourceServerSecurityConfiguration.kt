@@ -34,12 +34,15 @@ class OAuth2ResourceServerSecurityConfiguration(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/").permitAll()
-                .requestMatchers(GET, "/api/user").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(GET, "/api/user/{email}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/user").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(PUT, "/api/user/{email}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/user/add-snippet/{email}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/user/check-owner").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(GET, "/snippets/get/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/snippets/create").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/edit/{id}").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/delete/{id}").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/format/{id}").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/execute/{id}").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/validate/{id}").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/lint/{id}").hasAuthority("SCOPE_write:snippets")
+                .requestMatchers(POST, "/snippets/share/{id}").hasAuthority("SCOPE_write:snippets")
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(withDefaults()) }
