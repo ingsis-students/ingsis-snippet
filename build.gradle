@@ -41,6 +41,11 @@ dependencies {
 	implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
 	testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
 	testImplementation "com.h2database:h2"
+
+    implementation 'org.springframework.boot:spring-boot-starter-security' //apply role based security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.security:spring-security-oauth2-jose' // JWT decoding and validation
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 kotlin {
