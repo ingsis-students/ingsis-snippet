@@ -1,5 +1,5 @@
 package com.students.ingsissnippet.simple_tests
-
+/*
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.students.ingsissnippet.entities.Snippet
@@ -23,7 +23,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import java.io.File
 import kotlin.test.assertTrue
-/*
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class HttpRequestTest {
