@@ -8,3 +8,11 @@ spring:
     username: sa
     password: password
     url: jdbc:h2:mem:testdb
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://students-ingsis.us.auth0.com/
+
+auth0:
+  audience: https://students.ingsis.com/api
