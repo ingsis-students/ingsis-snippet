@@ -7,6 +7,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: password
+    platform: postgres
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -14,10 +15,6 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-
-  sql:
-    init:
-      platform: postgres
 
   security:
     oauth2:
