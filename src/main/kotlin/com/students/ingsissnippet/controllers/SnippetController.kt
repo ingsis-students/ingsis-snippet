@@ -9,6 +9,7 @@ import com.students.ingsissnippet.entities.request_types.SnippetRequest
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
+import kotlinx.serialization.json.JsonObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -73,7 +74,7 @@ class SnippetController(
 
     @PostMapping("/lint/rules")
     suspend fun lintSnippets(@RequestHeader("Authorization") token: String,
-                             @RequestBody lintRules: String): ResponseEntity<String> {
+                             @RequestBody lintRules: JsonObject): ResponseEntity<String> {
         val userId = permissionService.validate(token)
 
         val snippets : List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
