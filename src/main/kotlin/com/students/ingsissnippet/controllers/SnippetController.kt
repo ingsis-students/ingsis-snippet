@@ -7,6 +7,7 @@ import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.services.AssetService
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
@@ -27,7 +28,8 @@ class SnippetController(
     private val snippetService: SnippetService,
     private val permissionService: PermissionService,
     private val parseService: ParseService,
-    private val linterRuleProducer: LinterRuleProducer
+    private val linterRuleProducer: LinterRuleProducer,
+    private val assetService: AssetService
 ) {
 
     @GetMapping("/{id}")
@@ -88,13 +90,14 @@ class SnippetController(
         @RequestHeader("Authorization") token: String,
         @RequestBody lintRules: JsonObject
     ): ResponseEntity<String> {
-        val userId = permissionService.validate(token)
-        val snippets: List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
+        val userId = permissionService.validate(token).body!!
+        assetService.put("lint-rules", userId, lintRules.toString()) // modifico las rules.
+        val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
 
         snippets.forEach { snippet ->
             val msg = SnippetMessage(
                 snippetId = snippet.id,
-                rules = lintRules
+                userId = userId
             )
             linterRuleProducer.publishEvent(msg)
         }

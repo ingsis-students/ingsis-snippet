@@ -14,9 +14,9 @@ class AssetService(private val restTemplate: RestTemplate) : AssetServiceRoutes 
         return response ?: "Snippet not found"
     }
 
-    override fun put(id: Long, content: String): String {
+    override fun put(directory: String, id: Long, content: String): String {
         val response = restTemplate.postForObject(
-            "http://localhost:8084/v1/asset/snippets/$id",
+            "http://localhost:8084/v1/asset/$directory/$id",
             content,
             String::class.java
         )
