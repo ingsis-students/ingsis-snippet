@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod.GET
 import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.config.Customizer.withDefaults
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -33,15 +34,15 @@ class OAuth2ResourceServerSecurityConfiguration(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/").permitAll()
-                .requestMatchers(GET, "/snippets/get/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/create").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/edit/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/delete/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/format/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/execute/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/validate/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/lint/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/snippets/share/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(GET, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(PUT, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/delete/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/format/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/execute/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/validate/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/lint/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/share/{id}").hasAuthority("SCOPE_read:snippets")
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(withDefaults()) }
