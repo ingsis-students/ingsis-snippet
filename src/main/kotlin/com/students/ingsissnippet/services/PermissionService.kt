@@ -3,7 +3,12 @@ package com.students.ingsissnippet.services
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
 import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.*
+import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -56,7 +61,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         )
     }
 
-    override fun getSnippets(id : Long) : ResponseEntity<List<Snippet>> {
+    override fun getSnippets(id: Long): ResponseEntity<List<Snippet>> {
         val body: Map<String, Any> = mapOf("id" to id)
         val entity = HttpEntity(body, getJsonHeaders())
 

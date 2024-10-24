@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.simple_tests
 
+import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.controllers.SnippetController
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.SnippetService
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.hamcrest.Matchers.containsString
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
@@ -30,6 +32,9 @@ class WebMockTest {
 
     @MockBean
     private lateinit var service: SnippetService
+
+    @MockBean
+    private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer // initialize producer in test
 
     @Test
     @WithMockUser(authorities = ["SCOPE_read:snippets"])

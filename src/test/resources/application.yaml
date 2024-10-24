@@ -13,6 +13,18 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://students-ingsis.us.auth0.com/
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 auth0:
   audience: https://students.ingsis.com/api
+
+stream:
+  lint.key: "lintRuleStream"
+  format.key: "formatRuleStream"
+
+groups:
+  lint: "lintGroup"
+  format: "formatGroup"

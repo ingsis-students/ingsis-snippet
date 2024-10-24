@@ -11,7 +11,13 @@ import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import kotlinx.serialization.json.JsonObject
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.PathVariable
 
 @RestController
 @RequestMapping("/snippets")
@@ -73,11 +79,12 @@ class SnippetController(
     }
 
     @PostMapping("/lint/rules")
-    suspend fun lintSnippets(@RequestHeader("Authorization") token: String,
-                             @RequestBody lintRules: JsonObject): ResponseEntity<String> {
+    suspend fun lintSnippets(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody lintRules: JsonObject
+    ): ResponseEntity<String> {
         val userId = permissionService.validate(token)
-
-        val snippets : List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
+        val snippets: List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
 
         snippets.forEach { snippet ->
             val msg = SnippetMessage(
@@ -90,6 +97,4 @@ class SnippetController(
 
         return ResponseEntity.ok("Snippets submitted for linting")
     }
-
-
 }
