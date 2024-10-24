@@ -4,6 +4,7 @@ import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service

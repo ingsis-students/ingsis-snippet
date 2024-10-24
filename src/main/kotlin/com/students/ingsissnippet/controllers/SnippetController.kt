@@ -1,5 +1,7 @@
 package com.students.ingsissnippet.controllers
 
+import com.students.ingsissnippet.config.SnippetMessage
+import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.entities.request_types.ContentRequest
 import com.students.ingsissnippet.entities.request_types.ShareRequest
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.*
 class SnippetController(
     private val snippetService: SnippetService,
     private val permissionService: PermissionService,
-    private val parseService: ParseService
+    private val parseService: ParseService,
+    private val linterRuleProducer: LinterRuleProducer
 ) {
 
     @GetMapping("/get/{id}")
@@ -69,12 +72,20 @@ class SnippetController(
     }
 
     @PostMapping("/lint/rules")
-    fun lintSnippets(@RequestHeader("Authorization") token: String,
-                     @RequestBody lintRules: String): ResponseEntity<String> {
+    suspend fun lintSnippets(@RequestHeader("Authorization") token: String,
+                             @RequestBody lintRules: String): ResponseEntity<String> {
         val userId = permissionService.validate(token)
 
-        val snippets = snippetService.getByUser(userId)
+        val snippets = snippetService.getByUser(userId.body!!)
 
+        snippets.forEach { snippet ->
+            val lintDto = SnippetMessage(
+                snippetId = snippet.id,
+                content = snippet.content,
+                rules = lintRules
+            )
+            linterRuleProducer.publishEvent(lintDto)
+        }
 
         return ResponseEntity.ok("Snippets submitted for linting")
     }
