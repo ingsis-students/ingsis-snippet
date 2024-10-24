@@ -5,6 +5,7 @@ import com.students.ingsissnippet.controllers.SnippetController
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.services.LanguageService
 import com.students.ingsissnippet.services.SnippetService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -37,13 +38,16 @@ class WebMockTest {
     @MockBean
     private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer // initialize producer in test
 
+    @MockBean
+    private lateinit var languageService: LanguageService
+
     @Test
     @WithMockUser(authorities = ["SCOPE_read:snippets"])
     fun mockTest() {
         val language = Language(
             id = 1,
             name = "printscript",
-            version = "1.0"
+            version = "1.0",
         )
         val snippet = Snippet(
             id = 1,
