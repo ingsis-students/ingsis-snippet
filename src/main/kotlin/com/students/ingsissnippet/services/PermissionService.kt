@@ -32,7 +32,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         return ResponseEntity.ok("Snippet shared with $toEmail")
     }
 
-    private fun getJsonHeaders(): MultiValueMap<String, String>? {
+    private fun getJsonHeaders(): MultiValueMap<String, String> {
         return HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
         }
