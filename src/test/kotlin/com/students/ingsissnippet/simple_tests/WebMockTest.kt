@@ -1,6 +1,8 @@
 package com.students.ingsissnippet.simple_tests
 
 import com.students.ingsissnippet.controllers.SnippetController
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.SnippetService
 import org.junit.jupiter.api.Test
@@ -34,19 +36,27 @@ class WebMockTest {
     @Test
     @WithMockUser(authorities = ["SCOPE_read:snippets"])
     fun mockTest() {
-        `when`(service.getSnippetOfId(1L)).thenReturn(
-            Snippet(
-                1,
-                "My Snippet",
-                "println(\"New edited world!\");",
-                "PrintScript",
-                "admin"
+        val language = Language(
+            id = 1,
+            name = "printscript",
+            version = "1.0"
+        )
+        val snippet = Snippet(
+            id = 1,
+            name = "My Snippet",
+            owner = "admin",
+            language = language
+        )
+        `when`(service.get(1L)).thenReturn(
+            FullSnippet(
+                snippet = snippet,
+                content = "println(\"New edited world!\");"
             )
         )
 
-        mockMvc.perform(get("/snippets/get/1"))
+        mockMvc.perform(get("/api/snippets/1"))
             .andDo(print())
             .andExpect(status().isOk)
-            .andExpect(content().string(containsString("My Snippet")))
+            .andExpect(content().string(containsString("New edited world")))
     }
 }

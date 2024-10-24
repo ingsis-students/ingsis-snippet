@@ -1,75 +1,79 @@
 package com.students.ingsissnippet.controllers
 
-import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.entities.request_types.ContentRequest
-import com.students.ingsissnippet.entities.request_types.ShareRequest
-import com.students.ingsissnippet.entities.request_types.SnippetRequest
+import com.students.ingsissnippet.dtos.request_types.ContentRequest
+import com.students.ingsissnippet.dtos.request_types.ShareRequest
+import com.students.ingsissnippet.dtos.request_types.SnippetRequest
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/snippets")
+@RequestMapping("/api/snippets")
 class SnippetController(
     private val snippetService: SnippetService,
     private val permissionService: PermissionService,
     private val parseService: ParseService
 ) {
 
-    @GetMapping("/get/{id}")
-    fun getSnippet(@PathVariable id: Long): Snippet {
-        return snippetService.getSnippetOfId(id)
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): ResponseEntity<FullSnippet> {
+        val fullSnippet = snippetService.get(id)
+        return ResponseEntity.ok(fullSnippet)
     }
 
-    @PostMapping("/create")
-    fun createSnippet(@RequestBody snippetRequest: SnippetRequest): Snippet {
-        return snippetService.createSnippet(
+    @PostMapping("/")
+    fun create(@RequestBody snippetRequest: SnippetRequest): ResponseEntity<FullSnippet> {
+        val fullSnippet = snippetService.create(
             snippetRequest.name, snippetRequest.content, snippetRequest.language, snippetRequest.owner
         )
+        return ResponseEntity.ok(fullSnippet)
     }
 
-    @PostMapping("/edit/{id}")
-    fun editSnippet(@PathVariable id: Long, @RequestBody req: ContentRequest): Snippet? {
-        return snippetService.editSnippet(id, req.content)
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody req: ContentRequest): ResponseEntity<FullSnippet> {
+        val fullSnippet = snippetService.update(id, req.content)
+        return ResponseEntity.ok(fullSnippet)
     }
 
     @PostMapping("/delete/{id}")
-    fun deleteSnippet(@PathVariable id: Long) {
-        snippetService.deleteSnippet(id)
+    fun delete(@PathVariable id: Long): ResponseEntity<Void> {
+        snippetService.delete(id)
+        return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/format/{id}")
-    fun formatSnippet(@PathVariable id: Long): Snippet? {
-        val formattedCode = parseService.formatSnippet(id)
-
-        // Edit the snippet with the formatted code to save it ~ ¿We want this?
-        return snippetService.editSnippet(id, formattedCode)
+    fun format(@PathVariable id: Long): ResponseEntity<FullSnippet> {
+        val fullSnippet = parseService.format(id)
+        return ResponseEntity.ok(fullSnippet)
     }
 
     @PostMapping("/execute/{id}")
-    fun executeSnippet(@PathVariable id: Long): String {
-        return parseService.executeSnippet(id)
+    fun execute(@PathVariable id: Long): ResponseEntity<String> {
+        val output = parseService.execute(id)
+        return ResponseEntity.ok(output)
     }
 
     @PostMapping("/validate/{id}")
-    fun validateSnippet(@PathVariable id: Long): String {
-        return parseService.validateSnippet(id)
+    fun validate(@PathVariable id: Long): String {
+        return parseService.validate(id)
     }
 
     @PostMapping("/lint/{id}")
-    fun lintSnippet(@PathVariable id: Long): String {
-        return parseService.analyzeSnippet(id)
+    fun lint(@PathVariable id: Long): String {
+        return parseService.analyze(id)
     }
 
     @PostMapping("/share/{id}")
-    fun shareSnippet(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
+    fun share(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
         return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
 }

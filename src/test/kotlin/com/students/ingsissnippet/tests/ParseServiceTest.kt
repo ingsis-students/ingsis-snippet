@@ -1,7 +1,8 @@
 package com.students.ingsissnippet.tests
 
 import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.entities.request_dtos.DTO
+import com.students.ingsissnippet.dtos.request_dtos.DTO
+import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.services.ParseService
 import org.junit.jupiter.api.AfterEach
@@ -34,12 +35,16 @@ class ParseServiceTest {
 
     @BeforeEach
     fun setup() {
+        val language = Language(
+            id = 1,
+            name = "printscript",
+            version = "1.0",
+        )
         val snippet = Snippet(
             id = 1,
             name = "My Snippet",
-            content = "println(\"Hello World!\");",
-            language = "PrintScript",
-            owner = "admin"
+            owner = "admin",
+            language = language,
         )
         whenever(snippetRepository.existsById(any())).thenReturn(true)
         whenever(snippetRepository.findById(any())).thenReturn(Optional.of(snippet))
@@ -92,25 +97,25 @@ class ParseServiceTest {
 
     @Test
     fun `can format snippet`() {
-        val content = parseService.formatSnippet(1L)
-        assert(content == "Formatted snippet successfully")
+        val snippet = parseService.format(1L)
+        assert(snippet.content == "Formatted snippet successfully")
     }
 
     @Test
     fun `can analyze snippet`() {
-        val content = parseService.analyzeSnippet(1L)
+        val content = parseService.analyze(1L)
         assert(content == "Analyzed snippet successfully")
     }
 
     @Test
     fun `can validate snippet`() {
-        val content = parseService.validateSnippet(1L)
+        val content = parseService.validate(1L)
         assert(content == "Validate snippet successfully")
     }
 
     @Test
     fun `can execute snippet`() {
-        val content = parseService.executeSnippet(1L)
+        val content = parseService.execute(1L)
         assert(content == "Executed snippet successfully")
     }
 }

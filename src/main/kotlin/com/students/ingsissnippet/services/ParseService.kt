@@ -2,11 +2,12 @@ package com.students.ingsissnippet.services
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.students.ingsissnippet.entities.request_dtos.DTO
-import com.students.ingsissnippet.entities.request_dtos.FormatDTO
-import com.students.ingsissnippet.entities.request_dtos.InterpretDTO
-import com.students.ingsissnippet.entities.request_dtos.LinterDTO
-import com.students.ingsissnippet.entities.request_dtos.ValidateDTO
+import com.students.ingsissnippet.dtos.request_dtos.DTO
+import com.students.ingsissnippet.dtos.request_dtos.FormatDTO
+import com.students.ingsissnippet.dtos.request_dtos.InterpretDTO
+import com.students.ingsissnippet.dtos.request_dtos.LinterDTO
+import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.routes.ParseServiceRoutes
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -18,16 +19,17 @@ import org.springframework.web.client.RestTemplate
 @Service
 class ParseService(
     private val snippetService: SnippetService,
+    private val assetService: AssetService,
     private val restTemplate: RestTemplate,
     private val objectMapper: ObjectMapper
 ) : ParseServiceRoutes {
 
-    override fun executeSnippet(id: Long): String {
+    override fun execute(id: Long): String {
         snippetService.checkIfExists(id, "interpret")
 
-        val snippet = snippetService.getSnippetOfId(id)
+        val snippet = snippetService.get(id)
         val interpretDTO = InterpretDTO(
-            version = "1.0",
+            version = snippet.version,
             code = snippet.content
         )
         val entity = createHTTPEntity(interpretDTO)
@@ -35,29 +37,25 @@ class ParseService(
     }
 
     // FIXME Como todavía no sabemos como nos van a mandar las rules lo dejo así
-    override fun analyzeSnippet(id: Long): String {
+    override fun analyze(id: Long): String {
         snippetService.checkIfExists(id, "analyze")
-
-        val snippet = snippetService.getSnippetOfId(id)
-
+        val snippet = snippetService.get(id)
         val rulesJson = getDefaultRule()
-
         val linterDTO = LinterDTO(
-            version = "1.0",
+            version = snippet.version,
             code = snippet.content,
             rules = rulesJson
         )
-
         val entity = createHTTPEntity(linterDTO)
         return executePost(entity, "/analyze")
     }
 
-    override fun formatSnippet(id: Long): String {
-        val snippet = snippetService.getSnippetOfId(id)
+    override fun format(id: Long): FullSnippet {
+        val snippet = snippetService.get(id)
 
         // FIXME Esto recibiría version y rules
         val formatDto = FormatDTO(
-            version = "1.0",
+            version = snippet.version,
             code = snippet.content,
             rules = objectMapper.readTree(
                 """
@@ -71,18 +69,18 @@ class ParseService(
         )
 
         val entity = createHTTPEntity(formatDto)
-
         val formattedCode = executePost(entity, "/format")
-
-        return formattedCode
+        return snippetService.update(id, formattedCode)
     }
 
-    override fun validateSnippet(id: Long): String {
-        // TODO Call ValidatorService to validate the snippet, missing impl on parse service
-        val body: DTO = ValidateDTO("", "")
+    override fun validate(id: Long): String {
+        val snippet = snippetService.get(id)
+        val body: DTO = ValidateDTO(
+            version = snippet.version,
+            code = snippet.content
+        )
         val entity = HttpEntity(body, getJsonHeaders())
-        val response = executePost(entity, "/validate")
-        return response.toString()
+        return executePost(entity, "/validate")
     }
 
     // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests del linter

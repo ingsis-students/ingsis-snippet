@@ -1,7 +1,9 @@
 package com.students.ingsissnippet.tests
 
+import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.repositories.SnippetRepository
+import com.students.ingsissnippet.services.AssetService
 import com.students.ingsissnippet.services.SnippetService
 import com.students.ingsissnippet.stubs.InMemoryPermissionsApi
 import org.junit.jupiter.api.AfterEach
@@ -25,6 +27,9 @@ import kotlin.test.Test
 class SnippetServiceTest {
 
     @Autowired
+    private lateinit var assetService: AssetService
+
+    @Autowired
     lateinit var snippetService: SnippetService
 
     @MockBean
@@ -38,16 +43,21 @@ class SnippetServiceTest {
 
     @BeforeEach
     fun setup() {
+        val language = Language(
+            id = 1,
+            name = "printscript",
+            version = "1.0",
+        )
         val snippet = Snippet(
             id = 1,
             name = "My Snippet",
-            content = "println(\"Hello World!\");",
-            language = "PrintScript",
-            owner = "admin"
+            owner = "admin",
+            language = language,
         )
         whenever(snippetRepository.existsById(any())).thenReturn(true)
         whenever(snippetRepository.findById(any())).thenReturn(Optional.of(snippet))
         whenever(snippetRepository.save(snippet)).thenReturn(snippet)
+        whenever(assetService.get(1)).thenReturn("println(\"Hello World!\")")
         whenever(
             restTemplate.postForObject(
                 argThat { url: String -> url.contains("add-snippet") },
@@ -67,33 +77,44 @@ class SnippetServiceTest {
 
     @Test
     fun `can get snippet by id`() {
-        val snippet = snippetService.getSnippetOfId(1)
+        val snippet = snippetService.get(1)
         assert(snippet.id == 1L)
         assert(snippet.name == "My Snippet")
-        assert(snippet.content == "println(\"Hello World!\");")
-        assert(snippet.language == "PrintScript")
+        assert(snippet.content == "println(\"Hello World!\")")
+        assert(snippet.language == "printscript")
+        assert(snippet.version == "1.0")
         assert(snippet.owner == "admin")
     }
 
     @Test
     fun `should return empty optional when id does not exist`() {
         whenever(snippetRepository.findById(999)).thenReturn(Optional.empty())
-        assertThrows(NoSuchElementException::class.java) { snippetService.getSnippetOfId(999) }
+        assertThrows(NoSuchElementException::class.java) { snippetService.get(999) }
     }
 
     @Test
     fun `can edit snippet`() {
-        val updatedSnippet = snippetService.editSnippet(1, "println(\"Hello NEW World!\")")
-        assert(updatedSnippet?.content == "println(\"Hello NEW World!\")")
+        val updatedSnippet = snippetService.update(1, "println(\"Hello NEW World!\")")
+        assert(updatedSnippet.content == "println(\"Hello NEW World!\")")
     }
 
     @Test
     fun `can create snippet`() {
-        val snippet = snippetService.createSnippet("My Snippet", "println(\"Hello World!\");", "PrintScript", "admin")
+        val language = Language(
+            id = 1,
+            name = "printscript",
+            version = "1.0"
+        )
+        val snippet = snippetService.create(
+            name = "My Snippet",
+            content = "println(\"Hello World!\");",
+            language = language,
+            owner = "admin"
+        )
 
         assert(snippet.name == "My Snippet")
         assert(snippet.content == "println(\"Hello World!\");")
-        assert(snippet.language == "PrintScript")
+        assert(snippet.language == "printscript")
         assert(snippet.owner == "admin")
     }
 }

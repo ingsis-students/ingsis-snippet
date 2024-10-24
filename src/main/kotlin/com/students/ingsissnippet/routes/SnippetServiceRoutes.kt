@@ -1,17 +1,18 @@
 package com.students.ingsissnippet.routes
 
-import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.entities.Language
 
 /** This class is intended to have an overview of the SnippetService. */
 interface SnippetServiceRoutes {
     /**Route to create a snippet and add that snippet to its creator*/
-    fun createSnippet(name: String, content: String, language: String, owner: String): Snippet
+    fun create(name: String, content: String, language: Language, owner: String): FullSnippet
     /** Route to get a specific snippet by its id */
-    fun getSnippetOfId(id: Long): Snippet
-    /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception */
-    fun editSnippet(id: Long, content: String): Snippet?
-    /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception */
-    fun deleteSnippet(id: Long)
+    fun get(id: Long): FullSnippet
+    /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception **/
+    fun update(id: Long, content: String): FullSnippet?
+    /** Route to delete a snippet if it exists, else it throws a @SnippetNotFound exception */
+    fun delete(id: Long)
     /** Route to check if a snippet exists, if it doesn't it throws a @SnippetNotFound exception */
     fun checkIfExists(id: Long, operation: String)
 }

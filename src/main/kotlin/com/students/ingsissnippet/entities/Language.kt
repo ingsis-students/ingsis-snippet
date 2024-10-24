@@ -4,20 +4,18 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToMany
 
 @Entity
-data class Snippet(
+data class Language(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long = 0,
     val name: String,
-    val owner: String,
+    val version: String,
 
-    @ManyToOne
-    @JoinColumn(name = "language_id")
-    val language: Language? = null
+    @OneToMany(mappedBy = "language")
+    val snippets: List<Snippet> = emptyList()
 ) {
-    constructor() : this(0, "", "", null)
+    constructor() : this(0, "", "", emptyList())
 }

@@ -1,4 +1,4 @@
-package com.students.ingsissnippet.entities.request_dtos
+package com.students.ingsissnippet.dtos.request_dtos
 
 interface DTO {
     val version: String

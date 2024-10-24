@@ -1,6 +1,6 @@
 package com.students.ingsissnippet.tests
 
-import com.students.ingsissnippet.entities.request_dtos.DTO
+import com.students.ingsissnippet.dtos.request_dtos.DTO
 import com.students.ingsissnippet.services.PermissionService
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
