@@ -47,4 +47,14 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
             String::class.java
         )
     }
+
+    override fun validate(jwt: String): ResponseEntity<Long> {
+        val body: Map<String, Any> = mapOf("jwt" to jwt)
+        val entity = HttpEntity(body, getJsonHeaders())
+        return restTemplate.postForEntity(
+            "http://localhost:8082/api/user/validate",
+            entity,
+            Long::class.java
+        )
+    }
 }

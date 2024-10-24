@@ -13,4 +13,6 @@ interface PermissionServiceRoutes {
     fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String>
     /** This method is used to execute a post request to the permission service */
     fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String?
+
+    fun validate(jwt: String): ResponseEntity<Long>
 }

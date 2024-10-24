@@ -8,12 +8,7 @@ import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/snippets")
@@ -72,4 +67,16 @@ class SnippetController(
     fun shareSnippet(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
         return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
+
+    @PostMapping("/lint/rules")
+    fun lintSnippets(@RequestHeader("Authorization") token: String,
+                     @RequestBody lintRules: String): ResponseEntity<String> {
+        val userId = permissionService.validate(token)
+
+
+
+        return ResponseEntity.ok("Snippets submitted for linting")
+    }
+
+
 }

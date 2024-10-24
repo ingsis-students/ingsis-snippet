@@ -1,4 +1,4 @@
-package com.students.ingsisparse.config
+package com.students.ingsissnippet.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
