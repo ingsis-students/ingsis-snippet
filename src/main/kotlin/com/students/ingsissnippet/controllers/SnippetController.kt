@@ -94,7 +94,6 @@ class SnippetController(
         snippets.forEach { snippet ->
             val msg = SnippetMessage(
                 snippetId = snippet.id,
-                content = "",
                 rules = lintRules
             )
             linterRuleProducer.publishEvent(msg)
