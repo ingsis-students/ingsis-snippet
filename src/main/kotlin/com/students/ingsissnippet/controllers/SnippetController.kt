@@ -73,6 +73,7 @@ class SnippetController(
                      @RequestBody lintRules: String): ResponseEntity<String> {
         val userId = permissionService.validate(token)
 
+        val snippets = snippetService.getByUser(userId)
 
 
         return ResponseEntity.ok("Snippets submitted for linting")

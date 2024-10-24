@@ -14,4 +14,5 @@ interface SnippetServiceRoutes {
     fun deleteSnippet(id: Long)
     /** Route to check if a snippet exists, if it doesn't it throws a @SnippetNotFound exception */
     fun checkIfExists(id: Long, operation: String)
+    fun getByUser(id: Long): List<Snippet>
 }

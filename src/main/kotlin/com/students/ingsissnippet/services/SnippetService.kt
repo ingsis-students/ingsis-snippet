@@ -41,4 +41,9 @@ class SnippetService(
             throw SnippetNotFound("Snippet not found when trying to $operation it")
         }
     }
+
+    override fun getByUser(id: Long): List<Snippet> {
+        return snippetRepository.findByOwner(id)
+
+    }
 }
