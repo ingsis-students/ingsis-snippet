@@ -76,15 +76,15 @@ class SnippetController(
                              @RequestBody lintRules: String): ResponseEntity<String> {
         val userId = permissionService.validate(token)
 
-        val snippets = snippetService.getByUser(userId.body!!)
+        val snippets : List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
 
         snippets.forEach { snippet ->
-            val lintDto = SnippetMessage(
+            val msg = SnippetMessage(
                 snippetId = snippet.id,
                 content = snippet.content,
                 rules = lintRules
             )
-            linterRuleProducer.publishEvent(lintDto)
+            linterRuleProducer.publishEvent(msg)
         }
 
         return ResponseEntity.ok("Snippets submitted for linting")
