@@ -1,11 +1,14 @@
 package com.students.ingsissnippet.services
 
+import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -34,7 +37,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         return ResponseEntity.ok("Snippet shared with $toEmail")
     }
 
-    private fun getJsonHeaders(): MultiValueMap<String, String>? {
+    private fun getJsonHeaders(): MultiValueMap<String, String> {
         return HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
         }
@@ -46,5 +49,30 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
             entity,
             String::class.java
         )
+    }
+
+    override fun validate(jwt: String): ResponseEntity<Long> {
+        val body: Map<String, Any> = mapOf("jwt" to jwt)
+        val entity = HttpEntity(body, getJsonHeaders())
+        return restTemplate.postForEntity(
+            "http://localhost:8082/api/user/validate",
+            entity,
+            Long::class.java
+        )
+    }
+
+    override fun getSnippets(id: Long): ResponseEntity<List<Snippet>> {
+        val body: Map<String, Any> = mapOf("id" to id)
+        val entity = HttpEntity(body, getJsonHeaders())
+
+        val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
+
+        val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
+            "http://localhost:8082/api/user/snippets",
+            HttpMethod.GET,
+            entity,
+            responseType,
+        )
+        return ResponseEntity.ok(response.body)
     }
 }

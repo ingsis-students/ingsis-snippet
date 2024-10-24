@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.simple_tests
 
+import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.controllers.SnippetController
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Language
@@ -32,6 +33,9 @@ class WebMockTest {
 
     @MockBean
     private lateinit var service: SnippetService
+
+    @MockBean
+    private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer // initialize producer in test
 
     @Test
     @WithMockUser(authorities = ["SCOPE_read:snippets"])

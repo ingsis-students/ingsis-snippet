@@ -1,6 +1,7 @@
 package com.students.ingsissnippet.tests
 
 import com.students.ingsissnippet.entities.Language
+import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.services.AssetService
@@ -40,6 +41,9 @@ class SnippetServiceTest {
 
     @MockBean
     lateinit var restTemplate: RestTemplate
+
+    @MockBean
+    private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer
 
     @BeforeEach
     fun setup() {

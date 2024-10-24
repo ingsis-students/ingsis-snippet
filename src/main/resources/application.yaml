@@ -27,5 +27,19 @@ spring:
           client-id: ${AUTH_CLIENT_ID}
           client-secret: ${AUTH_CLIENT_SECRET}
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
 auth0:
   audience: ${AUTH0_AUDIENCE}
+
+
+stream:
+  lint.key: "lintRuleStream"
+  format.key: "formatRuleStream"
+
+groups:
+  lint: "lintGroup"
+  format: "formatGroup"

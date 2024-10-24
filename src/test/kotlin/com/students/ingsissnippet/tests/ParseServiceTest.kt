@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.tests
 
+import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import com.students.ingsissnippet.entities.Language
@@ -32,6 +33,9 @@ class ParseServiceTest {
 
     @MockBean
     lateinit var snippetRepository: SnippetRepository
+
+    @MockBean
+    private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer
 
     @BeforeEach
     fun setup() {

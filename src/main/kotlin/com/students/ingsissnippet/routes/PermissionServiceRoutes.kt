@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.routes
 
+import com.students.ingsissnippet.entities.Snippet
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
@@ -13,4 +14,7 @@ interface PermissionServiceRoutes {
     fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String>
     /** This method is used to execute a post request to the permission service */
     fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String?
+
+    fun validate(jwt: String): ResponseEntity<Long>
+    fun getSnippets(id: Long): ResponseEntity<List<Snippet>>
 }

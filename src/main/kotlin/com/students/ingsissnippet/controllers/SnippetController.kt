@@ -1,27 +1,33 @@
 package com.students.ingsissnippet.controllers
 
+import com.students.ingsissnippet.config.SnippetMessage
+import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.dtos.request_types.ContentRequest
 import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
+import kotlinx.serialization.json.JsonObject
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 
 @RestController
 @RequestMapping("/api/snippets")
 class SnippetController(
     private val snippetService: SnippetService,
     private val permissionService: PermissionService,
-    private val parseService: ParseService
+    private val parseService: ParseService,
+    private val linterRuleProducer: LinterRuleProducer
 ) {
 
     @GetMapping("/{id}")
@@ -75,5 +81,25 @@ class SnippetController(
     @PostMapping("/share/{id}")
     fun share(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
         return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
+    }
+
+    @PostMapping("/lint/rules")
+    suspend fun lintSnippets(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody lintRules: JsonObject
+    ): ResponseEntity<String> {
+        val userId = permissionService.validate(token)
+        val snippets: List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
+
+        snippets.forEach { snippet ->
+            val msg = SnippetMessage(
+                snippetId = snippet.id,
+                content = "",
+                rules = lintRules
+            )
+            linterRuleProducer.publishEvent(msg)
+        }
+
+        return ResponseEntity.ok("Snippets submitted for linting")
     }
 }
