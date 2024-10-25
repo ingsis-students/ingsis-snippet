@@ -29,11 +29,11 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
         return permissionDb.any { it.ownerEmail == email && it.snippetIds.any { it == snippetId } }
     }
 
-    override fun addSnippetToUser(email: String, snippetId: Long, role: String) {
+    override fun addSnippetToUser(token: String, email: String, snippetId: Long, role: String) {
         permissionDb.find { it.ownerEmail == email && it.snippetIds.add(snippetId) }
     }
 
-    override fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
+    override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
         permissionDb.find { it.ownerEmail == fromEmail && it.snippetIds.add(snippetId) }
         return ResponseEntity.ok("Snippet shared with $toEmail")
     }

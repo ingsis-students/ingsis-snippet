@@ -16,9 +16,14 @@ import org.springframework.web.client.RestTemplate
 @Service
 class PermissionService(private val restTemplate: RestTemplate) : PermissionServiceRoutes {
 
-    override fun addSnippetToUser(email: String, snippetId: Long, role: String) {
+    override fun addSnippetToUser(token: String, email: String, snippetId: Long, role: String) {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "role" to role)
-        val entity = HttpEntity(body, getJsonHeaders())
+
+        val headers = getJsonHeaders().apply {
+            set("Authorization", token)
+        }
+
+        val entity = HttpEntity(body, headers)
         executePost(entity, "/add-snippet/$email")
     }
 
@@ -29,11 +34,11 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         return response == "User is the owner of the snippet"
     }
 
-    override fun shareSnippet(snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
+    override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
         if (!checkIfOwner(snippetId, fromEmail)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not the owner of the snippet")
         }
-        addSnippetToUser(toEmail, snippetId, "Guest")
+        addSnippetToUser(token, toEmail, snippetId, "Guest")
         return ResponseEntity.ok("Snippet shared with $toEmail")
     }
 
