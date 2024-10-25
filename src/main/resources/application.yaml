@@ -3,7 +3,7 @@ spring:
     name: ingsis-snippet
 
   datasource:
-    url: jdbc:postgresql://localhost:5002/postgres-snippet
+    url: jdbc:postgresql://localhost:5002/postgres
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: password
