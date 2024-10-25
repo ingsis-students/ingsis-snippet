@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpMethod.OPTIONS
 import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.config.Customizer.withDefaults
@@ -36,6 +37,7 @@ class OAuth2ResourceServerSecurityConfiguration(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/").permitAll()
+                .requestMatchers(OPTIONS).permitAll()
                 .requestMatchers(GET, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/snippets/").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(PUT, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
