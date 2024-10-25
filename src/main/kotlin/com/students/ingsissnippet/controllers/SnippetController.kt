@@ -128,4 +128,16 @@ class SnippetController(
 
         return ResponseEntity.ok(jsonRules)
     }
+
+    @PostMapping("/format/rules/default")
+    fun setDefaultFormatRules(@RequestHeader("Authorization") token: String,
+                            @RequestBody userId: Long): ResponseEntity<String> {
+        val defaultRules: List<Rule> = RuleFactory.defaultFormatRules()
+
+        val mapper = jacksonObjectMapper()
+        val jsonRules = mapper.writeValueAsString(defaultRules)
+        assetService.put("format-rules", userId, jsonRules)
+
+        return ResponseEntity.ok(jsonRules)
+    }
 }

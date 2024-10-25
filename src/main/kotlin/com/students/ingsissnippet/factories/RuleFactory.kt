@@ -9,4 +9,11 @@ object RuleFactory {
             Rule(id = "2", name = "Rule 2", isActive = false),
         )
     }
+
+    fun defaultFormatRules(): List<Rule> {
+        return listOf(
+            Rule(id = "3", name = "Rule 3", isActive = false),
+            Rule(id = "4", name = "Rule 4", isActive = false),
+        )
+    }
 }
