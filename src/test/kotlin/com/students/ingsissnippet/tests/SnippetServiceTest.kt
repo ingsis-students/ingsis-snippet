@@ -61,7 +61,7 @@ class SnippetServiceTest {
         whenever(snippetRepository.existsById(any())).thenReturn(true)
         whenever(snippetRepository.findById(any())).thenReturn(Optional.of(snippet))
         whenever(snippetRepository.save(snippet)).thenReturn(snippet)
-        whenever(assetService.get(1)).thenReturn("println(\"Hello World!\")")
+        whenever(assetService.get("snippets", 1)).thenReturn("println(\"Hello World!\")")
         whenever(
             restTemplate.postForObject(
                 argThat { url: String -> url.contains("add-snippet") },

@@ -25,7 +25,7 @@ class SnippetService(
 
     override fun get(id: Long): FullSnippet {
         val snippet = snippetRepository.findById(id).orElseThrow { NoSuchElementException("Snippet not found") }
-        val content = assetService.get(id)
+        val content = assetService.get("snippets", id)
         return FullSnippet(snippet, content)
     }
 

@@ -3,6 +3,7 @@ package com.students.ingsissnippet.controllers
 import com.students.ingsissnippet.config.SnippetMessage
 import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.dtos.request_types.ContentRequest
+import com.students.ingsissnippet.dtos.request_types.Rule
 import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
@@ -88,10 +89,14 @@ class SnippetController(
     @PostMapping("/lint/rules")
     suspend fun lintSnippets(
         @RequestHeader("Authorization") token: String,
-        @RequestBody lintRules: JsonObject
+        @RequestBody lintRules: List<Rule>
     ): ResponseEntity<String> {
         val userId = permissionService.validate(token).body!!
-        assetService.put("lint-rules", userId, lintRules.toString()) // modifico las rules.
+
+        // modifico y agarro las rules.
+        assetService.put("lint-rules", userId, lintRules.toString())
+        val updatedRules: String = assetService.get("lint-rules", userId).stringToList()
+
         val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
 
         snippets.forEach { snippet ->
