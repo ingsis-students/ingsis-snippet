@@ -1,8 +1,17 @@
 FROM gradle:8-jdk21 AS build
+LABEL org.opencontainers.image.source="https://github.com/ingsis-students/ingsis-snippet"
+
+ARG GITHUB_ACTOR
+ARG GITHUB_TOKEN
+ENV GITHUB_ACTOR=$GITHUB_USER
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle assemble
+
 FROM openjdk:21-slim
+EXPOSE 8082
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production", "/app/spring-boot-application.jar"]
