@@ -50,6 +50,7 @@ class SnippetServiceTest {
         val language = Language(
             id = 1,
             name = "printscript",
+            extension = "prs",
             version = "1.0",
         )
         val snippet = Snippet(
@@ -107,6 +108,7 @@ class SnippetServiceTest {
         val language = Language(
             id = 1,
             name = "printscript",
+            extension = "prs",
             version = "1.0"
         )
         val snippet = snippetService.create(
