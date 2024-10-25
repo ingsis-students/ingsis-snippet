@@ -11,12 +11,4 @@ class LanguageService(
     fun getAll(): List<Language> {
         return languageRepository.findAll()
     }
-
-    fun get(id: String): Language {
-        return languageRepository.findById(id.toLong()).orElseThrow()
-    }
-
-    fun create(language: Language): Language {
-        return languageRepository.save(language)
-    }
 }
