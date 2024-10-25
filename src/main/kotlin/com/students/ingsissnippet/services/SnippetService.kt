@@ -47,4 +47,5 @@ class SnippetService(
             throw SnippetNotFound("Snippet not found when trying to $operation it")
         }
     }
+
 }

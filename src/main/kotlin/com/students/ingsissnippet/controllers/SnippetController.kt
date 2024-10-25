@@ -10,6 +10,7 @@ import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.factories.RuleFactory
 import com.students.ingsissnippet.services.AssetService
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
@@ -96,10 +97,11 @@ class SnippetController(
 
         val mapper = jacksonObjectMapper()
 
-        // modifico y agarro las rules.
+        // agrego las rules como json
         val jsonRules = mapper.writeValueAsString(lintRules)
-        assetService.put("lint-rules", userId, lintRules.toString())
+        assetService.put("lint-rules", userId, jsonRules)
 
+        // agarro las rules y las parseo como lista de rules
         val updatedRulesJson = assetService.get("lint-rules", userId)
         val updatedRules: List<Rule> = mapper.readValue(updatedRulesJson, object : TypeReference<List<Rule>>() {})
 
@@ -112,7 +114,18 @@ class SnippetController(
             )
             linterRuleProducer.publishEvent(msg)
         }
-
         return ResponseEntity.ok(updatedRules)
+    }
+
+    @PostMapping("/lint/rules/default")
+    fun setDefaultLintRules(@RequestHeader("Authorization") token: String,
+                            @RequestBody userId: Long): ResponseEntity<String> {
+        val defaultRules: List<Rule> = RuleFactory.defaultLintRules()
+
+        val mapper = jacksonObjectMapper()
+        val jsonRules = mapper.writeValueAsString(defaultRules)
+        assetService.put("lint-rules", userId, jsonRules)
+
+        return ResponseEntity.ok(jsonRules)
     }
 }
