@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpMethod.OPTIONS
 import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.config.Customizer.withDefaults
@@ -16,6 +17,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtValidators
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +37,7 @@ class OAuth2ResourceServerSecurityConfiguration(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/").permitAll()
+                .requestMatchers(OPTIONS).permitAll()
                 .requestMatchers(GET, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/snippets/").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(PUT, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
@@ -46,8 +50,8 @@ class OAuth2ResourceServerSecurityConfiguration(
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(withDefaults()) }
-            .cors { it.disable() }
-            .csrf { it.disable() }
+            .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
+            .csrf { csrf -> csrf.disable() }
         return http.build()
     }
 
@@ -59,5 +63,17 @@ class OAuth2ResourceServerSecurityConfiguration(
         val withAudience: OAuth2TokenValidator<Jwt> = DelegatingOAuth2TokenValidator(withIssuer, audienceValidator)
         jwtDecoder.setJwtValidator(withAudience)
         return jwtDecoder
+    }
+
+    @Bean
+    fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowedOrigins = listOf("http://localhost:5173")
+        config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        config.allowedHeaders = listOf("Authorization", "Content-Type")
+        config.allowCredentials = true
+        source.registerCorsConfiguration("/**", config)
+        return source
     }
 }

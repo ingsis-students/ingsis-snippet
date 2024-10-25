@@ -17,7 +17,7 @@ class SnippetService(
 
     override fun create(name: String, content: String, language: Language, owner: String): FullSnippet {
         val snippet = Snippet(name = name, language = language, owner = owner)
-        assetService.put(snippet.id, content)
+        assetService.put("snippets", snippet.id, content)
         snippetRepository.save(snippet)
         permissionService.addSnippetToUser(owner, snippet.id, "Owner")
         return FullSnippet(snippet, content)
@@ -25,14 +25,14 @@ class SnippetService(
 
     override fun get(id: Long): FullSnippet {
         val snippet = snippetRepository.findById(id).orElseThrow { NoSuchElementException("Snippet not found") }
-        val content = assetService.get(id)
+        val content = assetService.get("snippets", id)
         return FullSnippet(snippet, content)
     }
 
     override fun update(id: Long, content: String): FullSnippet {
         checkIfExists(id, "edit")
         val snippet = snippetRepository.findById(id).get()
-        assetService.put(id, content)
+        assetService.put("snippets", id, content)
         return FullSnippet(snippet, content)
     }
 
@@ -47,4 +47,5 @@ class SnippetService(
             throw SnippetNotFound("Snippet not found when trying to $operation it")
         }
     }
+
 }

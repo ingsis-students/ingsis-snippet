@@ -13,9 +13,10 @@ data class Language(
     val id: Long = 0,
     val name: String,
     val version: String,
+    val extension: String,
 
     @OneToMany(mappedBy = "language")
     val snippets: List<Snippet> = emptyList()
 ) {
-    constructor() : this(0, "", "", emptyList())
+    constructor() : this(0, "", "", "", emptyList())
 }

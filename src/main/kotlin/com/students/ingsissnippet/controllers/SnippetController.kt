@@ -1,16 +1,20 @@
 package com.students.ingsissnippet.controllers
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.config.SnippetMessage
 import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.dtos.request_types.ContentRequest
+import com.students.ingsissnippet.dtos.request_types.Rule
 import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
+import com.students.ingsissnippet.factories.RuleFactory
+import com.students.ingsissnippet.services.AssetService
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
-import kotlinx.serialization.json.JsonObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,7 +31,8 @@ class SnippetController(
     private val snippetService: SnippetService,
     private val permissionService: PermissionService,
     private val parseService: ParseService,
-    private val linterRuleProducer: LinterRuleProducer
+    private val linterRuleProducer: LinterRuleProducer,
+    private val assetService: AssetService
 ) {
 
     @GetMapping("/{id}")
@@ -86,19 +91,57 @@ class SnippetController(
     @PostMapping("/lint/rules")
     suspend fun lintSnippets(
         @RequestHeader("Authorization") token: String,
-        @RequestBody lintRules: JsonObject
-    ): ResponseEntity<String> {
-        val userId = permissionService.validate(token)
-        val snippets: List<Snippet> = permissionService.getSnippets(userId.body!!).body!!
+        @RequestBody lintRules: List<Rule>
+    ): ResponseEntity<List<Rule>> {
+        val userId = permissionService.validate(token).body!!
+
+        val mapper = jacksonObjectMapper()
+
+        // agrego las rules como json
+        val jsonRules = mapper.writeValueAsString(lintRules)
+        assetService.put("lint-rules", userId, jsonRules)
+
+        // agarro las rules y las parseo como lista de rules
+        val updatedRulesJson = assetService.get("lint-rules", userId)
+        val updatedRules: List<Rule> = mapper.readValue(updatedRulesJson, object : TypeReference<List<Rule>>() {})
+
+        val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
 
         snippets.forEach { snippet ->
             val msg = SnippetMessage(
                 snippetId = snippet.id,
-                rules = lintRules
+                userId = userId
             )
             linterRuleProducer.publishEvent(msg)
         }
+        return ResponseEntity.ok(updatedRules)
+    }
 
-        return ResponseEntity.ok("Snippets submitted for linting")
+    @PostMapping("/lint/rules/default")
+    fun setDefaultLintRules(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody userId: Long
+    ): ResponseEntity<String> {
+        val defaultRules: List<Rule> = RuleFactory.defaultLintRules()
+
+        val mapper = jacksonObjectMapper()
+        val jsonRules = mapper.writeValueAsString(defaultRules)
+        assetService.put("lint-rules", userId, jsonRules)
+
+        return ResponseEntity.ok(jsonRules)
+    }
+
+    @PostMapping("/format/rules/default")
+    fun setDefaultFormatRules(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody userId: Long
+    ): ResponseEntity<String> {
+        val defaultRules: List<Rule> = RuleFactory.defaultFormatRules()
+
+        val mapper = jacksonObjectMapper()
+        val jsonRules = mapper.writeValueAsString(defaultRules)
+        assetService.put("format-rules", userId, jsonRules)
+
+        return ResponseEntity.ok(jsonRules)
     }
 }

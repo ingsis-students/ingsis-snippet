@@ -15,3 +15,10 @@ data class ShareRequest(
     val fromEmail: String,
     val toEmail: String
 )
+
+data class Rule(
+    val id: String,
+    val name: String,
+    val isActive: Boolean,
+    val value: Any? = null
+)
