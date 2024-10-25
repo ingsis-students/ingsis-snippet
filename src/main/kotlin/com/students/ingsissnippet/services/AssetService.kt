@@ -15,12 +15,12 @@ class AssetService(private val restTemplate: RestTemplate) : AssetServiceRoutes 
     }
 
     override fun put(directory: String, id: Long, content: String): String {
-        val response = restTemplate.postForObject(
+        restTemplate.put(
             "http://localhost:8084/v1/asset/$directory/$id",
             content,
             String::class.java
         )
-        return response ?: "Failed to update snippet"
+        return "Snippet updated"
     }
 
     override fun delete(id: Long) {
