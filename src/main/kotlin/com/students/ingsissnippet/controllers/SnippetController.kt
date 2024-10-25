@@ -118,8 +118,10 @@ class SnippetController(
     }
 
     @PostMapping("/lint/rules/default")
-    fun setDefaultLintRules(@RequestHeader("Authorization") token: String,
-                            @RequestBody userId: Long): ResponseEntity<String> {
+    fun setDefaultLintRules(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody userId: Long
+    ): ResponseEntity<String> {
         val defaultRules: List<Rule> = RuleFactory.defaultLintRules()
 
         val mapper = jacksonObjectMapper()
@@ -130,8 +132,10 @@ class SnippetController(
     }
 
     @PostMapping("/format/rules/default")
-    fun setDefaultFormatRules(@RequestHeader("Authorization") token: String,
-                            @RequestBody userId: Long): ResponseEntity<String> {
+    fun setDefaultFormatRules(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody userId: Long
+    ): ResponseEntity<String> {
         val defaultRules: List<Rule> = RuleFactory.defaultFormatRules()
 
         val mapper = jacksonObjectMapper()
