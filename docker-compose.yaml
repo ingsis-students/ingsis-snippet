@@ -33,7 +33,6 @@ services:
       - db-data-ingsis-snippet:/var/lib/postgresql/data
 
   api:
-    container_name: "asset_service"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     ports:
       - "8084:8080"
@@ -45,7 +44,6 @@ services:
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
-    container_name: "azurite"
     hostname: azurite
     restart: always
     ports:
