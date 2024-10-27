@@ -47,6 +47,10 @@ class OAuth2ResourceServerSecurityConfiguration(
                 .requestMatchers(POST, "/api/snippets/validate/{id}").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/snippets/lint/{id}").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/snippets/share/{id}").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/lint/rules").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(GET, "/api/snippets/lint/rules").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(POST, "/api/snippets/format/rules").hasAuthority("SCOPE_read:snippets")
+                .requestMatchers(GET, "/api/snippets/format/rules").hasAuthority("SCOPE_read:snippets")
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(withDefaults()) }
