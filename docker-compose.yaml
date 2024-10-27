@@ -19,6 +19,8 @@ services:
       AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
       AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
       spring.security.oauth2.resourceserver.jwt.issuer-uri: ${AUTH_SERVER_URI}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
 
   # Postgres Database
   ingsis-snippet-db:
@@ -53,7 +55,10 @@ services:
     volumes:
       - blob:/workspace
 
-
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
 
 volumes:
   db-data-ingsis-snippet:
