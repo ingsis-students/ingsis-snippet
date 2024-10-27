@@ -31,8 +31,6 @@ class SnippetController(
     private val snippetService: SnippetService,
     private val permissionService: PermissionService,
     private val parseService: ParseService,
-    private val linterRuleProducer: LinterRuleProducer,
-    private val assetService: AssetService
 ) {
 
     @GetMapping("/{id}")
@@ -94,26 +92,7 @@ class SnippetController(
         @RequestBody lintRules: List<Rule>
     ): ResponseEntity<List<Rule>> {
         val userId = permissionService.validate(token).body!!
-
-        val mapper = jacksonObjectMapper()
-
-        // agrego las rules como json
-        val jsonRules = mapper.writeValueAsString(lintRules)
-        assetService.put("lint-rules", userId, jsonRules)
-
-        // agarro las rules y las parseo como lista de rules
-        val updatedRulesJson = assetService.get("lint-rules", userId)
-        val updatedRules: List<Rule> = mapper.readValue(updatedRulesJson, object : TypeReference<List<Rule>>() {})
-
-        val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
-
-        snippets.forEach { snippet ->
-            val msg = SnippetMessage(
-                snippetId = snippet.id,
-                userId = userId
-            )
-            linterRuleProducer.publishEvent(msg)
-        }
+        val updatedRules = snippetService.lintSnippets(userId, lintRules)
         return ResponseEntity.ok(updatedRules)
     }
 
@@ -122,12 +101,7 @@ class SnippetController(
         @RequestHeader("Authorization") token: String,
         @RequestBody userId: Long
     ): ResponseEntity<String> {
-        val defaultRules: List<Rule> = RuleFactory.defaultLintRules()
-
-        val mapper = jacksonObjectMapper()
-        val jsonRules = mapper.writeValueAsString(defaultRules)
-        assetService.put("lint-rules", userId, jsonRules)
-
+        val jsonRules = snippetService.setDefaultLintRules(userId)
         return ResponseEntity.ok(jsonRules)
     }
 
@@ -136,12 +110,7 @@ class SnippetController(
         @RequestHeader("Authorization") token: String,
         @RequestBody userId: Long
     ): ResponseEntity<String> {
-        val defaultRules: List<Rule> = RuleFactory.defaultFormatRules()
-
-        val mapper = jacksonObjectMapper()
-        val jsonRules = mapper.writeValueAsString(defaultRules)
-        assetService.put("format-rules", userId, jsonRules)
-
+        val jsonRules = snippetService.setDefaultFormatRules(userId)
         return ResponseEntity.ok(jsonRules)
     }
 }
