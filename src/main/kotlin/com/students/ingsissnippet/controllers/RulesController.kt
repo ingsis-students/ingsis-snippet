@@ -27,6 +27,15 @@ class RulesController(
         return ResponseEntity.ok(rules)
     }
 
+    @GetMapping("/format/rules")
+    fun getFormatRules(
+        @RequestHeader("Authorization") token: String
+    ): ResponseEntity<List<Rule>> {
+        val userId = permissionService.validate(token).body!!
+        val rules = rulesService.getRules("format-rules", userId)
+        return ResponseEntity.ok(rules)
+    }
+
     @PostMapping("/lint/rules")
     suspend fun lintSnippets(
         @RequestHeader("Authorization") token: String,
