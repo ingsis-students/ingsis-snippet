@@ -85,32 +85,4 @@ class SnippetController(
     fun share(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
         return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
-
-    @PostMapping("/lint/rules")
-    suspend fun lintSnippets(
-        @RequestHeader("Authorization") token: String,
-        @RequestBody lintRules: List<Rule>
-    ): ResponseEntity<List<Rule>> {
-        val userId = permissionService.validate(token).body!!
-        val updatedRules = snippetService.lintSnippets(userId, lintRules)
-        return ResponseEntity.ok(updatedRules)
-    }
-
-    @PostMapping("/lint/rules/default")
-    fun setDefaultLintRules(
-        @RequestHeader("Authorization") token: String,
-        @RequestBody userId: Long
-    ): ResponseEntity<String> {
-        val jsonRules = snippetService.setDefaultLintRules(userId)
-        return ResponseEntity.ok(jsonRules)
-    }
-
-    @PostMapping("/format/rules/default")
-    fun setDefaultFormatRules(
-        @RequestHeader("Authorization") token: String,
-        @RequestBody userId: Long
-    ): ResponseEntity<String> {
-        val jsonRules = snippetService.setDefaultFormatRules(userId)
-        return ResponseEntity.ok(jsonRules)
-    }
 }

@@ -16,6 +16,5 @@ interface SnippetServiceRoutes {
     /** Route to check if a snippet exists, if it doesn't it throws a @SnippetNotFound exception */
     fun checkIfExists(id: Long, operation: String)
 
-    fun setDefaultLintRules(userId: Long): String
-    fun setDefaultFormatRules(userId: Long): String
+
 }
