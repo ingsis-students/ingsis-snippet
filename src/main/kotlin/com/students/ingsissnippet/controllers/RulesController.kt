@@ -3,7 +3,6 @@ package com.students.ingsissnippet.controllers
 import com.students.ingsissnippet.dtos.request_types.Rule
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.RulesService
-import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody

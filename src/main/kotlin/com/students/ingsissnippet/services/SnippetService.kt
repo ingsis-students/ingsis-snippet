@@ -1,15 +1,9 @@
 package com.students.ingsissnippet.services
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.students.ingsissnippet.config.SnippetMessage
-import com.students.ingsissnippet.config.producers.LinterRuleProducer
-import com.students.ingsissnippet.dtos.request_types.Rule
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.errors.SnippetNotFound
-import com.students.ingsissnippet.factories.RuleFactory
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
 import org.springframework.stereotype.Service
@@ -19,7 +13,7 @@ class SnippetService(
     private val snippetRepository: SnippetRepository,
     private val permissionService: PermissionService,
     private val assetService: AssetService,
-    ) : SnippetServiceRoutes {
+) : SnippetServiceRoutes {
 
     override fun create(name: String, content: String, language: Language, owner: String): FullSnippet {
         val snippet = Snippet(name = name, language = language, owner = owner)

@@ -1,22 +1,13 @@
 package com.students.ingsissnippet.controllers
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.students.ingsissnippet.config.SnippetMessage
-import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.dtos.request_types.ContentRequest
-import com.students.ingsissnippet.dtos.request_types.Rule
 import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
-import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.factories.RuleFactory
-import com.students.ingsissnippet.services.AssetService
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

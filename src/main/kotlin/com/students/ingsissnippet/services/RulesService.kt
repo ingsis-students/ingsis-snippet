@@ -33,7 +33,7 @@ class RulesService(
         putRules("lint-rules", userId, lintRules)
 
         // agarro las rules y las parseo como lista de rules
-        val updatedRules  = getRules("lint-rules", userId)
+        val updatedRules = getRules("lint-rules", userId)
 
         val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
 
@@ -49,7 +49,7 @@ class RulesService(
 
     suspend fun formatSnippets(userId: Long, lintRules: List<Rule>): List<Rule> {
         putRules("format-rules", userId, lintRules)
-        val updatedRules  = getRules("format-rules", userId)
+        val updatedRules = getRules("format-rules", userId)
 
         val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
 
@@ -58,7 +58,7 @@ class RulesService(
                 snippetId = snippet.id,
                 userId = userId
             )
-            linterRuleProducer.publishEvent(msg) //TODO formatRuleProducer.
+            linterRuleProducer.publishEvent(msg) // TODO formatRuleProducer.
         }
         return updatedRules
     }
