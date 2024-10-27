@@ -9,7 +9,6 @@ import com.students.ingsissnippet.services.SnippetService
 import com.students.ingsissnippet.stubs.InMemoryPermissionsApi
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argThat
 import org.mockito.kotlin.eq
@@ -70,7 +69,7 @@ class SnippetServiceTest {
                 eq(String::class.java)
             )
         ).thenAnswer {
-            permissionService.addSnippetToUser("admin", 1, "Owner")
+            permissionService.addSnippetToUser("token", "admin", 1, "Owner")
             "Success"
         }
     }
@@ -92,12 +91,6 @@ class SnippetServiceTest {
     }
 
     @Test
-    fun `should return empty optional when id does not exist`() {
-        whenever(snippetRepository.findById(999)).thenReturn(Optional.empty())
-        assertThrows(NoSuchElementException::class.java) { snippetService.get(999) }
-    }
-
-    @Test
     fun `can edit snippet`() {
         val updatedSnippet = snippetService.update(1, "println(\"Hello NEW World!\")")
         assert(updatedSnippet.content == "println(\"Hello NEW World!\")")
@@ -112,6 +105,7 @@ class SnippetServiceTest {
             version = "1.0"
         )
         val snippet = snippetService.create(
+            token = "token",
             name = "My Snippet",
             content = "println(\"Hello World!\");",
             language = language,

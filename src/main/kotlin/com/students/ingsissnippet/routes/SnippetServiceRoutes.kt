@@ -6,7 +6,7 @@ import com.students.ingsissnippet.entities.Language
 /** This class is intended to have an overview of the SnippetService. */
 interface SnippetServiceRoutes {
     /**Route to create a snippet and add that snippet to its creator*/
-    fun create(name: String, content: String, language: Language, owner: String): FullSnippet
+    fun create(name: String, content: String, language: Language, owner: String, token: String): FullSnippet
     /** Route to get a specific snippet by its id */
     fun get(id: Long): FullSnippet
     /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception **/

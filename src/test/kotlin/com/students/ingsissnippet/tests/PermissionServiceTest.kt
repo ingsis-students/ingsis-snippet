@@ -58,12 +58,12 @@ class PermissionServiceTest {
 
     @Test
     fun `can add snippet to user`() {
-        permissionService.addSnippetToUser("admin", 1L, "Owner")
+        permissionService.addSnippetToUser("token", "admin", 1L, "Owner")
     }
 
     @Test
     fun `can share snippet to user`() {
-        val response = permissionService.shareSnippet(1L, "example@gmail.com", "otherexample@gmail.com")
+        val response = permissionService.shareSnippet("token", 1L, "example@gmail.com", "otherexample@gmail.com")
         assert(response.body == "Snippet shared with otherexample@gmail.com")
     }
 }

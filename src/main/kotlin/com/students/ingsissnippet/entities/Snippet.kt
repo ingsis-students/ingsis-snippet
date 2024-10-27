@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn
 @Entity
 data class Snippet(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long = 0,
     val name: String,
     val owner: String,

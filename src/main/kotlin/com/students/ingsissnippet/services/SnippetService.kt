@@ -15,16 +15,18 @@ class SnippetService(
     private val assetService: AssetService,
 ) : SnippetServiceRoutes {
 
-    override fun create(name: String, content: String, language: Language, owner: String): FullSnippet {
+    override fun create(name: String, content: String, language: Language, owner: String, token: String): FullSnippet {
         val snippet = Snippet(name = name, language = language, owner = owner)
-        assetService.put("snippets", snippet.id, content)
         snippetRepository.save(snippet)
-        permissionService.addSnippetToUser(owner, snippet.id, "Owner")
+        assetService.put("snippets", snippet.id, content)
+        permissionService.addSnippetToUser(token, owner, snippet.id, "Owner")
         return FullSnippet(snippet, content)
     }
 
     override fun get(id: Long): FullSnippet {
-        val snippet = snippetRepository.findById(id).orElseThrow { NoSuchElementException("Snippet not found") }
+        val snippet = snippetRepository.findById(id).orElseThrow {
+            SnippetNotFound("Snippet not found when trying to get it")
+        }
         val content = assetService.get("snippets", id)
         return FullSnippet(snippet, content)
     }

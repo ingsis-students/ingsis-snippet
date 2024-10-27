@@ -8,13 +8,7 @@ import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/snippets")
@@ -31,9 +25,12 @@ class SnippetController(
     }
 
     @PostMapping("/")
-    fun create(@RequestBody snippetRequest: SnippetRequest): ResponseEntity<FullSnippet> {
+    fun create(
+        @RequestBody snippetRequest: SnippetRequest,
+        @RequestHeader("Authorization") token: String
+    ): ResponseEntity<FullSnippet> {
         val fullSnippet = snippetService.create(
-            snippetRequest.name, snippetRequest.content, snippetRequest.language, snippetRequest.owner
+            snippetRequest.name, snippetRequest.content, snippetRequest.language, snippetRequest.owner, token
         )
         return ResponseEntity.ok(fullSnippet)
     }
@@ -48,6 +45,15 @@ class SnippetController(
     fun delete(@PathVariable id: Long): ResponseEntity<Void> {
         snippetService.delete(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/share/{id}")
+    fun share(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable id: Long,
+        @RequestBody emails: ShareRequest
+    ): ResponseEntity<String> {
+        return permissionService.shareSnippet(token, id, emails.fromEmail, emails.toEmail)
     }
 
     @PostMapping("/format/{id}")
@@ -70,10 +76,5 @@ class SnippetController(
     @PostMapping("/lint/{id}")
     fun lint(@PathVariable id: Long): String {
         return parseService.analyze(id)
-    }
-
-    @PostMapping("/share/{id}")
-    fun share(@PathVariable id: Long, @RequestBody emails: ShareRequest): ResponseEntity<String> {
-        return permissionService.shareSnippet(id, emails.fromEmail, emails.toEmail)
     }
 }
