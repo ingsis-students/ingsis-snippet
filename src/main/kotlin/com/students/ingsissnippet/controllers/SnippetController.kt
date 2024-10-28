@@ -8,14 +8,7 @@ import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/snippets")
@@ -29,6 +22,17 @@ class SnippetController(
     fun get(@PathVariable id: Long): ResponseEntity<FullSnippet> {
         val fullSnippet = snippetService.get(id)
         return ResponseEntity.ok(fullSnippet)
+    }
+
+    @GetMapping
+    fun getAll(
+        @RequestParam page: Int = 0,
+        @RequestParam pageSize: Int = 10,
+        @RequestParam(required = false) snippetName: String?
+    ): ResponseEntity<Map<String, Any>> {
+        val snippets = snippetService.getSnippets(page, pageSize, snippetName)
+        val totalCount = snippetService.countSnippets(snippetName)
+        return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
     }
 
     @PostMapping("/")
