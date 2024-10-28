@@ -6,6 +6,7 @@ import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -47,6 +48,23 @@ class SnippetService(
     override fun checkIfExists(id: Long, operation: String) {
         if (!snippetRepository.existsById(id)) {
             throw SnippetNotFound("Snippet not found when trying to $operation it")
+        }
+    }
+
+    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<Snippet> {
+        val pageable = PageRequest.of(page, pageSize)
+        return if (!snippetName.isNullOrEmpty()) {
+            snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
+        } else {
+            snippetRepository.findAll(pageable).content
+        }
+    }
+
+    fun countSnippets(snippetName: String?): Long {
+        return if (!snippetName.isNullOrEmpty()) {
+            snippetRepository.countByNameContainingIgnoreCase(snippetName)
+        } else {
+            snippetRepository.count()
         }
     }
 }
