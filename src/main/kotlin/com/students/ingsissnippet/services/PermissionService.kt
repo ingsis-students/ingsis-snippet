@@ -50,7 +50,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
 
     override fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String? {
         return restTemplate.postForObject(
-            "http://localhost:8083/api/user$string",
+            "http://permissions_api:8080/api/user$string",
             entity,
             String::class.java
         )
