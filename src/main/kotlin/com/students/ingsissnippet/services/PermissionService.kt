@@ -60,7 +60,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         val body: Map<String, Any> = mapOf("jwt" to jwt)
         val entity = HttpEntity(body, getJsonHeaders())
         return restTemplate.postForEntity(
-            "http://localhost:8083/api/user/validate",
+            "http://permissions_api:8080/api/user/validate",
             entity,
             Long::class.java
         )
@@ -73,7 +73,7 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
 
         val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
-            "http://localhost:8083/api/user/snippets",
+            "http://permissions_api:8080/api/user/snippets",
             HttpMethod.GET,
             entity,
             responseType,
