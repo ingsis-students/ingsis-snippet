@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.entities
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -18,6 +19,7 @@ data class Language(
     val extension: String,
 
     @OneToMany(mappedBy = "language", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonManagedReference
     val snippets: List<Snippet> = emptyList()
 ) {
     constructor() : this(0, "", "", "", emptyList())
