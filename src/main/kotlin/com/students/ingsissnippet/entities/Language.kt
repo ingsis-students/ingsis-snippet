@@ -1,6 +1,8 @@
 package com.students.ingsissnippet.entities
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -15,7 +17,7 @@ data class Language(
     val version: String,
     val extension: String,
 
-    @OneToMany(mappedBy = "language")
+    @OneToMany(mappedBy = "language", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val snippets: List<Snippet> = emptyList()
 ) {
     constructor() : this(0, "", "", "", emptyList())

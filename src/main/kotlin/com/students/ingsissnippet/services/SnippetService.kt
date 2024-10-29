@@ -2,7 +2,6 @@ package com.students.ingsissnippet.services
 
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
-import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
@@ -13,9 +12,11 @@ class SnippetService(
     private val snippetRepository: SnippetRepository,
     private val permissionService: PermissionService,
     private val assetService: AssetService,
+    private val languageService: LanguageService
 ) : SnippetServiceRoutes {
 
-    override fun create(name: String, content: String, language: Language, owner: String, token: String): FullSnippet {
+    override fun create(name: String, content: String, languageId: String, owner: String, token: String): FullSnippet {
+        val language = languageService.getLanguageById(languageId.toLongOrNull())
         val snippet = Snippet(name = name, language = language, owner = owner)
         snippetRepository.save(snippet)
         assetService.put("snippets", snippet.id, content)

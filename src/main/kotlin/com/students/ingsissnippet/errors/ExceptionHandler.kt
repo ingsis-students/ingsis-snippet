@@ -10,4 +10,9 @@ class ExceptionHandler {
     fun handle(ex: SnippetNotFound): ResponseEntity<Any> {
         return ResponseEntity.notFound().build()
     }
+
+    @ExceptionHandler(LanguageNotFound::class)
+    fun handle(ex: LanguageNotFound): ResponseEntity<Any> {
+        return ResponseEntity.notFound().build()
+    }
 }
