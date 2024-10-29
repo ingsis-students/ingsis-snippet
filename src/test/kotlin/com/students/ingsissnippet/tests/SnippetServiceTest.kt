@@ -5,6 +5,7 @@ import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.services.AssetService
+import com.students.ingsissnippet.services.LanguageService
 import com.students.ingsissnippet.services.SnippetService
 import com.students.ingsissnippet.stubs.InMemoryPermissionsApi
 import org.junit.jupiter.api.AfterEach
@@ -42,6 +43,9 @@ class SnippetServiceTest {
     lateinit var restTemplate: RestTemplate
 
     @MockBean
+    lateinit var languageService: LanguageService
+
+    @MockBean
     private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer
 
     @BeforeEach
@@ -72,6 +76,7 @@ class SnippetServiceTest {
             permissionService.addSnippetToUser("token", "admin", 1, "Owner")
             "Success"
         }
+        whenever(languageService.getLanguageById(1)).thenReturn(language)
     }
 
     @AfterEach
@@ -98,17 +103,11 @@ class SnippetServiceTest {
 
     @Test
     fun `can create snippet`() {
-        val language = Language(
-            id = 1,
-            name = "printscript",
-            extension = "prs",
-            version = "1.0"
-        )
         val snippet = snippetService.create(
             token = "token",
             name = "My Snippet",
             content = "println(\"Hello World!\");",
-            language = language,
+            languageId = "1",
             owner = "admin"
         )
 

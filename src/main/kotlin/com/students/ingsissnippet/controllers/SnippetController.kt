@@ -41,7 +41,7 @@ class SnippetController(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<FullSnippet> {
         val fullSnippet = snippetService.create(
-            snippetRequest.name, snippetRequest.content, snippetRequest.language, snippetRequest.owner, token
+            snippetRequest.name, snippetRequest.content, snippetRequest.languageId, snippetRequest.owner, token
         )
         return ResponseEntity.ok(fullSnippet)
     }

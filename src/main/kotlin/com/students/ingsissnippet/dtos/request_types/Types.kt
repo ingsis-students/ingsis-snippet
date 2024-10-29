@@ -1,12 +1,10 @@
 package com.students.ingsissnippet.dtos.request_types
 
-import com.students.ingsissnippet.entities.Language
-
 data class SnippetRequest(
     val name: String,
     val content: String,
-    val owner: String,
-    val language: Language
+    val languageId: String,
+    val owner: String
 )
 
 data class ContentRequest(val content: String)
