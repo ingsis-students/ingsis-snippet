@@ -2,7 +2,7 @@ version: '3'
 
 services:
   # Spring app service
-  snippet_api:
+  snippet-api:
     build:
       context: . # Ubicación del dockerfile
       dockerfile: Dockerfile.multi
@@ -23,7 +23,7 @@ services:
       SPRING_DATA_REDIS_PORT: 6379
 
   # Postgres Database
-  ingsis-snippet-db:
+  snippet-db:
     image: postgres:12 #dockerhub
     ports:
       - '5002:5432'
@@ -34,7 +34,7 @@ services:
     volumes:
       - db-data-ingsis-snippet:/var/lib/postgresql/data
 
-  api:
+  asset-api:
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     ports:
       - "8084:8080"

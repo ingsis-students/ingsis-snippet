@@ -104,7 +104,7 @@ class ParseService(
 
     override fun executePost(entity: HttpEntity<DTO>, route: String): String {
         return restTemplate.postForObject(
-            "http://localhost:8081$route",
+            "http://printscript-api:8080$route",
             entity,
             String::class.java
         ).toString()
