@@ -93,6 +93,7 @@ class SnippetServiceTest {
         assert(snippet.language == "printscript")
         assert(snippet.version == "1.0")
         assert(snippet.owner == "admin")
+        assert(snippet.extension == "prs")
     }
 
     @Test
