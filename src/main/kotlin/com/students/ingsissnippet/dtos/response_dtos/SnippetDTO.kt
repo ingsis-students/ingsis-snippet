@@ -3,7 +3,7 @@ package com.students.ingsissnippet.dtos.response_dtos
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.request_types.Compliance
 
-class FullSnippet(snippet: Snippet, val content: String) {
+class SnippetDTO(snippet: Snippet) {
     val id: Long = snippet.id
     val name: String = snippet.name
     val owner: String = snippet.owner

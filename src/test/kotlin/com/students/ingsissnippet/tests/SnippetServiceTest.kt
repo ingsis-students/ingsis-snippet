@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
 import java.util.Optional
 import kotlin.test.Test
+import com.students.ingsissnippet.dtos.request_types.Compliance
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -94,6 +95,7 @@ class SnippetServiceTest {
         assert(snippet.version == "1.0")
         assert(snippet.owner == "admin")
         assert(snippet.extension == "prs")
+        assert(snippet.compilance == Compliance.PENDING)
     }
 
     @Test

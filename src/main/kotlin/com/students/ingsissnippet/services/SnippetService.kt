@@ -2,6 +2,7 @@ package com.students.ingsissnippet.services
 
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
@@ -52,13 +53,14 @@ class SnippetService(
         }
     }
 
-    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<Snippet> {
+    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
         val pageable = PageRequest.of(page, pageSize)
-        return if (!snippetName.isNullOrEmpty()) {
+        val snippets = if (!snippetName.isNullOrEmpty()) {
             snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
         } else {
             snippetRepository.findAll(pageable).content
         }
+        return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
     fun countSnippets(snippetName: String?): Long {
