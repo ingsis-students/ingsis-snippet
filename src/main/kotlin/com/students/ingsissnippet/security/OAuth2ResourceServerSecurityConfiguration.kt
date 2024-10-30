@@ -37,7 +37,7 @@ class OAuth2ResourceServerSecurityConfiguration(
                 .requestMatchers(OPTIONS).permitAll()
                 /*
                 .requestMatchers(GET, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/snippets/").hasAuthority("SCOPE_read:snippets")
+//                .requestMatchers(POST, "/api/snippets/").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(PUT, "/api/snippets/{id}").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/snippets/delete/{id}").hasAuthority("SCOPE_read:snippets")
                 .requestMatchers(POST, "/api/snippets/format/{id}").hasAuthority("SCOPE_read:snippets")
