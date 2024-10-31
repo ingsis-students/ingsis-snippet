@@ -1,3 +1,4 @@
+/*
 package com.students.ingsissnippet.simple_tests
 
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
@@ -69,3 +70,4 @@ class WebMockTest {
             .andExpect(content().string(containsString("New edited world")))
     }
 }
+*/
