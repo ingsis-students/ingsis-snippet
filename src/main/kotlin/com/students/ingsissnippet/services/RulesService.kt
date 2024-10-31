@@ -17,12 +17,17 @@ class RulesService(
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
         val rulesJson = assetService.get(directory, userId)
-
+        print("got the following rules supposed to be json: $rulesJson")
         val mapper = jacksonObjectMapper()
         return mapper.readValue(rulesJson, object : TypeReference<List<Rule>>() {}) // return as List<Rule>
     }
 
     fun putRules(directory: String, userId: Long, rules: List<Rule>): String {
+        val existingRules = assetService.get(directory, userId)
+        if (existingRules != null) {
+            print("Rules already exist")
+            return existingRules
+        }
         val mapper = jacksonObjectMapper()
         val jsonRules = mapper.writeValueAsString(rules)
         assetService.put(directory, userId, jsonRules)
