@@ -5,6 +5,7 @@ import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.repositories.SnippetRepository
+import com.students.ingsissnippet.services.AssetService
 import com.students.ingsissnippet.services.ParseService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -35,6 +36,9 @@ class ParseServiceTest {
     lateinit var snippetRepository: SnippetRepository
 
     @MockBean
+    lateinit var assetService: AssetService
+
+    @MockBean
     private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer
 
     @BeforeEach
@@ -51,6 +55,7 @@ class ParseServiceTest {
             owner = "admin",
             language = language,
         )
+        whenever(assetService.get(any(), any())).thenReturn("Snippet content")
         whenever(snippetRepository.existsById(any())).thenReturn(true)
         whenever(snippetRepository.findById(any())).thenReturn(Optional.of(snippet))
         whenever(snippetRepository.save(snippet)).thenReturn(snippet)
