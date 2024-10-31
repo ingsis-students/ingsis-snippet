@@ -17,6 +17,7 @@ class RulesService(
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
         val rulesJson = assetService.get(directory, userId)
+
         val mapper = jacksonObjectMapper()
         return mapper.readValue(rulesJson, object : TypeReference<List<Rule>>() {}) // return as List<Rule>
     }
