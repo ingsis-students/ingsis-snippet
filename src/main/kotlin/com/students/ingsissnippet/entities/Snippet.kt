@@ -1,6 +1,8 @@
 package com.students.ingsissnippet.entities
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.students.ingsissnippet.dtos.request_types.Compliance.PENDING
+import com.students.ingsissnippet.dtos.request_types.Compliance
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -16,11 +18,12 @@ data class Snippet(
     val id: Long = 0,
     val name: String,
     val owner: String,
+    val compilance: Compliance = PENDING,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id", nullable = false)
     @JsonBackReference
     val language: Language
 ) {
-    constructor() : this(0, "", "", Language())
+    constructor() : this(0, "", "", PENDING, Language())
 }
