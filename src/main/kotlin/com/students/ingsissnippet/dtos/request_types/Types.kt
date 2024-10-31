@@ -20,3 +20,10 @@ data class Rule(
     val isActive: Boolean,
     val value: Any? = null
 )
+
+enum class Compliance {
+    PENDING,
+    FAILED,
+    NOT_COMPLIANT,
+    COMPLIANT
+}

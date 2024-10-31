@@ -3,6 +3,7 @@ version: '3'
 services:
   # Spring app service
   snippet-api:
+    container_name: "snippet-api-1"
     build:
       context: . # Ubicación del dockerfile
       dockerfile: Dockerfile.multi
@@ -21,9 +22,12 @@ services:
       spring.security.oauth2.resourceserver.jwt.issuer-uri: ${AUTH_SERVER_URI}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
+    depends_on:
+      - snippet-db
 
   # Postgres Database
   snippet-db:
+    container_name: "snippet-db-1"
     image: postgres:12 #dockerhub
     ports:
       - '5002:5432'
@@ -35,6 +39,7 @@ services:
       - db-data-ingsis-snippet:/var/lib/postgresql/data
 
   asset-api:
+    container_name: "asset-api-1"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     ports:
       - "8084:8080"
@@ -45,6 +50,7 @@ services:
 
 
   azurite:
+    container_name: "azurite-1"
     image: mcr.microsoft.com/azure-storage/azurite
     hostname: azurite
     restart: always
@@ -56,6 +62,7 @@ services:
       - blob:/workspace
 
   redis:
+    container_name: "redis-1"
     image: redis:latest
     ports:
       - '6379:6379'
