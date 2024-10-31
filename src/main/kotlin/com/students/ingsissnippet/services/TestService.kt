@@ -4,8 +4,10 @@ import com.students.ingsissnippet.dtos.response_dtos.TestDTO
 import com.students.ingsissnippet.entities.Test
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.repositories.TestRepository
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+@Service
 open class TestService (
     private val testRepository: TestRepository,
     private val snippetRepository: SnippetRepository
