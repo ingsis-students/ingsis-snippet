@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-open class TestService (
+open class TestService(
     private val testRepository: TestRepository,
     private val snippetRepository: SnippetRepository
 ) {
@@ -17,7 +17,6 @@ open class TestService (
         val tests = testRepository.findBySnippetId(snippetId)
         return tests.map { TestDTO(it) }
     }
-
 
     @Transactional
     open fun addTestToSnippet(snippetId: Long, input: String, output: String): TestDTO {
@@ -28,5 +27,4 @@ open class TestService (
         testRepository.save(test)
         return TestDTO(test)
     }
-
 }
