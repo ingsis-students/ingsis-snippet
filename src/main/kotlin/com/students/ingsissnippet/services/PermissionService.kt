@@ -90,7 +90,7 @@ class PermissionService(
         return try {
             val headers = HttpHeaders().apply {
                 contentType = MediaType.APPLICATION_JSON
-                set("Authorization", "Bearer $jwt")
+                set("Authorization", jwt)
             }
             val entity = HttpEntity<Void>(headers)
 
