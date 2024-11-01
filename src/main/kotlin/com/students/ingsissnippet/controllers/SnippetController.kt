@@ -63,7 +63,7 @@ class SnippetController(
 
     @PostMapping("/delete/{id}")
     fun delete(@PathVariable id: Long): ResponseEntity<Void> {
-        snippetService.delete(id)
+        snippetService.delete("snippets", id)
         return ResponseEntity.noContent().build()
     }
 
