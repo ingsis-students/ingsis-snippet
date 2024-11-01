@@ -7,6 +7,7 @@ services:
     build:
       context: . # Ubicación del dockerfile
       dockerfile: Dockerfile.multi
+    platform: linux/amd64
     ports:
       - '8082:8080' # Puerto del contenedor:puerto del host
     environment:
@@ -29,6 +30,7 @@ services:
   snippet-db:
     container_name: "snippet-db-1"
     image: postgres:12 #dockerhub
+    platform: linux/amd64
     ports:
       - '5002:5432'
     environment:
@@ -41,6 +43,7 @@ services:
   asset-api:
     container_name: "asset-api-1"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
+    platform: linux/amd64
     ports:
       - "8084:8080"
     environment:
@@ -52,6 +55,7 @@ services:
   azurite:
     container_name: "azurite-1"
     image: mcr.microsoft.com/azure-storage/azurite
+    platform: linux/amd64
     hostname: azurite
     restart: always
     ports:
@@ -64,6 +68,7 @@ services:
   redis:
     container_name: "redis-1"
     image: redis:latest
+    platform: linux/amd64
     ports:
       - '6379:6379'
 

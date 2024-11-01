@@ -21,6 +21,7 @@ class RulesController(
     fun getRules(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<List<Rule>> {
+        print("getRulesss $token")
         val userId = permissionService.validate(token).body!!
         val rules = rulesService.getRules("lint-rules", userId)
         return ResponseEntity.ok(rules)
@@ -31,6 +32,7 @@ class RulesController(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<List<Rule>> {
         val userId = permissionService.validate(token).body!!
+
         val rules = rulesService.getRules("format-rules", userId)
         return ResponseEntity.ok(rules)
     }

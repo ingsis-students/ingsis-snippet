@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.services
 
+import com.students.ingsissnippet.constants.PERMISSION_URL
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
@@ -73,20 +74,30 @@ class PermissionService(
 
     override fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String? {
         return restTemplate.postForObject(
-            "http://permission-api:8080/api/user$string",
+            "$PERMISSION_URL$string",
             entity,
             String::class.java
         )
     }
 
     override fun validate(jwt: String): ResponseEntity<Long> {
-        val body: Map<String, Any> = mapOf("jwt" to jwt)
-        val entity = HttpEntity(body, getJsonHeaders())
-        return restTemplate.postForEntity(
-            "http://permission-api:8080/api/user/validate",
-            entity,
-            Long::class.java
-        )
+        return try {
+            val headers = HttpHeaders().apply {
+                contentType = MediaType.APPLICATION_JSON
+                set("Authorization", "Bearer $jwt")
+            }
+            val entity = HttpEntity<Void>(headers)
+
+            restTemplate.exchange(
+                "$PERMISSION_URL/validate",
+                HttpMethod.GET,
+                entity,
+                Long::class.java
+            )
+        } catch (e: Exception) {
+            print("VALIDATE -> Error validating token: $e")
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(-1)
+        }
     }
 
     override fun getSnippets(id: Long): ResponseEntity<List<Snippet>> {
@@ -95,9 +106,8 @@ class PermissionService(
 
         val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
 
-        val response = restTemplate.exchange(
-            // exchange deja recibir listas de objetos.
-            "http://permission-api:8080/api/user/snippets",
+        val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
+            "$PERMISSION_URL/snippets",
             HttpMethod.GET,
             entity,
             responseType,
