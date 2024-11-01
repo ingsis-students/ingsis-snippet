@@ -74,16 +74,16 @@ class SnippetController(
         @RequestBody emails: ShareRequest
     ): ResponseEntity<FullSnippet> {
 
-        val snippet = try {
-            snippetService.get(id)
-        } catch (e: Exception) {
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .header("Share-Status", "Snippet not found while trying to share it")
-                .body(FullSnippet())
-        }
+//        val snippet = try {
+//            snippetService.get(id)
+//        } catch (e: Exception) {
+//            return ResponseEntity
+//                .status(HttpStatus.NOT_FOUND)
+//                .header("Share-Status", "Snippet not found while trying to share it")
+//                .body(FullSnippet())
+//        }
 
-        return permissionService.shareSnippet(token, id, emails.fromEmail, emails.toEmail, snippet)
+        return permissionService.shareSnippet(token, id, emails.fromEmail, emails.toEmail, FullSnippet())
     }
 
     @PostMapping("/format/{id}")
