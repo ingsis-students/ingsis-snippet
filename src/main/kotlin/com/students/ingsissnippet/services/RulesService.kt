@@ -16,6 +16,7 @@ class RulesService(
     private val linterRuleProducer: LinterRuleProducer
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
+        println("userIdddd $userId")
         if (!assetService.exists(directory, userId)) {
             print("rules don't exist!!!!!")
             return emptyList()
@@ -35,7 +36,7 @@ class RulesService(
         val mapper = jacksonObjectMapper()
         val jsonRules = mapper.writeValueAsString(rules)
         assetService.put(directory, userId, jsonRules)
-        print("rules created to user id: $userId ++++++")
+        print("rules created to user id: $userId")
         return jsonRules
     }
 

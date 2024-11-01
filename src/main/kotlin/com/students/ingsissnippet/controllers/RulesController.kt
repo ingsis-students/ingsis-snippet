@@ -56,11 +56,23 @@ class RulesController(
         return ResponseEntity.ok(updatedRules)
     }
 
+    @PostMapping("/rules/default")
+    fun setDefaultRules(
+        @RequestHeader("Authorization") token: String,
+    ): ResponseEntity<String> {
+        val userId = permissionService.validate(token).body!!
+
+        val lintRules = rulesService.setDefaultLintRules(userId)
+        val formatRules = rulesService.setDefaultFormatRules(userId)
+
+        return ResponseEntity.ok("Default rules set for user $userId: $lintRules, $formatRules")
+    }
+
     @PostMapping("/lint/rules/default")
     fun setDefaultLintRules(
         @RequestHeader("Authorization") token: String,
-        @RequestBody userId: Long
     ): ResponseEntity<String> {
+        val userId = permissionService.validate(token).body!!
         val jsonRules = rulesService.setDefaultLintRules(userId)
         return ResponseEntity.ok(jsonRules)
     }
@@ -68,8 +80,8 @@ class RulesController(
     @PostMapping("/format/rules/default")
     fun setDefaultFormatRules(
         @RequestHeader("Authorization") token: String,
-        @RequestBody userId: Long
     ): ResponseEntity<String> {
+        val userId = permissionService.validate(token).body!!
         val jsonRules = rulesService.setDefaultFormatRules(userId)
         return ResponseEntity.ok(jsonRules)
     }
