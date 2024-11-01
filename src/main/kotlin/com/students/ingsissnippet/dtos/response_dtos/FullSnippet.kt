@@ -11,4 +11,6 @@ class FullSnippet(snippet: Snippet, val content: String) {
     val extension: String = snippet.language.extension
     val compilance: Compliance = snippet.compilance
     val version: String = snippet.language.version
+
+    constructor() : this(Snippet(), "")
 }

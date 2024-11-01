@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.stubs
 
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.fixture.UserFixtures
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 @Profile("test")
@@ -33,9 +35,12 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
         permissionDb.find { it.ownerEmail == email && it.snippetIds.add(snippetId) }
     }
 
-    override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
+    override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String, snippet: FullSnippet): ResponseEntity<FullSnippet> {
         permissionDb.find { it.ownerEmail == fromEmail && it.snippetIds.add(snippetId) }
-        return ResponseEntity.ok("Snippet shared with $toEmail")
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .header("Share-Status", "Snippet shared with $toEmail")
+            .body(snippet)
     }
 
     override fun executePost(

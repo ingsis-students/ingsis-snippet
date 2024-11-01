@@ -2,6 +2,7 @@ package com.students.ingsissnippet.tests
 
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.dtos.request_dtos.DTO
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.services.PermissionService
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
@@ -15,6 +16,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -63,7 +65,7 @@ class PermissionServiceTest {
 
     @Test
     fun `can share snippet to user`() {
-        val response = permissionService.shareSnippet("token", 1L, "example@gmail.com", "otherexample@gmail.com")
-        assert(response.body == "Snippet shared with otherexample@gmail.com")
+        val response = permissionService.shareSnippet("token", 1L, "example@gmail.com", "otherexample@gmail.com", FullSnippet())
+        assertEquals("Snippet shared with otherexample@gmail.com", response.headers["Share-Status"]?.first())
     }
 }
