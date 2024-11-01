@@ -56,7 +56,7 @@ class RulesController(
         return ResponseEntity.ok(updatedRules)
     }
 
-    @PostMapping("/rules/default")
+    @GetMapping("/rules/default")
     fun setDefaultRules(
         @RequestHeader("Authorization") token: String,
     ): ResponseEntity<String> {
