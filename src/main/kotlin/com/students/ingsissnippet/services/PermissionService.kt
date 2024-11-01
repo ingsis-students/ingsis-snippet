@@ -34,8 +34,14 @@ class PermissionService(
     override fun checkIfOwner(snippetId: Long, email: String): Boolean {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
         val entity = HttpEntity(body, getJsonHeaders())
-        val response = executePost(entity, "/check-owner")
-        return response == "User is the owner of the snippet"
+        val response: String?
+
+        return try {
+            response = executePost(entity, "/check-owner")
+            response == "User is the owner of the snippet"
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun shareSnippet(
@@ -52,12 +58,12 @@ class PermissionService(
                 .body(FullSnippet())
         }
 
-//        if (!checkIfOwner(sgit config core.hooksPath ./git-hooksnippetId, fromEmail)) {
-//            return ResponseEntity
-//                .status(HttpStatus.FORBIDDEN)
-//                .header("Share-Status", "You are not the owner of the snippet")
-//                .body(FullSnippet())
-//        }
+        if (!checkIfOwner(snippetId, fromEmail)) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .header("Share-Status", "You are not the owner of the snippet")
+                .body(FullSnippet())
+        }
 
         addSnippetToUser(token, toEmail, snippetId, "Guest")
         return ResponseEntity
