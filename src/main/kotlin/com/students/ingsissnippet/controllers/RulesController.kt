@@ -68,7 +68,7 @@ class RulesController(
         return ResponseEntity.ok("Default rules set for user $userId: $lintRules, $formatRules")
     }
 
-    @PostMapping("/lint/rules/default")
+    @GetMapping("/lint/rules/default")
     fun setDefaultLintRules(
         @RequestHeader("Authorization") token: String,
     ): ResponseEntity<String> {

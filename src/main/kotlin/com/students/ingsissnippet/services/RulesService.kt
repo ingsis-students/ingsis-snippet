@@ -16,7 +16,6 @@ class RulesService(
     private val linterRuleProducer: LinterRuleProducer
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
-        println("userIdddd $userId")
         if (!assetService.exists(directory, userId)) {
             print("rules don't exist!!!!!")
             return emptyList()

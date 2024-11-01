@@ -96,7 +96,7 @@ class PermissionService(
             )
         } catch (e: Exception) {
             print("VALIDATE -> Error validating token: $e")
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(-1)
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         }
     }
 
