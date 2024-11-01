@@ -45,22 +45,22 @@ class PermissionService(
         toEmail: String,
         snippet: FullSnippet
     ): ResponseEntity<FullSnippet> {
-        if (fromEmail == toEmail) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .header("Share-Status", "You can't share a snippet with yourself")
-                .body(FullSnippet())
-        }
-
-        if (!checkIfOwner(snippetId, fromEmail)) {
-            return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .header("Share-Status", "You are not the owner of the snippet")
-                .body(FullSnippet())
-        }
+//        if (fromEmail == toEmail) {
+//            return ResponseEntity
+//                .status(HttpStatus.BAD_REQUEST)
+//                .header("Share-Status", "You can't share a snippet with yourself")
+//                .body(FullSnippet())
+//        }
+//
+//        if (!checkIfOwner(snippetId, fromEmail)) {
+//            return ResponseEntity
+//                .status(HttpStatus.FORBIDDEN)
+//                .header("Share-Status", "You are not the owner of the snippet")
+//                .body(FullSnippet())
+//        }
 
         addSnippetToUser(token, toEmail, snippetId, "Guest")
-        return return ResponseEntity
+        return ResponseEntity
             .status(HttpStatus.OK)
             .header("Share-Status", "Snippet shared with $toEmail")
             .body(snippet)
