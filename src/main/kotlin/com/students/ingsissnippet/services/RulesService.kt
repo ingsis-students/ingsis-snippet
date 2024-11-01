@@ -24,7 +24,7 @@ class RulesService(
 
     fun putRules(directory: String, userId: Long, rules: List<Rule>): String {
         val existingRules = assetService.get(directory, userId)
-        if (existingRules != null) {
+        if (existingRules != "Snippet not found") {
             print("Rules already exist")
             return existingRules
         }

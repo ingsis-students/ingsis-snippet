@@ -7,14 +7,15 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class AssetService(private val restTemplate: RestTemplate) : AssetServiceRoutes {
-    override fun get(directory: String, id: Long): String? {
+    override fun get(directory: String, id: Long): String {
         return try {
-            restTemplate.getForObject(
+            val response = restTemplate.getForObject(
                 "$ASSETSERVICE_URL/$directory/$id",
                 String::class.java
             )
+            response ?: throw Exception("Snippet not found")
         } catch (e: Exception) {
-            null
+            "Snippet not found"
         }
     }
 
