@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.services
 
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
 import org.springframework.core.ParameterizedTypeReference
@@ -14,7 +15,9 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 
 @Service
-class PermissionService(private val restTemplate: RestTemplate) : PermissionServiceRoutes {
+class PermissionService(
+    private val restTemplate: RestTemplate,
+) : PermissionServiceRoutes {
 
     override fun addSnippetToUser(token: String, email: String, snippetId: Long, role: String) {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "role" to role)
@@ -34,12 +37,32 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
         return response == "User is the owner of the snippet"
     }
 
-    override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String): ResponseEntity<String> {
-        if (!checkIfOwner(snippetId, fromEmail)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not the owner of the snippet")
+    override fun shareSnippet(
+        token: String,
+        snippetId: Long,
+        fromEmail: String,
+        toEmail: String,
+        snippet: FullSnippet
+    ): ResponseEntity<FullSnippet> {
+        if (fromEmail == toEmail) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .header("Share-Status", "You can't share a snippet with yourself")
+                .body(FullSnippet())
         }
+
+        if (!checkIfOwner(snippetId, fromEmail)) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .header("Share-Status", "You are not the owner of the snippet")
+                .body(FullSnippet())
+        }
+
         addSnippetToUser(token, toEmail, snippetId, "Guest")
-        return ResponseEntity.ok("Snippet shared with $toEmail")
+        return return ResponseEntity
+            .status(HttpStatus.OK)
+            .header("Share-Status", "Snippet shared with $toEmail")
+            .body(snippet)
     }
 
     private fun getJsonHeaders(): MultiValueMap<String, String> {
@@ -72,7 +95,8 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
 
         val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
 
-        val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
+        val response = restTemplate.exchange(
+            // exchange deja recibir listas de objetos.
             "http://permission-api:8080/api/user/snippets",
             HttpMethod.GET,
             entity,
