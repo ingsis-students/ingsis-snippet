@@ -24,8 +24,8 @@ class AssetService(private val restTemplate: RestTemplate) : AssetServiceRoutes 
         return "Snippet updated"
     }
 
-    override fun delete(id: Long) {
-        restTemplate.delete("$ASSETSERVICE_URL/snippets/$id")
+    override fun delete(directory: String, id: Long) {
+        restTemplate.delete("$ASSETSERVICE_URL/$directory/$id")
     }
 
     override fun exists(directory: String, id: Long): Boolean {
