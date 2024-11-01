@@ -16,6 +16,10 @@ class RulesService(
     private val linterRuleProducer: LinterRuleProducer
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
+        if (!assetService.exists(directory, userId)) {
+            print("rules don't exist!!!!!")
+            return emptyList()
+        }
         val rulesJson = assetService.get(directory, userId)
         print("got the following rules supposed to be json: $rulesJson")
         val mapper = jacksonObjectMapper()
@@ -23,14 +27,15 @@ class RulesService(
     }
 
     fun putRules(directory: String, userId: Long, rules: List<Rule>): String {
-        val existingRules = assetService.get(directory, userId)
-        if (existingRules != "Snippet not found") {
-            print("Rules already exist")
-            return existingRules
+        if (assetService.exists(directory, userId)) {
+            print("rules already exist!!!!!")
+            return assetService.get(directory, userId)
         }
+
         val mapper = jacksonObjectMapper()
         val jsonRules = mapper.writeValueAsString(rules)
         assetService.put(directory, userId, jsonRules)
+        print("rules created to user id: $userId ++++++")
         return jsonRules
     }
 
