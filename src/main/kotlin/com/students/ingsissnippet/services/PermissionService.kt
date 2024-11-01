@@ -60,7 +60,7 @@ class PermissionService(
 //        }
 
         addSnippetToUser(token, toEmail, snippetId, "Guest")
-        return return ResponseEntity
+        return ResponseEntity
             .status(HttpStatus.OK)
             .header("Share-Status", "Snippet shared with $toEmail")
             .body(snippet)
