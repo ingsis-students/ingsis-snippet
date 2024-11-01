@@ -7,6 +7,7 @@ import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -73,16 +74,16 @@ class SnippetController(
         @RequestBody emails: ShareRequest
     ): ResponseEntity<FullSnippet> {
 
-//        val snippet = try {
-//            snippetService.get(id)
-//        } catch (e: Exception) {
-//            return ResponseEntity
-//                .status(HttpStatus.NOT_FOUND)
-//                .header("Share-Status", "Snippet not found while trying to share it")
-//                .body(FullSnippet())
-//        }
+        val snippet = try {
+            snippetService.get(id)
+        } catch (e: Exception) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .header("Share-Status", "Snippet not found while trying to share it")
+                .body(FullSnippet())
+        }
 
-        return permissionService.shareSnippet(token, id, emails.fromEmail, emails.toEmail, FullSnippet())
+        return permissionService.shareSnippet(token, id, emails.fromEmail, emails.toEmail, snippet)
     }
 
     @PostMapping("/format/{id}")

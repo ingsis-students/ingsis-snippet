@@ -45,14 +45,14 @@ class PermissionService(
         toEmail: String,
         snippet: FullSnippet
     ): ResponseEntity<FullSnippet> {
-//        if (fromEmail == toEmail) {
-//            return ResponseEntity
-//                .status(HttpStatus.BAD_REQUEST)
-//                .header("Share-Status", "You can't share a snippet with yourself")
-//                .body(FullSnippet())
-//        }
-//
-//        if (!checkIfOwner(snippetId, fromEmail)) {
+        if (fromEmail == toEmail) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .header("Share-Status", "You can't share a snippet with yourself")
+                .body(FullSnippet())
+        }
+
+//        if (!checkIfOwner(sgit config core.hooksPath ./git-hooksnippetId, fromEmail)) {
 //            return ResponseEntity
 //                .status(HttpStatus.FORBIDDEN)
 //                .header("Share-Status", "You are not the owner of the snippet")
