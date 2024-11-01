@@ -64,6 +64,8 @@ class PermissionService(private val restTemplate: RestTemplate) : PermissionServ
                 set("Authorization", "Bearer $jwt")
             }
             val entity = HttpEntity<Void>(headers)
+            print("VALIDATE -> Validating token: $jwt")
+            print("HEADERS -> Validating token: $headers")
 
             restTemplate.exchange(
                 "$PERMISSION_URL/validate",

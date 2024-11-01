@@ -32,7 +32,6 @@ class RulesController(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<List<Rule>> {
         val userId = permissionService.validate(token).body!!
-
         val rules = rulesService.getRules("format-rules", userId)
         return ResponseEntity.ok(rules)
     }
