@@ -11,7 +11,7 @@ interface SnippetServiceRoutes {
     /** Route to edit a snippet if it exists, else it throws a @SnippetNotFound exception **/
     fun update(id: Long, content: String): FullSnippet?
     /** Route to delete a snippet if it exists, else it throws a @SnippetNotFound exception */
-    fun delete(id: Long)
+    fun delete(directory: String, id: Long)
     /** Route to check if a snippet exists, if it doesn't it throws a @SnippetNotFound exception */
     fun checkIfExists(id: Long, operation: String)
 }
