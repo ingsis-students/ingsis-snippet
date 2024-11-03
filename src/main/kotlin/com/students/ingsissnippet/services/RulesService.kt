@@ -27,15 +27,10 @@ class RulesService(
     }
 
     fun putRules(directory: String, userId: Long, rules: List<Rule>): String {
-        if (assetService.exists(directory, userId)) {
-            print("rules already exist!!!!!")
-            return assetService.get(directory, userId)
-        }
-
         val mapper = jacksonObjectMapper()
         val jsonRules = mapper.writeValueAsString(rules)
         assetService.put(directory, userId, jsonRules)
-        print("rules created to user id: $userId ++++++")
+        println("rules created to user id: $userId")
         return jsonRules
     }
 
@@ -45,8 +40,10 @@ class RulesService(
 
         // agarro las rules y las parseo como lista de rules
         val updatedRules = getRules("lint-rules", userId)
+        println("updated rules: $updatedRules")
 
         val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
+        println("snippets of the user $userId: $snippets")
 
         snippets.forEach { snippet ->
             val msg = SnippetMessage(
@@ -76,11 +73,19 @@ class RulesService(
 
     fun setDefaultLintRules(userId: Long): String {
         val defaultRules: List<Rule> = RuleFactory.defaultLintRules()
+
+        if (assetService.exists("lint-rules", userId)) {
+            return assetService.get("lint-rules", userId)
+        }
         return putRules("lint-rules", userId, defaultRules)
     }
 
     fun setDefaultFormatRules(userId: Long): String {
         val defaultRules: List<Rule> = RuleFactory.defaultFormatRules()
+
+        if (assetService.exists("format-rules", userId)) {
+            return assetService.get("format-rules", userId)
+        }
         return putRules("format-rules", userId, defaultRules)
     }
 }

@@ -21,9 +21,11 @@ class RulesController(
     fun getRules(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<List<Rule>> {
-        print("getRulesss $token")
+        print("getRuless with token: $token")
         val userId = permissionService.validate(token).body!!
+        print("userId validated: $userId")
         val rules = rulesService.getRules("lint-rules", userId)
+        print("the rules gotten are: $rules")
         return ResponseEntity.ok(rules)
     }
 
@@ -32,7 +34,6 @@ class RulesController(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<List<Rule>> {
         val userId = permissionService.validate(token).body!!
-
         val rules = rulesService.getRules("format-rules", userId)
         return ResponseEntity.ok(rules)
     }
@@ -57,11 +58,24 @@ class RulesController(
         return ResponseEntity.ok(updatedRules)
     }
 
-    @PostMapping("/lint/rules/default")
+    @GetMapping("/rules/default")
+    fun setDefaultRules(
+        @RequestHeader("Authorization") token: String,
+    ): ResponseEntity<String> {
+        println("setDefaultRules $token")
+        val userId = permissionService.validate(token).body!!
+        println("userId got after validate method $userId")
+        val lintRules = rulesService.setDefaultLintRules(userId)
+        val formatRules = rulesService.setDefaultFormatRules(userId)
+
+        return ResponseEntity.ok("Default rules set for user $userId: $lintRules, $formatRules")
+    }
+
+    @GetMapping("/lint/rules/default")
     fun setDefaultLintRules(
         @RequestHeader("Authorization") token: String,
-        @RequestBody userId: Long
     ): ResponseEntity<String> {
+        val userId = permissionService.validate(token).body!!
         val jsonRules = rulesService.setDefaultLintRules(userId)
         return ResponseEntity.ok(jsonRules)
     }
@@ -69,8 +83,8 @@ class RulesController(
     @PostMapping("/format/rules/default")
     fun setDefaultFormatRules(
         @RequestHeader("Authorization") token: String,
-        @RequestBody userId: Long
     ): ResponseEntity<String> {
+        val userId = permissionService.validate(token).body!!
         val jsonRules = rulesService.setDefaultFormatRules(userId)
         return ResponseEntity.ok(jsonRules)
     }

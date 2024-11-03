@@ -54,10 +54,10 @@ class SnippetService(
         return FullSnippet(snippet, content)
     }
 
-    override fun delete(id: Long) {
+    override fun delete(directory: String, id: Long) {
         checkIfExists(id, "delete")
         snippetRepository.deleteById(id)
-        assetService.delete(id)
+        assetService.delete(directory, id)
     }
 
     override fun checkIfExists(id: Long, operation: String) {

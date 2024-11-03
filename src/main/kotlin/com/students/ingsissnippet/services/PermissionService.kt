@@ -34,8 +34,14 @@ class PermissionService(
     override fun checkIfOwner(snippetId: Long, email: String): Boolean {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
         val entity = HttpEntity(body, getJsonHeaders())
-        val response = executePost(entity, "/check-owner")
-        return response == "User is the owner of the snippet"
+        val response: String?
+
+        return try {
+            response = executePost(entity, "/check-owner")
+            response == "User is the owner of the snippet"
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun shareSnippet(
@@ -60,7 +66,7 @@ class PermissionService(
         }
 
         addSnippetToUser(token, toEmail, snippetId, "Guest")
-        return return ResponseEntity
+        return ResponseEntity
             .status(HttpStatus.OK)
             .header("Share-Status", "Snippet shared with $toEmail")
             .body(snippet)
@@ -84,7 +90,7 @@ class PermissionService(
         return try {
             val headers = HttpHeaders().apply {
                 contentType = MediaType.APPLICATION_JSON
-                set("Authorization", "Bearer $jwt")
+                set("Authorization", jwt)
             }
             val entity = HttpEntity<Void>(headers)
 
@@ -96,7 +102,7 @@ class PermissionService(
             )
         } catch (e: Exception) {
             print("VALIDATE -> Error validating token: $e")
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(-1)
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         }
     }
 
