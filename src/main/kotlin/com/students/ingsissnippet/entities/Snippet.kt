@@ -2,6 +2,7 @@ package com.students.ingsissnippet.entities
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.dtos.request_types.Compliance.PENDING
 import jakarta.persistence.Entity
@@ -29,9 +30,13 @@ data class Snippet(
     val language: Language,
 
     @OneToMany(mappedBy = "snippet", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonManagedReference
     @JsonIgnore
     val tests: List<Test> = emptyList()
 ) {
     constructor() : this(0, "", "", PENDING, Language(), emptyList())
+
+    override fun toString(): String {
+        return "Snippet(id=$id, name='$name', owner='$owner', compilance=$compilance)"
+    }
 }

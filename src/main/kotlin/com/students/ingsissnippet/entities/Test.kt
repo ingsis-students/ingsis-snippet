@@ -1,6 +1,6 @@
 package com.students.ingsissnippet.entities
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -19,7 +19,7 @@ data class Test(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "snippet_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     val snippet: Snippet
 ) {
     constructor() : this(0, "", "", Snippet())
