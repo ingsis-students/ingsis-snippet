@@ -1,6 +1,5 @@
 package com.students.ingsissnippet.entities
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -21,7 +20,6 @@ data class Test(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "snippet_id", nullable = false)
     @JsonManagedReference
-    @JsonIgnore
     val snippet: Snippet
 ) {
     constructor() : this(0, "", "", Snippet())
