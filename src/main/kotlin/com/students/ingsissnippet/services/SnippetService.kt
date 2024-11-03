@@ -27,13 +27,10 @@ class SnippetService(
     }
 
     override fun get(id: Long): FullSnippet {
-        println("HERE IS THE ID: $id")
         val snippet = snippetRepository.findById(id).orElseThrow {
             SnippetNotFound("Snippet not found when trying to get it")
         }
-        println("ARRIVED HERE $snippet")
         val content = assetService.get("snippets", id)
-        println("MADE IT HERE $content")
         return FullSnippet(snippet, content)
     }
 
