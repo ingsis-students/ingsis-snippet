@@ -27,11 +27,24 @@ class SnippetService(
     }
 
     override fun get(id: Long): FullSnippet {
+        println("HERE IS THE ID: $id")
         val snippet = snippetRepository.findById(id).orElseThrow {
             SnippetNotFound("Snippet not found when trying to get it")
         }
+        println("ARRIVED HERE $snippet")
         val content = assetService.get("snippets", id)
+        println("MADE IT HERE $content")
         return FullSnippet(snippet, content)
+    }
+
+    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
+        val pageable = PageRequest.of(page, pageSize)
+        val snippets = if (!snippetName.isNullOrEmpty()) {
+            snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
+        } else {
+            snippetRepository.findAll(pageable).content
+        }
+        return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
     override fun update(id: Long, content: String): FullSnippet {
@@ -51,16 +64,6 @@ class SnippetService(
         if (!snippetRepository.existsById(id)) {
             throw SnippetNotFound("Snippet not found when trying to $operation it")
         }
-    }
-
-    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
-        val pageable = PageRequest.of(page, pageSize)
-        val snippets = if (!snippetName.isNullOrEmpty()) {
-            snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
-        } else {
-            snippetRepository.findAll(pageable).content
-        }
-        return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
     fun countSnippets(snippetName: String?): Long {
