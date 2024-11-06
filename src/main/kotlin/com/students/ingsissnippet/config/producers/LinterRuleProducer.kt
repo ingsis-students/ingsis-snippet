@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.config.producers
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.config.SnippetMessage
 import kotlinx.coroutines.reactive.awaitSingle
 import org.austral.ingsis.redis.RedisStreamProducer
@@ -19,6 +20,7 @@ class RedisLinterRuleProducer @Autowired constructor(
     redis: ReactiveRedisTemplate<String, String>
 ) : LinterRuleProducer, RedisStreamProducer(streamKey, redis) {
     override suspend fun publishEvent(snippetMessage: SnippetMessage) {
-        emit(snippetMessage).awaitSingle()
+        val messageJson = jacksonObjectMapper().writeValueAsString(snippetMessage)
+        emit(messageJson).awaitSingle() // serialized the snippetMessage
     }
 }
