@@ -54,7 +54,7 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
         TODO("Not yet implemented")
     }
 
-    override fun getSnippets(id: Long): ResponseEntity<List<Snippet>> {
+    override fun getSnippets(jwt: String, id: Long): ResponseEntity<List<Snippet>> {
         TODO("Not yet implemented")
     }
 }

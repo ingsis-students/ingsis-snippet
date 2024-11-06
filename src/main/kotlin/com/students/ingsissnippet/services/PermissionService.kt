@@ -116,8 +116,6 @@ class PermissionService(
             set("Authorization", jwt)
         }
         val entity = HttpEntity(body, headers)
-
-
         val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
 
         val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
