@@ -20,6 +20,7 @@ class RedisLinterRuleProducer @Autowired constructor(
     redis: ReactiveRedisTemplate<String, String>
 ) : LinterRuleProducer, RedisStreamProducer(streamKey, redis) {
     override suspend fun publishEvent(snippetMessage: SnippetMessage) {
+        println("publicando el evento")
         val messageJson = jacksonObjectMapper().writeValueAsString(snippetMessage)
         emit(messageJson).awaitSingle() // serialized the snippetMessage
     }
