@@ -34,14 +34,14 @@ class PermissionService(
     override fun checkIfOwner(snippetId: Long, email: String): Boolean {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
         val entity = HttpEntity(body, getJsonHeaders())
-        val response: String?
 
         return try {
             println("CHECK OWNER -> $entity")
-            response = executePost(entity, "/check-owner")
+            val response = executePost(entity, "/check-owner")
             println("ARRIVED HERE -> $response")
-            response == "User is the owner of the snippet"
+            response?.equals("User is the owner of the snippet", ignoreCase = true) == true
         } catch (e: Exception) {
+            println("Error checking ownership: ${e.message}")
             false
         }
     }
