@@ -17,5 +17,5 @@ interface PermissionServiceRoutes {
     fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String?
 
     fun validate(jwt: String): ResponseEntity<Long>
-    fun getSnippets(id: Long): ResponseEntity<List<Snippet>>
+    fun getSnippets(jwt: String, id: Long): ResponseEntity<List<Snippet>>
 }

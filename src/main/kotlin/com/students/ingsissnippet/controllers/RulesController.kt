@@ -44,7 +44,7 @@ class RulesController(
         @RequestBody lintRules: List<Rule>
     ): ResponseEntity<List<Rule>> {
         val userId = permissionService.validate(token).body!!
-        val updatedRules = rulesService.lintSnippets(userId, lintRules)
+        val updatedRules = rulesService.lintSnippets(token, userId, lintRules)
         return ResponseEntity.ok(updatedRules)
     }
 
@@ -54,7 +54,7 @@ class RulesController(
         @RequestBody formatRules: List<Rule>
     ): ResponseEntity<List<Rule>> {
         val userId = permissionService.validate(token).body!!
-        val updatedRules = rulesService.formatSnippets(userId, formatRules)
+        val updatedRules = rulesService.formatSnippets(token, userId, formatRules)
         return ResponseEntity.ok(updatedRules)
     }
 

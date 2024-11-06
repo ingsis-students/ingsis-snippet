@@ -34,7 +34,7 @@ class RulesService(
         return jsonRules
     }
 
-    suspend fun lintSnippets(userId: Long, lintRules: List<Rule>): List<Rule> {
+    suspend fun lintSnippets(token: String, userId: Long, lintRules: List<Rule>): List<Rule> {
         // agrego las rules como json
         putRules("lint-rules", userId, lintRules)
 
@@ -42,7 +42,7 @@ class RulesService(
         val updatedRules = getRules("lint-rules", userId)
         println("updated rules: $updatedRules")
 
-        val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
+        val snippets: List<Snippet> = permissionService.getSnippets(token, userId).body!!
         println("snippets of the user $userId: $snippets")
 
         snippets.forEach { snippet ->
@@ -55,11 +55,11 @@ class RulesService(
         return updatedRules
     }
 
-    suspend fun formatSnippets(userId: Long, lintRules: List<Rule>): List<Rule> {
+    suspend fun formatSnippets(token: String, userId: Long, lintRules: List<Rule>): List<Rule> {
         putRules("format-rules", userId, lintRules)
         val updatedRules = getRules("format-rules", userId)
 
-        val snippets: List<Snippet> = permissionService.getSnippets(userId).body!!
+        val snippets: List<Snippet> = permissionService.getSnippets(token, userId).body!!
 
         snippets.forEach { snippet ->
             val msg = SnippetMessage(
