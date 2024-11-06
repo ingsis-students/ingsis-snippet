@@ -23,4 +23,8 @@ data class Language(
     val snippets: List<Snippet> = emptyList()
 ) {
     constructor() : this(0, "", "", "", emptyList())
+
+    override fun toString(): String {
+        return "Language(id=$id, name='$name', version='$version', extension='$extension')"
+    }
 }

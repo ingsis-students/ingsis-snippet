@@ -1,4 +1,3 @@
-/*
 package com.students.ingsissnippet.simple_tests
 
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
@@ -8,6 +7,7 @@ import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.services.LanguageService
 import com.students.ingsissnippet.services.SnippetService
+import com.students.ingsissnippet.services.TestService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,6 +42,9 @@ class WebMockTest {
     @MockBean
     private lateinit var languageService: LanguageService
 
+    @MockBean
+    private lateinit var testService: TestService
+
     @Test
     @WithMockUser(authorities = ["SCOPE_read:snippets"])
     fun mockTest() {
@@ -70,4 +73,3 @@ class WebMockTest {
             .andExpect(content().string(containsString("New edited world")))
     }
 }
-*/

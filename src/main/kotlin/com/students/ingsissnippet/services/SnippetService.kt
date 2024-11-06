@@ -34,6 +34,16 @@ class SnippetService(
         return FullSnippet(snippet, content)
     }
 
+    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
+        val pageable = PageRequest.of(page, pageSize)
+        val snippets = if (!snippetName.isNullOrEmpty()) {
+            snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
+        } else {
+            snippetRepository.findAll(pageable).content
+        }
+        return snippets.map { snippet -> SnippetDTO(snippet) }
+    }
+
     override fun update(id: Long, content: String): FullSnippet {
         checkIfExists(id, "edit")
         val snippet = snippetRepository.findById(id).get()
@@ -51,16 +61,6 @@ class SnippetService(
         if (!snippetRepository.existsById(id)) {
             throw SnippetNotFound("Snippet not found when trying to $operation it")
         }
-    }
-
-    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
-        val pageable = PageRequest.of(page, pageSize)
-        val snippets = if (!snippetName.isNullOrEmpty()) {
-            snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
-        } else {
-            snippetRepository.findAll(pageable).content
-        }
-        return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
     fun countSnippets(snippetName: String?): Long {

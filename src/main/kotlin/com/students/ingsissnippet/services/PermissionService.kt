@@ -37,7 +37,9 @@ class PermissionService(
         val response: String?
 
         return try {
+            println("CHECK OWNER -> $entity")
             response = executePost(entity, "/check-owner")
+            println("ARRIVED HERE -> $response")
             response == "User is the owner of the snippet"
         } catch (e: Exception) {
             false
