@@ -54,7 +54,7 @@ class PermissionServiceTest {
 
     @Test
     fun `can check if owner`() {
-        val content = permissionService.checkIfOwner(1L, "example@gmail.com")
+        val content = permissionService.checkIfOwner(1L, "example@gmail.com", "token")
         assert(content)
     }
 
