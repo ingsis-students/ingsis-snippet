@@ -2,7 +2,6 @@ package com.students.ingsissnippet.services
 
 import com.students.ingsissnippet.constants.PERMISSION_URL
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
-import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.ResponseEntity
@@ -108,14 +107,17 @@ class PermissionService(
         }
     }
 
-    override fun getSnippets(id: Long): ResponseEntity<List<Snippet>> {
-        val body: Map<String, Any> = mapOf("id" to id)
-        val entity = HttpEntity(body, getJsonHeaders())
-
-        val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
+    override fun getSnippetsId(jwt: String, id: Long): ResponseEntity<List<Long>> {
+        println("getting snippets of user: $id")
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+            set("Authorization", jwt)
+        }
+        val entity = HttpEntity<Void>(headers)
+        val responseType = object : ParameterizedTypeReference<List<Long>>() {}
 
         val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
-            "$PERMISSION_URL/snippets",
+            "$PERMISSION_URL/snippets/$id",
             HttpMethod.GET,
             entity,
             responseType,

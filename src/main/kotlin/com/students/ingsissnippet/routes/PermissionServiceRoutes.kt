@@ -1,7 +1,6 @@
 package com.students.ingsissnippet.routes
 
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
-import com.students.ingsissnippet.entities.Snippet
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
@@ -17,5 +16,5 @@ interface PermissionServiceRoutes {
     fun executePost(entity: HttpEntity<Map<String, Any>>, string: String): String?
 
     fun validate(jwt: String): ResponseEntity<Long>
-    fun getSnippets(id: Long): ResponseEntity<List<Snippet>>
+    fun getSnippetsId(jwt: String, id: Long): ResponseEntity<List<Long>>
 }

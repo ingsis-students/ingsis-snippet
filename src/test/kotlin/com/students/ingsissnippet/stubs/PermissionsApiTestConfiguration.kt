@@ -1,7 +1,6 @@
 package com.students.ingsissnippet.stubs
 
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
-import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.fixture.UserFixtures
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
 import org.springframework.context.annotation.Bean
@@ -54,7 +53,7 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
         TODO("Not yet implemented")
     }
 
-    override fun getSnippets(id: Long): ResponseEntity<List<Snippet>> {
+    override fun getSnippetsId(jwt: String, id: Long): ResponseEntity<List<Long>> {
         TODO("Not yet implemented")
     }
 }
