@@ -110,16 +110,15 @@ class PermissionService(
 
     override fun getSnippets(jwt: String, id: Long): ResponseEntity<List<Snippet>> {
         println("getting snippets of user: $id")
-        val body: Map<String, Any> = mapOf("id" to id)
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
             set("Authorization", jwt)
         }
-        val entity = HttpEntity(body, headers)
+        val entity = HttpEntity<Void>(headers)
         val responseType = object : ParameterizedTypeReference<List<Snippet>>() {}
 
         val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
-            "$PERMISSION_URL/snippets",
+            "$PERMISSION_URL/snippets/$id",
             HttpMethod.GET,
             entity,
             responseType,

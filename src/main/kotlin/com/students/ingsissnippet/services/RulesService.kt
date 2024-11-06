@@ -17,11 +17,11 @@ class RulesService(
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
         if (!assetService.exists(directory, userId)) {
-            print("rules don't exist!!!!!")
+            println("rules don't exist!!!!!")
             return emptyList()
         }
         val rulesJson = assetService.get(directory, userId)
-        print("got the following rules supposed to be json: $rulesJson")
+        println("got the following rules supposed to be json: $rulesJson")
         val mapper = jacksonObjectMapper()
         return mapper.readValue(rulesJson, object : TypeReference<List<Rule>>() {}) // return as List<Rule>
     }
