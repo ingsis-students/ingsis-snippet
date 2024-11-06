@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.config.SnippetMessage
 import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.dtos.request_types.Rule
-import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.factories.RuleFactory
 import org.springframework.stereotype.Service
 
@@ -42,12 +41,12 @@ class RulesService(
         val updatedRules = getRules("lint-rules", userId)
         println("updated rules: $updatedRules")
 
-        val snippets: List<Snippet> = permissionService.getSnippets(token, userId).body!!
-        println("snippets of the user $userId: $snippets")
+        val snippetsId: List<Long> = permissionService.getSnippetsId(token, userId).body!!
+        println("snippets of the user $userId: $snippetsId")
 
-        snippets.forEach { snippet ->
+        snippetsId.forEach { id ->
             val msg = SnippetMessage(
-                snippetId = snippet.id,
+                snippetId = id,
                 userId = userId
             )
             linterRuleProducer.publishEvent(msg)
@@ -59,14 +58,14 @@ class RulesService(
         putRules("format-rules", userId, lintRules)
         val updatedRules = getRules("format-rules", userId)
 
-        val snippets: List<Snippet> = permissionService.getSnippets(token, userId).body!!
+        val snippetsId: List<Long> = permissionService.getSnippetsId(token, userId).body!!
 
-        snippets.forEach { snippet ->
+        snippetsId.forEach { id ->
             val msg = SnippetMessage(
-                snippetId = snippet.id,
+                snippetId = id,
                 userId = userId
             )
-            linterRuleProducer.publishEvent(msg) // TODO formatRuleProducer.
+            linterRuleProducer.publishEvent(msg) // TODO formatRuleProducer being cooked
         }
         return updatedRules
     }
