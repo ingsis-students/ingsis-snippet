@@ -22,6 +22,8 @@ class RedisLinterRuleProducer @Autowired constructor(
     override suspend fun publishEvent(snippetMessage: SnippetMessage) {
         println("publicando el evento")
         val messageJson = jacksonObjectMapper().writeValueAsString(snippetMessage)
+        println("mensaje del evento a publicar: $messageJson")
         emit(messageJson).awaitSingle() // serialized the snippetMessage
+        println("evento publicado")
     }
 }
