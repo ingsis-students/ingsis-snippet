@@ -25,5 +25,5 @@ enum class Compliance {
     PENDING,
     FAILED,
     NOT_COMPLIANT,
-    COMPLIANT
+    SUCCESS
 }

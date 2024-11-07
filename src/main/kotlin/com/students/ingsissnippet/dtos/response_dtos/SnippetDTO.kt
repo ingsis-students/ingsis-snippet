@@ -9,6 +9,6 @@ open class SnippetDTO(snippet: Snippet) {
     val owner: String = snippet.owner
     val language: String = snippet.language.name
     val extension: String = snippet.language.extension
-    val compilance: Compliance = snippet.compilance
+    val compilance: Compliance = snippet.status
     val version: String = snippet.language.version
 }
