@@ -36,7 +36,6 @@ class TestController(
         return ResponseEntity.ok(testDTO)
     }
 
-
     @DeleteMapping("/{id}")
     fun deleteTestById(@PathVariable id: Long): ResponseEntity<Void> {
         testService.deleteTestById(id)
