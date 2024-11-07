@@ -1,6 +1,7 @@
 package com.students.ingsissnippet.routes
 
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.dtos.response_dtos.SnippetUserDto
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
@@ -10,6 +11,8 @@ interface PermissionServiceRoutes {
     fun checkIfOwner(snippetId: Long, email: String, token: String): Boolean
     /** This method is used to add a snippet to a certain user of @email with the specified @role, Guest or Owner */
     fun addSnippetToUser(token: String, email: String, snippetId: Long, role: String)
+    /** This method is used to get the snippets of a certain user */
+    fun getSnippetsOfUser(token: String, email: String): List<SnippetUserDto>
     /** Route that uses permission service to share a snippet of code to other user*/
     fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String, snippet: FullSnippet): ResponseEntity<FullSnippet>
     /** This method is used to execute a post request to the permission service */
