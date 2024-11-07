@@ -3,6 +3,7 @@ package com.students.ingsissnippet.services
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
+import com.students.ingsissnippet.dtos.response_dtos.SnippetWithRole
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
@@ -42,6 +43,17 @@ class SnippetService(
             snippetRepository.findAll(pageable).content
         }
         return snippets.map { snippet -> SnippetDTO(snippet) }
+    }
+
+    fun getSnippetsOfUser(page: Int, pageSize: Int, userEmail: String, token: String): List<SnippetWithRole> {
+        val pageable = PageRequest.of(page, pageSize)
+        val snippets = permissionService.getSnippetsOfUser(token, userEmail)
+        return snippets.map {
+            SnippetWithRole(
+                get(it.snippetId),
+                it.role
+            )
+        }
     }
 
     override fun update(id: Long, content: String): FullSnippet {

@@ -1,6 +1,7 @@
 package com.students.ingsissnippet.stubs
 
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.dtos.response_dtos.SnippetUserDto
 import com.students.ingsissnippet.fixture.UserFixtures
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
 import org.springframework.context.annotation.Bean
@@ -32,6 +33,13 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
 
     override fun addSnippetToUser(token: String, email: String, snippetId: Long, role: String) {
         permissionDb.find { it.ownerEmail == email && it.snippetIds.add(snippetId) }
+    }
+
+    override fun getSnippetsOfUser(
+        token: String,
+        email: String
+    ): List<SnippetUserDto> {
+        TODO("Not yet implemented")
     }
 
     override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String, snippet: FullSnippet): ResponseEntity<FullSnippet> {

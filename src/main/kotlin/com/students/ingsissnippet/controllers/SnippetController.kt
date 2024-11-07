@@ -44,6 +44,18 @@ class SnippetController(
         return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
     }
 
+    @GetMapping("/user")
+    fun getSnippetsOfUser(
+        @RequestParam page: Int = 0,
+        @RequestParam pageSize: Int = 10,
+        @RequestParam userEmail: String,
+        @RequestHeader("Authorization") token: String
+    ): ResponseEntity<Map<String, Any>> {
+        val snippets = snippetService.getSnippetsOfUser(page, pageSize, userEmail, token)
+        val totalCount = 5
+        return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
+    }
+
     @PostMapping("/")
     fun create(
         @RequestBody snippetRequest: SnippetRequest,
@@ -57,8 +69,8 @@ class SnippetController(
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody req: ContentRequest): ResponseEntity<FullSnippet> {
-        val fullSnippet = snippetService.update(id, req.content)
-        return ResponseEntity.ok(fullSnippet)
+        val response = snippetService.update(id, req.content)
+        return ResponseEntity.ok(response)
     }
 
     @PostMapping("/delete/{id}")

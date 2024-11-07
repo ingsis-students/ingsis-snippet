@@ -2,6 +2,7 @@ package com.students.ingsissnippet.services
 
 import com.students.ingsissnippet.constants.PERMISSION_URL
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.dtos.response_dtos.SnippetUserDto
 import com.students.ingsissnippet.routes.PermissionServiceRoutes
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.ResponseEntity
@@ -33,13 +34,28 @@ class PermissionService(
         val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
 
         return try {
-            println("CHECK OWNER -> $entity")
             val response = executePost(entity, "/check-owner")
-            println("ARRIVED HERE -> $response")
             response?.equals("User is the owner of the snippet", ignoreCase = true) == true
         } catch (e: Exception) {
             println("Error checking ownership: ${e.message}")
             false
+        }
+    }
+
+    override fun getSnippetsOfUser(token: String, email: String): List<SnippetUserDto> {
+        val body = mapOf("email" to email)
+        val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
+        return try {
+            val response = restTemplate.exchange(
+                "$PERMISSION_URL/get-user-snippets",
+                HttpMethod.GET,
+                entity,
+                object : ParameterizedTypeReference<List<SnippetUserDto>>() {}
+            )
+            response.body ?: emptyList()
+        } catch (e: Exception) {
+            println("Error getting snippets of user: ${e.message}")
+            emptyList()
         }
     }
 
@@ -107,7 +123,6 @@ class PermissionService(
     }
 
     override fun getSnippetsId(jwt: String, id: Long): ResponseEntity<List<Long>> {
-        println("getting snippets of user: $id")
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
             set("Authorization", jwt)
@@ -115,7 +130,8 @@ class PermissionService(
         val entity = HttpEntity<Void>(headers)
         val responseType = object : ParameterizedTypeReference<List<Long>>() {}
 
-        val response = restTemplate.exchange( // exchange deja recibir listas de objetos.
+        val response = restTemplate.exchange(
+            // exchange deja recibir listas de objetos.
             "$PERMISSION_URL/snippets/$id",
             HttpMethod.GET,
             entity,
