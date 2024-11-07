@@ -24,13 +24,13 @@ class TestController(
     @PostMapping("/snippet/{snippetId}")
     fun addTestToSnippet(
         @PathVariable snippetId: Long,
-        @RequestBody testInput: Map<String, String>
+        @RequestBody testBody: Map<String, Any>
     ): ResponseEntity<TestDTO> {
         val testDTO = testService.addTestToSnippet(
             snippetId,
-            name = testInput["name"] ?: "",
-            input = testInput["input"] ?: "",
-            output = testInput["output"] ?: ""
+            name = testBody["name"] as? String ?: "",
+            input = testBody["input"] as? List<String> ?: listOf(),
+            output = testBody["output"] as? List<String> ?: listOf()
         )
         return ResponseEntity.ok(testDTO)
     }
