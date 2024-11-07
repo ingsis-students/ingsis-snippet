@@ -26,7 +26,7 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
 
     private var permissionDb = UserFixtures.all()
 
-    override fun checkIfOwner(snippetId: Long, email: String): Boolean {
+    override fun checkIfOwner(snippetId: Long, email: String, token: String): Boolean {
         return permissionDb.any { it.ownerEmail == email && it.snippetIds.any { it == snippetId } }
     }
 

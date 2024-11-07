@@ -22,25 +22,23 @@ class PermissionService(
     override fun addSnippetToUser(token: String, email: String, snippetId: Long, role: String) {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "role" to role)
 
-        val headers = getJsonHeaders().apply {
-            set("Authorization", token)
-        }
+        val headers = getJsonAuthorizedHeaders(token)
 
         val entity = HttpEntity(body, headers)
         executePost(entity, "/add-snippet/$email")
     }
 
-    override fun checkIfOwner(snippetId: Long, email: String): Boolean {
+    override fun checkIfOwner(snippetId: Long, email: String, token: String): Boolean {
         val body: Map<String, Any> = mapOf("snippetId" to snippetId, "email" to email)
-        val entity = HttpEntity(body, getJsonHeaders())
-        val response: String?
+        val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
 
         return try {
             println("CHECK OWNER -> $entity")
-            response = executePost(entity, "/check-owner")
+            val response = executePost(entity, "/check-owner")
             println("ARRIVED HERE -> $response")
-            response == "User is the owner of the snippet"
+            response?.equals("User is the owner of the snippet", ignoreCase = true) == true
         } catch (e: Exception) {
+            println("Error checking ownership: ${e.message}")
             false
         }
     }
@@ -59,7 +57,7 @@ class PermissionService(
                 .body(FullSnippet())
         }
 
-        if (!checkIfOwner(snippetId, fromEmail)) {
+        if (!checkIfOwner(snippetId, fromEmail, token)) {
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .header("Share-Status", "You are not the owner of the snippet")
@@ -73,9 +71,10 @@ class PermissionService(
             .body(snippet)
     }
 
-    private fun getJsonHeaders(): MultiValueMap<String, String> {
+    private fun getJsonAuthorizedHeaders(token: String): MultiValueMap<String, String> {
         return HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
+            set("Authorization", token)
         }
     }
 
