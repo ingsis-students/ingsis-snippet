@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
 
 @Entity
 data class Test(
@@ -18,9 +20,13 @@ data class Test(
     val name: String = "",
 
     @ElementCollection
+    @CollectionTable(name = "test_input", joinColumns = [JoinColumn(name = "test_id")])
+    @Column(name = "input_value")
     val input: List<String> = listOf(),
 
     @ElementCollection
+    @CollectionTable(name = "test_output", joinColumns = [JoinColumn(name = "test_id")])
+    @Column(name = "output_value")
     val output: List<String> = listOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
