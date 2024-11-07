@@ -3,6 +3,7 @@ package com.students.ingsissnippet.controllers
 import com.students.ingsissnippet.dtos.response_dtos.TestDTO
 import com.students.ingsissnippet.services.TestService
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -33,5 +34,12 @@ class TestController(
             output = testBody["output"] as? List<String> ?: listOf()
         )
         return ResponseEntity.ok(testDTO)
+    }
+
+
+    @DeleteMapping("/{id}")
+    fun deleteTestById(@PathVariable id: Long): ResponseEntity<Void> {
+        testService.removeTestById(id)
+        return ResponseEntity.noContent().build()
     }
 }
