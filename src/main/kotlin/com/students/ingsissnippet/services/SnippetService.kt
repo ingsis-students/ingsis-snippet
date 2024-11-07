@@ -1,8 +1,10 @@
 package com.students.ingsissnippet.services
 
+import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
+import com.students.ingsissnippet.dtos.response_dtos.SnippetWithRole
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
@@ -44,6 +46,19 @@ class SnippetService(
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
+    fun getSnippetsOfUser(page: Int, pageSize: Int, userId: String, token: String): List<SnippetWithRole> {
+        val pageable = PageRequest.of(page, pageSize)
+        val snippets = permissionService.getSnippetsOfUser(token, userId)
+        if (snippets.isEmpty()) { return emptyList() }
+        println("SNIPPETS $snippets")
+        return snippets.map {
+            SnippetWithRole(
+                get(it.snippetId),
+                it.role
+            )
+        }
+    }
+
     override fun update(id: Long, content: String): FullSnippet {
         checkIfExists(id, "edit")
         val snippet = snippetRepository.findById(id).get()
@@ -69,5 +84,14 @@ class SnippetService(
         } else {
             snippetRepository.count()
         }
+    }
+    fun updateStatus(id: Long, status: Compliance): FullSnippet {
+        val snippet = snippetRepository.findById(id).orElseThrow {
+            RuntimeException("Snippet with ID $id not found")
+        }
+        snippet.status = status
+
+        val updatedSnippet = snippetRepository.save(snippet)
+        return FullSnippet(updatedSnippet, assetService.get("snippets", id))
     }
 }

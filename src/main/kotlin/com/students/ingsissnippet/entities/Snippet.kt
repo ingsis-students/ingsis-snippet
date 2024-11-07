@@ -22,7 +22,7 @@ data class Snippet(
     val id: Long = 0,
     val name: String,
     val owner: String,
-    val compilance: Compliance = PENDING,
+    var status: Compliance = PENDING,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "language_id", nullable = false)
@@ -37,6 +37,6 @@ data class Snippet(
     constructor() : this(0, "", "", PENDING, Language(), emptyList())
 
     override fun toString(): String {
-        return "Snippet(id=$id, name='$name', owner='$owner', compilance=$compilance)"
+        return "Snippet(id=$id, name='$name', owner='$owner', compilance=$status)"
     }
 }
