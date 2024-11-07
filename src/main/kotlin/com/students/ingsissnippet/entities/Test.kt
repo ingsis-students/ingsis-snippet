@@ -14,6 +14,7 @@ data class Test(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long = 0,
+    val name: String = "",
     val input: String,
     val output: String,
 
@@ -22,5 +23,5 @@ data class Test(
     @JsonBackReference
     val snippet: Snippet
 ) {
-    constructor() : this(0, "", "", Snippet())
+    constructor() : this(0, "", "", "", Snippet())
 }

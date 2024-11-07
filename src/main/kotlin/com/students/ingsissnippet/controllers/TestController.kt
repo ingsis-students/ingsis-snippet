@@ -28,6 +28,7 @@ class TestController(
     ): ResponseEntity<TestDTO> {
         val testDTO = testService.addTestToSnippet(
             snippetId,
+            name = testInput["name"] ?: "",
             input = testInput["input"] ?: "",
             output = testInput["output"] ?: ""
         )
