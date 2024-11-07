@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.services
 
+import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
@@ -81,5 +82,14 @@ class SnippetService(
         } else {
             snippetRepository.count()
         }
+    }
+    fun updateStatus(id: Long, status: Compliance): FullSnippet {
+        val snippet = snippetRepository.findById(id).orElseThrow {
+            RuntimeException("Snippet with ID $id not found")
+        }
+        snippet.status = status
+
+        val updatedSnippet = snippetRepository.save(snippet)
+        return FullSnippet(updatedSnippet, assetService.get("snippets", id))
     }
 }

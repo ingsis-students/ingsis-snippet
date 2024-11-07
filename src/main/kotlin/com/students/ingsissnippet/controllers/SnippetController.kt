@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.controllers
 
+import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.dtos.request_types.ContentRequest
 import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
@@ -9,15 +10,16 @@ import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
 @RequestMapping("/api/snippets")
@@ -118,5 +120,20 @@ class SnippetController(
     @PostMapping("/lint/{id}")
     fun lint(@PathVariable id: Long): String {
         return parseService.analyze(id)
+    }
+
+    @PatchMapping("/{id}/status")
+    fun updateStatus(
+        @PathVariable id: Long,
+        @RequestBody status: Compliance
+    ): ResponseEntity<Void> {
+        try {
+            val updatedSnippet = snippetService.updateStatus(id, status)
+            ResponseEntity.ok(updatedSnippet)
+        } catch (e: Exception) {
+            println("Error updating snippet status: ${e.message}")
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+        return ResponseEntity.noContent().build()
     }
 }
