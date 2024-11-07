@@ -8,7 +8,7 @@ class SnippetWithRole(snippet: FullSnippet, val role: String) {
     val owner: String = snippet.owner
     val language: String = snippet.language
     val extension: String = snippet.extension
-    val compilance: Compliance = snippet.compilance
+    val status: Compliance = snippet.status
     val version: String = snippet.version
 
     constructor() : this(FullSnippet(), "")
