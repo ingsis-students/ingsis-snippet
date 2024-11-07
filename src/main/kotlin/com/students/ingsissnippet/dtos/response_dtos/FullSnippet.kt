@@ -9,7 +9,7 @@ class FullSnippet(snippet: Snippet, val content: String) {
     val owner: String = snippet.owner
     val language: String = snippet.language.name
     val extension: String = snippet.language.extension
-    val compilance: Compliance = snippet.compilance
+    val status: Compliance = snippet.status
     val version: String = snippet.language.version
 
     constructor() : this(Snippet(), "")
