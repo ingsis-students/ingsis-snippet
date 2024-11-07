@@ -39,7 +39,7 @@ class TestController(
 
     @DeleteMapping("/{id}")
     fun deleteTestById(@PathVariable id: Long): ResponseEntity<Void> {
-        testService.removeTestById(id)
+        testService.deleteTestById(id)
         return ResponseEntity.noContent().build()
     }
 }

@@ -24,4 +24,8 @@ class TestService(
         testRepository.save(test)
         return TestDTO(test)
     }
+
+    fun deleteTestById(id: Long) {
+        testRepository.deleteById(id)
+    }
 }
