@@ -42,10 +42,10 @@ class PermissionService(
         }
     }
 
-    override fun getSnippetsOfUser(token: String, email: String): List<SnippetUserDto> {
-        val body = mapOf("email" to email)
+    override fun getSnippetsOfUser(token: String, userId: String): List<SnippetUserDto> {
+        val body = mapOf("userId" to userId)
         val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
-        println("ARRIVED getSnippetsOfUser with $email")
+        println("ARRIVED getSnippetsOfUser with $userId")
         return try {
             val response = restTemplate.exchange(
                 "$PERMISSION_URL/get-user-snippets",

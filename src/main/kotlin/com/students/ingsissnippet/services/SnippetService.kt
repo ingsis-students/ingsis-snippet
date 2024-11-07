@@ -45,9 +45,9 @@ class SnippetService(
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
-    fun getSnippetsOfUser(page: Int, pageSize: Int, userEmail: String, token: String): List<SnippetWithRole> {
+    fun getSnippetsOfUser(page: Int, pageSize: Int, userId: String, token: String): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
-        val snippets = permissionService.getSnippetsOfUser(token, userEmail)
+        val snippets = permissionService.getSnippetsOfUser(token, userId)
         return snippets.map {
             SnippetWithRole(
                 get(it.snippetId),
