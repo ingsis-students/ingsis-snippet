@@ -47,7 +47,8 @@ class RulesService(
         snippetsId.forEach { id ->
             val msg = SnippetMessage(
                 snippetId = id,
-                userId = userId
+                userId = userId,
+                jwtToken = token,
             )
             linterRuleProducer.publishEvent(msg)
         }
@@ -63,7 +64,8 @@ class RulesService(
         snippetsId.forEach { id ->
             val msg = SnippetMessage(
                 snippetId = id,
-                userId = userId
+                userId = userId,
+                jwtToken = token,
             )
             linterRuleProducer.publishEvent(msg) // TODO formatRuleProducer being cooked
         }
