@@ -49,6 +49,8 @@ class SnippetService(
     fun getSnippetsOfUser(page: Int, pageSize: Int, userId: String, token: String): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
         val snippets = permissionService.getSnippetsOfUser(token, userId)
+        if (snippets.isEmpty()) { return emptyList() }
+        println("SNIPPETS $snippets")
         return snippets.map {
             SnippetWithRole(
                 get(it.snippetId),

@@ -10,7 +10,6 @@ import com.students.ingsissnippet.services.PermissionService
 import com.students.ingsissnippet.services.SnippetService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -122,7 +121,7 @@ class SnippetController(
         return parseService.analyze(id)
     }
 
-    @PatchMapping("/{id}/status")
+    @PutMapping("/{id}/status")
     fun updateStatus(
         @PathVariable id: Long,
         @RequestBody status: Compliance

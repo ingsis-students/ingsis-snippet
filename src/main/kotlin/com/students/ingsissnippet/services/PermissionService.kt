@@ -48,8 +48,8 @@ class PermissionService(
         println("ARRIVED getSnippetsOfUser with $userId")
         return try {
             val response = restTemplate.exchange(
-                "$PERMISSION_URL/get-user-snippets",
-                HttpMethod.POST,
+                "$PERMISSION_URL/get-user-snippets/$userId",
+                HttpMethod.GET,
                 entity,
                 object : ParameterizedTypeReference<List<SnippetUserDto>>() {}
             )

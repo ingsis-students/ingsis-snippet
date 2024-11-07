@@ -17,11 +17,15 @@ class TestService(
         return tests.map { TestDTO(it) }
     }
 
-    fun addTestToSnippet(snippetId: Long, input: String, output: String): TestDTO {
+    fun addTestToSnippet(snippetId: Long, name: String, input: List<String>, output: List<String>): TestDTO {
         val snippet = snippetRepository.findById(snippetId)
             .orElseThrow { IllegalArgumentException("Snippet not found") }
-        val test = Test(input = input, output = output, snippet = snippet)
+        val test = Test(name = name, input = input, output = output, snippet = snippet)
         testRepository.save(test)
         return TestDTO(test)
+    }
+
+    fun deleteTestById(id: Long) {
+        testRepository.deleteById(id)
     }
 }

@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 class ExceptionHandler {
     @ExceptionHandler(SnippetNotFound::class)
     fun handle(ex: SnippetNotFound): ResponseEntity<Any> {
-        return ResponseEntity.notFound().build()
+        return ResponseEntity.badRequest().body(ex.message)
     }
 
     @ExceptionHandler(LanguageNotFound::class)
     fun handle(ex: LanguageNotFound): ResponseEntity<Any> {
-        return ResponseEntity.notFound().build()
+        return ResponseEntity.badRequest().body(ex.message)
     }
 
     @ExceptionHandler(TestNotFound::class)
     fun handle(ex: TestNotFound): ResponseEntity<Any> {
-        return ResponseEntity.notFound().build()
+        return ResponseEntity.badRequest().body(ex.message)
     }
 }

@@ -29,7 +29,7 @@ data class Snippet(
     @JsonBackReference
     val language: Language,
 
-    @OneToMany(mappedBy = "snippet", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "snippet", cascade = [CascadeType.ALL], orphanRemoval = true)
     @JsonManagedReference
     @JsonIgnore
     val tests: List<Test> = emptyList()
