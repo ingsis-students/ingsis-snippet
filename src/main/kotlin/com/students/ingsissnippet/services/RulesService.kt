@@ -3,6 +3,7 @@ package com.students.ingsissnippet.services
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.config.SnippetMessage
+import com.students.ingsissnippet.config.producers.FormatRuleProducer
 import com.students.ingsissnippet.config.producers.LinterRuleProducer
 import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.dtos.request_types.Rule
@@ -14,6 +15,7 @@ class RulesService(
     private val assetService: AssetService,
     private val permissionService: PermissionService,
     private val linterRuleProducer: LinterRuleProducer,
+    private val formatRuleProducer: FormatRuleProducer,
     private val snippetService: SnippetService
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
@@ -68,16 +70,12 @@ class RulesService(
         val snippetsId: List<Long> = permissionService.getSnippetsId(token, userId).body!!
 
         snippetsId.forEach { id ->
-            snippetService.updateStatus(id, Compliance.PENDING)
-        }
-
-        snippetsId.forEach { id ->
             val msg = SnippetMessage(
                 snippetId = id,
                 userId = userId,
                 jwtToken = token,
             )
-            linterRuleProducer.publishEvent(msg) // TODO formatRuleProducer being cooked
+            formatRuleProducer.publishEvent(msg)
         }
         return updatedRules
     }
