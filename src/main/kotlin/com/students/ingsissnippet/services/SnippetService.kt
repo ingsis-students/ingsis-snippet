@@ -48,11 +48,23 @@ class SnippetService(
 
     fun getSnippetsOfUser(page: Int, pageSize: Int, userId: String, token: String): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
-        val snippets = permissionService.getSnippetsOfUser(token, userId)
+
+        // Get the list of SnippetUserDto from permissionService
+        val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
+
+        // Map snippetId to role for easy access
+        val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
+
+        // Fetch snippets by snippet IDs
+        val snippets = snippetRepository.findAllById(snippetIdToRoleMap.keys)
+
+        if (snippets.isEmpty()) return emptyList()
+
+        // Map each Snippet to SnippetWithRole, using the role from snippetIdToRoleMap
         return snippets.map {
             SnippetWithRole(
-                get(it.snippetId),
-                it.role
+                snippet = it,
+                role = snippetIdToRoleMap[it.id] ?: "Default"
             )
         }
     }
