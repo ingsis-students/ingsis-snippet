@@ -17,6 +17,11 @@ class TestService(
         return tests.map { TestDTO(it) }
     }
 
+    fun getTestById(id: Long): Test {
+        return testRepository.findById(id)
+            .orElseThrow { IllegalArgumentException("Test not found") }
+    }
+
     fun addTestToSnippet(snippetId: Long, name: String, input: List<String>, output: List<String>): TestDTO {
         val snippet = snippetRepository.findById(snippetId)
             .orElseThrow { IllegalArgumentException("Snippet not found") }
