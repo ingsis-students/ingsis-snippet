@@ -15,5 +15,7 @@ interface ParseServiceRoutes {
     /** Route that uses parse service to check if a snippet compiles and returns errors */
     fun validate(id: Long): String
     /** Route that uses parse service to execute a post request */
+    fun test(snippetId: Long, inputs: List<String>, outputs: List<String>): List<String>
+
     fun executePost(entity: HttpEntity<DTO>, route: String): String
 }
