@@ -63,7 +63,7 @@ class SnippetService(
         // Map each Snippet to SnippetWithRole, using the role from snippetIdToRoleMap
         return snippets.map {
             SnippetWithRole(
-                snippet = get(it.id),
+                snippet = it,
                 role = snippetIdToRoleMap[it.id] ?: "Default"
             )
         }
