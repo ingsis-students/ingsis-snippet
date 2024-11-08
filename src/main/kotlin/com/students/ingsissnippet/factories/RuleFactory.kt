@@ -29,9 +29,6 @@ object RuleFactory {
             Rule(id = "8", name = "SameLineForIfBrace", isActive = false),
             Rule(id = "9", name = "SameLineForElseBrace", isActive = false),
             Rule(id = "10", name = "NewLineForIfBrace", isActive = false),
-            Rule(id = "11", name = "SpaceAfterAndBeforeOperators", isActive = false),
-            Rule(id = "12", name = "OnlyOneSpacePermitted", isActive = false),
-            Rule(id = "13", name = "NewLineAfterBrace", isActive = false)
         )
     }
 }

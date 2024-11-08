@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.simple_tests
 
+import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.controllers.SnippetController
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
@@ -38,6 +39,9 @@ class WebMockTest {
 
     @MockBean
     private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer // initialize producer in test
+
+    @MockBean
+    private lateinit var redisFormatRuleProducer: RedisFormatRuleProducer
 
     @MockBean
     private lateinit var languageService: LanguageService

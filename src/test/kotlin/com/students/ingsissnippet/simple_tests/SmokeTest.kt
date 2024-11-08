@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.simple_tests
 
+import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.controllers.SnippetController
 import org.assertj.core.api.Assertions.assertThat
@@ -16,6 +17,9 @@ class SmokeTest {
 
     @MockBean
     private lateinit var redisLinterRuleProducer: RedisLinterRuleProducer
+
+    @MockBean
+    private lateinit var redisFormatRuleProducer: RedisFormatRuleProducer
 
     @Test
     fun contextLoads() {
