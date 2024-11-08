@@ -135,4 +135,9 @@ class SnippetController(
         }
         return ResponseEntity.noContent().build()
     }
+
+    @GetMapping("/newrelic/error")
+    fun newRelicError(): ResponseEntity<Void> {
+        throw Exception("New Relic error")
+    }
 }
