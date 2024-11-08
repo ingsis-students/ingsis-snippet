@@ -1,6 +1,7 @@
 package com.students.ingsissnippet.controllers
 
 import com.students.ingsissnippet.dtos.response_dtos.TestDTO
+import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.TestService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 @RequestMapping("/api/tests")
 class TestController(
     private val testService: TestService,
+    private val parseService: ParseService,
 ) {
     @GetMapping("/snippet/{snippetId}")
     fun getTestsBySnippetId(@PathVariable snippetId: Long): ResponseEntity<List<TestDTO>> {
@@ -40,5 +42,17 @@ class TestController(
     fun deleteTestById(@PathVariable id: Long): ResponseEntity<Void> {
         testService.deleteTestById(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/{id}/run")
+    fun runTests(@PathVariable id: Long): ResponseEntity<String> {
+        val test = testService.getTestById(id)
+        val results = parseService.test(test.snippet.id, test.input, test.output)
+
+        return if (results.isEmpty()) {
+            ResponseEntity.ok("success")
+        } else {
+            ResponseEntity.ok("fail")
+        }
     }
 }

@@ -14,8 +14,21 @@ object RuleFactory {
 
     fun defaultFormatRules(): List<Rule> {
         return listOf(
-            Rule(id = "3", name = "Rule 3", isActive = false),
-            Rule(id = "4", name = "Rule 4", isActive = false),
+            Rule(id = "20", name = "OnlyOneSpacePermitted", isActive = true),
+            Rule(id = "21", name = "NewLineAfterSemicolon", isActive = true),
+            Rule(id = "22", name = "SpaceAfterAndBeforeOperators", isActive = true),
+            Rule(id = "23", name = "NewLineAfterBrace", isActive = true),
+
+            Rule(id = "1", name = "SpaceBeforeColon", isActive = false),
+            Rule(id = "2", name = "SpaceAfterColon", isActive = false),
+            Rule(id = "3", name = "NewlineAfterPrintln", isActive = false),
+            Rule(id = "4", name = "NewlineBeforePrintln", isActive = false),
+            Rule(id = "5", name = "SpaceAroundEquals", isActive = false),
+            Rule(id = "6", name = "NoSpaceAroundEquals", isActive = false),
+            Rule(id = "7", name = "NumberOfSpacesIndentation", isActive = false, value = 4),
+            Rule(id = "8", name = "SameLineForIfBrace", isActive = false),
+            Rule(id = "9", name = "SameLineForElseBrace", isActive = false),
+            Rule(id = "10", name = "NewLineForIfBrace", isActive = false),
         )
     }
 }

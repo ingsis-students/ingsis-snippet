@@ -8,6 +8,7 @@ import com.students.ingsissnippet.dtos.request_dtos.InterpretDTO
 import com.students.ingsissnippet.dtos.request_dtos.LinterDTO
 import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -81,6 +82,23 @@ class ParseService(
         )
         val entity = HttpEntity(body, getJsonHeaders())
         return executePost(entity, "/validate")
+    }
+
+    override fun test(snippetId: Long, inputs: List<String>, outputs: List<String>): List<String> {
+        val snippet = snippetService.get(snippetId)
+        val testDTO = TestParseDTO(
+            version = snippet.version,
+            code = snippet.content,
+            inputs = inputs,
+            outputs = outputs
+        )
+        val entity = createHTTPEntity(testDTO)
+
+        return restTemplate.postForObject(
+            "http://printscript-api:8080/api/printscript/test",
+            entity,
+            List::class.java
+        ) as List<String>? ?: listOf("Error: No response from test service")
     }
 
     // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests del linter
