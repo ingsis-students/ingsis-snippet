@@ -2,6 +2,7 @@ package com.students.ingsissnippet.services
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.students.ingsissnippet.constants.PARSE_URL
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import com.students.ingsissnippet.dtos.request_dtos.FormatDTO
 import com.students.ingsissnippet.dtos.request_dtos.InterpretDTO
@@ -12,7 +13,9 @@ import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
