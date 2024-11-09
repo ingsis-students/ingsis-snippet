@@ -1,20 +1,23 @@
 package com.students.ingsissnippet.controllers
 
 import com.students.ingsissnippet.dtos.response_dtos.TestDTO
+import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.TestService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.RequestHeader
 
 @RestController
 @RequestMapping("/api/tests")
 class TestController(
     private val testService: TestService,
+    private val parseService: ParseService,
 ) {
     @GetMapping("/snippet/{snippetId}")
     fun getTestsBySnippetId(@PathVariable snippetId: Long): ResponseEntity<List<TestDTO>> {
@@ -40,5 +43,11 @@ class TestController(
     fun deleteTestById(@PathVariable id: Long): ResponseEntity<Void> {
         testService.deleteTestById(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/{id}/run")
+    fun runTests(@RequestHeader("Authorization") token: String, @PathVariable id: Long): ResponseEntity<String> {
+        val test = testService.getTestById(id)
+        return parseService.test(token, test.snippet.id, test.input, test.output)
     }
 }

@@ -3,7 +3,9 @@ package com.students.ingsissnippet.services
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.config.SnippetMessage
+import com.students.ingsissnippet.config.producers.FormatRuleProducer
 import com.students.ingsissnippet.config.producers.LinterRuleProducer
+import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.dtos.request_types.Rule
 import com.students.ingsissnippet.factories.RuleFactory
 import org.springframework.stereotype.Service
@@ -12,7 +14,9 @@ import org.springframework.stereotype.Service
 class RulesService(
     private val assetService: AssetService,
     private val permissionService: PermissionService,
-    private val linterRuleProducer: LinterRuleProducer
+    private val linterRuleProducer: LinterRuleProducer,
+    private val formatRuleProducer: FormatRuleProducer,
+    private val snippetService: SnippetService
 ) {
     fun getRules(directory: String, userId: Long): List<Rule> {
         if (!assetService.exists(directory, userId)) {
@@ -45,6 +49,10 @@ class RulesService(
         println("snippets of the user $userId: $snippetsId")
 
         snippetsId.forEach { id ->
+            snippetService.updateStatus(id, Compliance.PENDING)
+        }
+
+        snippetsId.forEach { id ->
             val msg = SnippetMessage(
                 snippetId = id,
                 userId = userId,
@@ -67,7 +75,7 @@ class RulesService(
                 userId = userId,
                 jwtToken = token,
             )
-            linterRuleProducer.publishEvent(msg) // TODO formatRuleProducer being cooked
+            formatRuleProducer.publishEvent(msg)
         }
         return updatedRules
     }
