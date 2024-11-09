@@ -90,11 +90,6 @@ class SnippetService(
         }
     }
 
-    fun countSnippetsOfUser(snippetsIds: List<SnippetUserDto>): Long {
-        if (snippetsIds.isEmpty()) return 0L
-        return snippetRepository.countByIdIn(snippetsIds.map { it.snippetId }.toSet())
-    }
-
     fun updateStatus(id: Long, status: Compliance): FullSnippet {
         val snippet = snippetRepository.findById(id).orElseThrow {
             RuntimeException("Snippet with ID $id not found")
