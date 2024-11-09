@@ -10,6 +10,7 @@ import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -20,7 +21,6 @@ import org.springframework.web.client.RestTemplate
 @Service
 class ParseService(
     private val snippetService: SnippetService,
-    private val assetService: AssetService,
     private val restTemplate: RestTemplate,
     private val objectMapper: ObjectMapper
 ) : ParseServiceRoutes {
