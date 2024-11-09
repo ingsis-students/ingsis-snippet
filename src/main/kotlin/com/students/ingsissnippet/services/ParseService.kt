@@ -83,7 +83,7 @@ class ParseService(
         return executePost(entity, "validate")
     }
 
-    override fun test(snippetId: Long, inputs: List<String>, outputs: List<String>): List<String> {
+    override fun test(token: String, snippetId: Long, inputs: List<String>, outputs: List<String>): ResponseEntity<String> {
         val snippet = snippetService.get(snippetId)
         val testDTO = TestParseDTO(
             version = snippet.version,
@@ -91,13 +91,22 @@ class ParseService(
             inputs = inputs,
             outputs = outputs
         )
-        val entity = createHTTPEntity(testDTO)
 
-        return restTemplate.postForObject(
-            "http://printscript-api:8080/api/printscript/test",
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+            set("Authorization", token)
+        }
+
+        val entity = HttpEntity(testDTO, headers)
+
+        val response = restTemplate.exchange(
+            "$PARSE_URL/test",
+            HttpMethod.POST,
             entity,
-            List::class.java
-        ) as List<String>? ?: listOf("Error: No response from test service")
+            String::class.java,
+        )
+
+        return response
     }
 
     // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests del linter
