@@ -52,8 +52,9 @@ class SnippetController(
         @RequestParam userId: String,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<Map<String, Any>> {
-        val snippets = snippetService.getSnippetsOfUser(page, pageSize, userId, token)
-        val totalCount = 5
+        val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
+        val snippets = snippetService.getSnippetsOfUser(page, pageSize, snippetsIds)
+        val totalCount = snippetService.countSnippetsOfUser(snippetsIds)
         return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
     }
 
