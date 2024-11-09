@@ -34,7 +34,7 @@ class ParseService(
             code = snippet.content
         )
         val entity = createHTTPEntity(interpretDTO)
-        return executePost(entity, "/interpret")
+        return executePost(entity, "interpret")
     }
 
     // FIXME Como todavía no sabemos como nos van a mandar las rules lo dejo así
@@ -48,7 +48,7 @@ class ParseService(
             rules = rulesJson
         )
         val entity = createHTTPEntity(linterDTO)
-        return executePost(entity, "/analyze")
+        return executePost(entity, "analyze")
     }
 
     override fun format(id: Long): FullSnippet {
@@ -70,7 +70,7 @@ class ParseService(
         )
 
         val entity = createHTTPEntity(formatDto)
-        val formattedCode = executePost(entity, "/format")
+        val formattedCode = executePost(entity, "format")
         return snippetService.update(id, formattedCode)
     }
 
@@ -81,7 +81,7 @@ class ParseService(
             code = snippet.content
         )
         val entity = HttpEntity(body, getJsonHeaders())
-        return executePost(entity, "/validate")
+        return executePost(entity, "validate")
     }
 
     override fun test(snippetId: Long, inputs: List<String>, outputs: List<String>): List<String> {
@@ -122,7 +122,7 @@ class ParseService(
 
     override fun executePost(entity: HttpEntity<DTO>, route: String): String {
         return restTemplate.postForObject(
-            "http://printscript-api:8080$route",
+            "$PARSE_URL/$route",
             entity,
             String::class.java
         ).toString()
