@@ -11,5 +11,4 @@ interface SnippetRepository : JpaRepository<Snippet, Long> {
     fun findByNameContainingIgnoreCase(name: String, pageable: Pageable): Page<Snippet>
     fun countByNameContainingIgnoreCase(name: String): Long
     fun findByIdIn(snippetIds: Set<Long>, pageable: Pageable): Page<Snippet>
-    fun countByIdIn(snippetIds: Set<Long>): Long
 }
