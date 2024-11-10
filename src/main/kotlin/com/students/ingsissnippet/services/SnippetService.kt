@@ -99,6 +99,7 @@ class SnippetService(
             RuntimeException("Snippet with ID $id not found")
         }
         snippet.status = status
+        println("HIT snippet service: snippet $id status was updated to $status")
 
         val updatedSnippet = snippetRepository.save(snippet)
         return FullSnippet(updatedSnippet, assetService.get("snippets", id))
