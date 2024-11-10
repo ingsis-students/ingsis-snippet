@@ -4,6 +4,7 @@ import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
+import com.students.ingsissnippet.dtos.response_dtos.SnippetUserDto
 import com.students.ingsissnippet.dtos.response_dtos.SnippetWithRole
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
@@ -45,21 +46,15 @@ class SnippetService(
         }
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
+    fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRole> {
+        val pageable = PageRequest.of(page, pageSize)
 
-    fun getSnippetsOfUser(page: Int, pageSize: Int, userId: String, token: String): List<SnippetWithRole> {
-
-        // Get the list of SnippetUserDto from permissionService
-        val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
-
-        // Map snippetId to role for easy access
         val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
 
-        // Fetch snippets by snippet IDs
-        val snippets = snippetRepository.findAllById(snippetIdToRoleMap.keys)
+        if (snippetIdToRoleMap.isEmpty()) return emptyList()
 
-        if (snippets.isEmpty()) return emptyList()
+        val snippets = snippetRepository.findByIdIn(snippetIdToRoleMap.keys, pageable).content
 
-        // Map each Snippet to SnippetWithRole, using the role from snippetIdToRoleMap
         return snippets.map {
             SnippetWithRole(
                 snippet = it,
@@ -94,6 +89,7 @@ class SnippetService(
             snippetRepository.count()
         }
     }
+
     fun updateStatus(id: Long, status: Compliance): FullSnippet {
         val snippet = snippetRepository.findById(id).orElseThrow {
             RuntimeException("Snippet with ID $id not found")

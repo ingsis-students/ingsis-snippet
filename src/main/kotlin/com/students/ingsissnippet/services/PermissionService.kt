@@ -124,10 +124,10 @@ class PermissionService(
         }
     }
 
-    override fun getSnippetsId(jwt: String, id: Long): ResponseEntity<List<Long>> {
+    override fun getSnippetsId(token: String, id: Long): ResponseEntity<List<Long>> {
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
-            set("Authorization", jwt)
+            set("Authorization", token)
         }
         val entity = HttpEntity<Void>(headers)
         val responseType = object : ParameterizedTypeReference<List<Long>>() {}
