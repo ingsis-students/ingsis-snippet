@@ -35,6 +35,10 @@ spring:
 auth0:
   audience: ${AUTH0_AUDIENCE}
 
+server:
+#  port: 80
+  port: 8080
+
 
 stream:
   lint.key: "lintRuleStream"
