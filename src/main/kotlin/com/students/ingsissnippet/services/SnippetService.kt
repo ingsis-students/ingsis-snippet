@@ -30,10 +30,12 @@ class SnippetService(
     }
 
     override fun get(id: Long): FullSnippet {
-        val snippet = snippetRepository.findById(id).orElseThrow {
-            SnippetNotFound("Snippet not found when trying to get it")
-        }
+        println("ID HERE $id")
+        val snippet = snippetRepository.findById(id)
+            .orElseThrow { SnippetNotFound("Snippet not found when trying to get it") }
+        println("SNIPPET HERE $snippet")
         val content = assetService.get("snippets", id)
+        println("CONTENT HERE $content")
         return FullSnippet(snippet, content)
     }
 
@@ -46,6 +48,7 @@ class SnippetService(
         }
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
+
     fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
 
@@ -95,6 +98,7 @@ class SnippetService(
             RuntimeException("Snippet with ID $id not found")
         }
         snippet.status = status
+        println("HIT snippet service: snippet $id status was updated to $status")
 
         val updatedSnippet = snippetRepository.save(snippet)
         return FullSnippet(updatedSnippet, assetService.get("snippets", id))
