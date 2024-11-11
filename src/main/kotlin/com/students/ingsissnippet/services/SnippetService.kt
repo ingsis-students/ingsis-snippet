@@ -52,16 +52,28 @@ class SnippetService(
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
-    fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRole> {
+    fun getFilteredSnippets(
+        page: Int,
+        pageSize: Int,
+        snippetsIds: List<SnippetUserDto>,
+        snippetName: String?,
+        roles: List<String>?,
+        languages: List<Long>?
+    ): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
 
         val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
-
         if (snippetIdToRoleMap.isEmpty()) return emptyList()
 
         val snippets = snippetRepository.findByIdIn(snippetIdToRoleMap.keys, pageable).content
 
-        return snippets.map {
+        val filteredSnippets = snippets.filter { snippet ->
+            (snippetName == null || snippet.name.contains(snippetName, ignoreCase = true)) &&
+                (roles.isNullOrEmpty() || roles.contains(snippetIdToRoleMap[snippet.id])) &&
+                (languages.isNullOrEmpty() || languages.contains(snippet.language.id))
+        }
+
+        return filteredSnippets.map {
             SnippetWithRole(
                 snippet = it,
                 role = snippetIdToRoleMap[it.id] ?: "Default"
