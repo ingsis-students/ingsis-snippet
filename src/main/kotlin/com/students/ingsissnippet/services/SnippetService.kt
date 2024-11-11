@@ -112,6 +112,7 @@ class SnippetService(
         val snippet = get(id)
         val version = snippet.version
         val formatRules = assetService.get("format-rules", userId)
-        return parseService.format(version, content, formatRules)
+        println("por enviar al parseService la solicitud de formateo con reglas: $formatRules")
+        return parseService.format(version, content, formatRules, token)
     }
 }
