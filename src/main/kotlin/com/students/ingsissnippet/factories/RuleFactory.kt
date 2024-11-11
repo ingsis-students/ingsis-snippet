@@ -21,8 +21,8 @@ object RuleFactory {
 
             Rule(id = "1", name = "SpaceBeforeColon", isActive = false),
             Rule(id = "2", name = "SpaceAfterColon", isActive = false),
-            Rule(id = "3", name = "NewlineAfterPrintln", isActive = false),
-            Rule(id = "4", name = "NewlineBeforePrintln", isActive = false),
+            Rule(id = "3", name = "NewlineAfterPrintln", isActive = false, value = 0),
+            Rule(id = "4", name = "NewlineBeforePrintln", isActive = false, value = 0),
             Rule(id = "5", name = "SpaceAroundEquals", isActive = false),
             Rule(id = "6", name = "NoSpaceAroundEquals", isActive = false),
             Rule(id = "7", name = "NumberOfSpacesIndentation", isActive = false, value = 4),
