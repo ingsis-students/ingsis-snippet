@@ -123,7 +123,7 @@ class ParseServiceTest {
 
     @Test
     fun `can validate snippet`() {
-        val content = parseService.validate("", 1L)
+        val content = parseService.validate("", "1.1", "HI")
         assert(content.isNotEmpty())
     }
 

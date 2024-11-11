@@ -78,12 +78,10 @@ class ParseService(
         return snippetService.update(id, formattedCode)
     }
 
-    override fun validate(token: String, id: Long): List<String> {
-        val snippet = snippetService.get(id)
-
+    override fun validate(token: String, version: String, content: String): List<String> {
         val body: DTO = ValidateDTO(
-            version = snippet.version,
-            code = snippet.content
+            version = version,
+            code = content
         )
 
         val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
