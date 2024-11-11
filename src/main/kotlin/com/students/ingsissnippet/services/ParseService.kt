@@ -90,7 +90,7 @@ class ParseService(
         val snippet = snippetService.get(snippetId)
         val testDTO = TestParseDTO(
             version = snippet.version,
-            code = snippet.content,
+            code = snippet.id,
             inputs = inputs,
             outputs = outputs
         )
