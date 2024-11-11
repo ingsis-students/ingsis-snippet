@@ -112,10 +112,7 @@ class ParseService(
             outputs = outputs
         )
 
-        val headers = HttpHeaders().apply {
-            contentType = MediaType.APPLICATION_JSON
-            set("Authorization", token)
-        }
+        val headers = getJsonAuthorizedHeaders(token)
 
         val entity = HttpEntity(testDTO, headers)
 
