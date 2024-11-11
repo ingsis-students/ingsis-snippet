@@ -17,7 +17,8 @@ class SnippetService(
     private val snippetRepository: SnippetRepository,
     private val permissionService: PermissionService,
     private val assetService: AssetService,
-    private val languageService: LanguageService
+    private val languageService: LanguageService,
+    private val parseService: ParseService
 ) : SnippetServiceRoutes {
 
     override fun create(name: String, content: String, languageId: String, owner: String, token: String): FullSnippet {
@@ -26,7 +27,8 @@ class SnippetService(
         snippetRepository.save(snippet)
         assetService.put("snippets", snippet.id, content)
         permissionService.addSnippetToUser(token, owner, snippet.id, "Owner")
-        return FullSnippet(snippet, content)
+        val errors = parseService.validate(snippet.id)
+        return FullSnippet(snippet, content, errors)
     }
 
     override fun get(id: Long): FullSnippet {

@@ -115,7 +115,7 @@ class SnippetController(
     }
 
     @PostMapping("/validate/{id}")
-    fun validate(@PathVariable id: Long): String {
+    fun validate(@PathVariable id: Long): List<String> {
         return parseService.validate(id)
     }
 

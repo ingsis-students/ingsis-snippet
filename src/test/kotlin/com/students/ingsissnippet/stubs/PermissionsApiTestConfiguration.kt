@@ -35,14 +35,17 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
         permissionDb.find { it.ownerEmail == email && it.snippetIds.add(snippetId) }
     }
 
-    override fun getSnippetsOfUser(
-        token: String,
-        email: String
-    ): List<SnippetUserDto> {
-        TODO("Not yet implemented")
+    override fun getSnippetsOfUser(token: String, userId: String): List<SnippetUserDto> {
+        return emptyList()
     }
 
-    override fun shareSnippet(token: String, snippetId: Long, fromEmail: String, toEmail: String, snippet: FullSnippet): ResponseEntity<FullSnippet> {
+    override fun shareSnippet(
+        token: String,
+        snippetId: Long,
+        fromEmail: String,
+        toEmail: String,
+        snippet: FullSnippet
+    ): ResponseEntity<FullSnippet> {
         permissionDb.find { it.ownerEmail == fromEmail && it.snippetIds.add(snippetId) }
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -57,11 +60,11 @@ class InMemoryPermissionsApi : PermissionServiceRoutes {
         return "Post request executed"
     }
 
-    override fun validate(jwt: String): ResponseEntity<Long> {
+    override fun validate(token: String): ResponseEntity<Long> {
         TODO("Not yet implemented")
     }
 
-    override fun getSnippetsId(jwt: String, id: Long): ResponseEntity<List<Long>> {
+    override fun getSnippetsId(token: String, id: Long): ResponseEntity<List<Long>> {
         TODO("Not yet implemented")
     }
 }
