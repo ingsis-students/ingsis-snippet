@@ -45,7 +45,7 @@ class TestService(
         val tests = getTestsBySnippetId(snippetId)
         val responses = tests.map { executeTest(token, it.id) }
 
-        val passedTests = responses.count { it.statusCode.is2xxSuccessful }
+        val passedTests = responses.count { it.body == "success" }
         val failedTests = responses.size - passedTests
 
         return ResponseEntity.ok(mapOf("passed" to passedTests, "failed" to failedTests))
