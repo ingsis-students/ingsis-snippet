@@ -113,8 +113,9 @@ class SnippetController(
     fun format(
         @RequestHeader("Authorization") token: String,
         @PathVariable id: Long,
-        @RequestBody content: String
+        @RequestBody body: Map<String, String>
     ): ResponseEntity<String> {
+        val content = body["content"] ?: return ResponseEntity.badRequest().body("Content field is required.")
         val formattedContent = snippetService.format(id, content, token)
         return ResponseEntity.ok(formattedContent)
     }
