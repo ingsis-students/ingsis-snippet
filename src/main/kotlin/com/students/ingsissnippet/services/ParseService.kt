@@ -64,12 +64,10 @@ class ParseService(
         return executePost(entity, "format")
     }
 
-    override fun validate(token: String, id: Long): List<String> {
-        val snippet = snippetService.get(id)
-
+    override fun validate(token: String, version: String, content: String): List<String> {
         val body: DTO = ValidateDTO(
-            version = snippet.version,
-            code = snippet.content
+            version = version,
+            code = content
         )
 
         val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
@@ -100,10 +98,7 @@ class ParseService(
             outputs = outputs
         )
 
-        val headers = HttpHeaders().apply {
-            contentType = MediaType.APPLICATION_JSON
-            set("Authorization", token)
-        }
+        val headers = getJsonAuthorizedHeaders(token)
 
         val entity = HttpEntity(testDTO, headers)
 

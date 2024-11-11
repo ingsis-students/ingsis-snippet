@@ -9,6 +9,11 @@ data class SnippetRequest(
 
 data class ContentRequest(val content: String)
 
+data class ValidateRequest(
+    val version: String,
+    val code: String
+)
+
 data class ShareRequest(
     val fromEmail: String,
     val toEmail: String

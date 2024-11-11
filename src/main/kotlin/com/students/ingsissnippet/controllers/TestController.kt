@@ -51,7 +51,7 @@ class TestController(
     }
 
     @PostMapping("/{snippetId}/run-all")
-    fun runAllTests(@RequestHeader("Authorization") token: String, @PathVariable snippetId: Long): ResponseEntity<String> {
+    fun runAllTests(@RequestHeader("Authorization") token: String, @PathVariable snippetId: Long): ResponseEntity<Map<String, Int>> {
         return testService.executeAllSnippetTests(token, snippetId)
     }
 }

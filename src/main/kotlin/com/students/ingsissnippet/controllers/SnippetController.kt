@@ -4,6 +4,7 @@ import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.dtos.request_types.ContentRequest
 import com.students.ingsissnippet.dtos.request_types.ShareRequest
 import com.students.ingsissnippet.dtos.request_types.SnippetRequest
+import com.students.ingsissnippet.dtos.request_types.ValidateRequest
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
@@ -118,9 +119,9 @@ class SnippetController(
         return ResponseEntity.ok(output)
     }
 
-    @PostMapping("/validate/{id}")
-    fun validate(@PathVariable id: Long, @RequestHeader("Authorization") token: String): List<String> {
-        return parseService.validate(token, id)
+    @PostMapping("/validate")
+    fun validate(@RequestBody req: ValidateRequest, @RequestHeader("Authorization") token: String): List<String> {
+        return parseService.validate(token, req.version, req.code)
     }
 
     @PostMapping("/lint/{id}")
