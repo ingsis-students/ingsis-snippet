@@ -55,27 +55,14 @@ class ParseService(
         return executePost(entity, "analyze")
     }
 
-    override fun format(id: Long): FullSnippet {
-        val snippet = snippetService.get(id)
-
-        // FIXME Esto recibiría version y rules
+    override fun format(version: String, content: String, rules: String): String {
         val formatDto = FormatDTO(
-            version = snippet.version,
-            code = snippet.content,
-            rules = objectMapper.readTree(
-                """
-                {
-                    "space_around_equals": true,
-                    "space_before_colon": true,
-                    "space_after_colon": true
-                }
-                """.trimIndent()
+            version = version,
+            code = content,
+            rules = ObjectMapper().readTree(rules),
             )
-        )
-
         val entity = createHTTPEntity(formatDto)
-        val formattedCode = executePost(entity, "format")
-        return snippetService.update(id, formattedCode)
+        return executePost(entity, "format")
     }
 
     override fun validate(token: String, id: Long): List<String> {

@@ -102,10 +102,13 @@ class SnippetController(
         return permissionService.shareSnippet(token, id, emails.fromEmail, emails.toEmail, snippet)
     }
 
-    @PostMapping("/format/{id}")
-    fun format(@PathVariable id: Long): ResponseEntity<FullSnippet> {
-        val fullSnippet = parseService.format(id)
-        return ResponseEntity.ok(fullSnippet)
+    @PostMapping("/format}/{id}")
+    fun format(@RequestHeader("Authorization") token: String,
+               @PathVariable id: Long,
+               @RequestBody content: String
+    ): ResponseEntity<String> {
+        val formattedContent = snippetService.format(id, content, token)
+        return ResponseEntity.ok(formattedContent)
     }
 
     @PostMapping("/execute/{id}")

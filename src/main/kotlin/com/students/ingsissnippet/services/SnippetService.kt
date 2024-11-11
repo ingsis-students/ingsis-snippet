@@ -105,4 +105,12 @@ class SnippetService(
         val updatedSnippet = snippetRepository.save(snippet)
         return FullSnippet(updatedSnippet, assetService.get("snippets", id))
     }
+
+    fun format(id: Long, content: String, token: String): String {
+        val userId = permissionService.validate(token).body!!
+        val snippet = get(id)
+        val version = snippet.version
+        val formatRules = assetService.get("format-rules", userId)
+        return parseService.format(version, content, formatRules)
+    }
 }
