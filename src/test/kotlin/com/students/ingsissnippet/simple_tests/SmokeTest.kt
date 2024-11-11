@@ -3,6 +3,7 @@ package com.students.ingsissnippet.simple_tests
 import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.controllers.SnippetController
+import com.students.ingsissnippet.services.ParseService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,9 @@ class SmokeTest {
 
     @MockBean
     private lateinit var redisFormatRuleProducer: RedisFormatRuleProducer
+
+    @MockBean
+    private lateinit var parseService: ParseService
 
     @Test
     fun contextLoads() {

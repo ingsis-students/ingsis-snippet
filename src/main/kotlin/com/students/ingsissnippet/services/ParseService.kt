@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.services
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.students.ingsissnippet.constants.PARSE_URL
@@ -11,6 +12,7 @@ import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -22,7 +24,7 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class ParseService(
-    private val snippetService: SnippetService,
+    @Lazy private val snippetService: SnippetService,
     private val restTemplate: RestTemplate,
     private val objectMapper: ObjectMapper
 ) : ParseServiceRoutes {
@@ -76,21 +78,38 @@ class ParseService(
         return snippetService.update(id, formattedCode)
     }
 
-    override fun validate(id: Long): String {
+    override fun validate(token: String, id: Long): List<String> {
         val snippet = snippetService.get(id)
+
         val body: DTO = ValidateDTO(
             version = snippet.version,
             code = snippet.content
         )
-        val entity = HttpEntity(body, getJsonHeaders())
-        return executePost(entity, "validate")
+
+        val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
+
+        val response = restTemplate.postForObject(
+            "$PARSE_URL/validate",
+            entity,
+            List::class.java
+        )
+
+        return objectMapper.convertValue(
+            response,
+            object : TypeReference<List<String>>() {}
+        )
     }
 
-    override fun test(token: String, snippetId: Long, inputs: List<String>, outputs: List<String>): ResponseEntity<String> {
+    override fun test(
+        token: String,
+        snippetId: Long,
+        inputs: List<String>,
+        outputs: List<String>
+    ): ResponseEntity<String> {
         val snippet = snippetService.get(snippetId)
         val testDTO = TestParseDTO(
             version = snippet.version,
-            code = snippet.content,
+            snippetId = snippet.id,
             inputs = inputs,
             outputs = outputs
         )
@@ -146,6 +165,13 @@ class ParseService(
     private fun getJsonHeaders(): MultiValueMap<String, String>? {
         return HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
+        }
+    }
+
+    private fun getJsonAuthorizedHeaders(token: String): MultiValueMap<String, String> {
+        return HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+            set("Authorization", token)
         }
     }
 }

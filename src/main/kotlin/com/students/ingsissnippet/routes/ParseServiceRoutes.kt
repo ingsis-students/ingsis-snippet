@@ -9,12 +9,16 @@ import org.springframework.http.ResponseEntity
 interface ParseServiceRoutes {
     /** Route that uses parse service to execute a snippet of code */
     fun execute(id: Long): String
+
     /** Route that uses parse service to analyze a snippet of code */
     fun analyze(id: Long): String
+
     /** Route that uses parse service to format a snippet of code */
     fun format(id: Long): FullSnippet
+
     /** Route that uses parse service to check if a snippet compiles and returns errors */
-    fun validate(id: Long): String
+    fun validate(token: String, id: Long): List<String>
+
     /** Route that uses parse service to execute a post request */
     fun test(token: String, snippetId: Long, inputs: List<String>, outputs: List<String>): ResponseEntity<String>
 

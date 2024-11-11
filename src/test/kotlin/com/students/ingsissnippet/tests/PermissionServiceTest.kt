@@ -4,6 +4,7 @@ import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
@@ -34,6 +35,9 @@ class PermissionServiceTest {
 
     @MockBean
     private lateinit var redisFormatRuleProducer: RedisFormatRuleProducer
+
+    @MockBean
+    private lateinit var parseService: ParseService
 
     @BeforeEach
     fun setup() {

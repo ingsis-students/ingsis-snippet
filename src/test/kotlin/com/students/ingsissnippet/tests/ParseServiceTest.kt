@@ -87,10 +87,10 @@ class ParseServiceTest {
             restTemplate.postForObject(
                 argThat { url: String? -> url?.contains("validate") == true },
                 any<HttpEntity<DTO>>(),
-                eq(String::class.java)
+                eq(List::class.java)
             )
         ).thenAnswer {
-            "Validate snippet successfully"
+            listOf("Error 1", "Error 2")
         }
 
         whenever(
@@ -123,8 +123,8 @@ class ParseServiceTest {
 
     @Test
     fun `can validate snippet`() {
-        val content = parseService.validate(1L)
-        assert(content == "Validate snippet successfully")
+        val content = parseService.validate("", 1L)
+        assert(content.isNotEmpty())
     }
 
     @Test

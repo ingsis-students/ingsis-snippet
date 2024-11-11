@@ -104,11 +104,11 @@ class PermissionService(
         )
     }
 
-    override fun validate(jwt: String): ResponseEntity<Long> {
+    override fun validate(token: String): ResponseEntity<Long> {
         return try {
             val headers = HttpHeaders().apply {
                 contentType = MediaType.APPLICATION_JSON
-                set("Authorization", jwt)
+                set("Authorization", token)
             }
             val entity = HttpEntity<Void>(headers)
 
