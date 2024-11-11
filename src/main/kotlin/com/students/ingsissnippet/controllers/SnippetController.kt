@@ -73,8 +73,12 @@ class SnippetController(
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody req: ContentRequest): ResponseEntity<FullSnippet> {
-        val response = snippetService.update(id, req.content)
+    fun update(
+        @PathVariable id: Long,
+        @RequestBody req: ContentRequest,
+        @RequestHeader("Authorization") token: String
+    ): ResponseEntity<FullSnippet> {
+        val response = snippetService.update(id, req.content, token)
         return ResponseEntity.ok(response)
     }
 

@@ -69,9 +69,11 @@ class SnippetService(
         }
     }
 
-    override fun update(id: Long, content: String): FullSnippet {
+    override fun update(id: Long, content: String, token: String): FullSnippet {
         checkIfExists(id, "edit")
         val snippet = snippetRepository.findById(id).get()
+        val errors = parseService.validate(token, snippet.language.version, content)
+        if (errors.isNotEmpty()) { return FullSnippet(snippet, content, errors) }
         assetService.put("snippets", id, content)
         return FullSnippet(snippet, content)
     }
