@@ -78,7 +78,7 @@ class ParseService(
         return snippetService.update(id, formattedCode)
     }
 
-    override fun validate(id: Long): List<String> {
+    override fun validate(token: String, id: Long): List<String> {
         val snippet = snippetService.get(id)
 
         val body: DTO = ValidateDTO(
@@ -86,7 +86,7 @@ class ParseService(
             code = snippet.content
         )
 
-        val entity = HttpEntity(body, getJsonHeaders())
+        val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
 
         val response = restTemplate.postForObject(
             "$PARSE_URL/validate",
@@ -100,7 +100,12 @@ class ParseService(
         )
     }
 
-    override fun test(token: String, snippetId: Long, inputs: List<String>, outputs: List<String>): ResponseEntity<String> {
+    override fun test(
+        token: String,
+        snippetId: Long,
+        inputs: List<String>,
+        outputs: List<String>
+    ): ResponseEntity<String> {
         val snippet = snippetService.get(snippetId)
         val testDTO = TestParseDTO(
             version = snippet.version,
@@ -160,6 +165,13 @@ class ParseService(
     private fun getJsonHeaders(): MultiValueMap<String, String>? {
         return HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
+        }
+    }
+
+    private fun getJsonAuthorizedHeaders(token: String): MultiValueMap<String, String> {
+        return HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+            set("Authorization", token)
         }
     }
 }

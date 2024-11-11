@@ -27,7 +27,7 @@ class SnippetService(
         snippetRepository.save(snippet)
         assetService.put("snippets", snippet.id, content)
         permissionService.addSnippetToUser(token, owner, snippet.id, "Owner")
-        val errors = parseService.validate(snippet.id)
+        val errors = parseService.validate(token, snippet.id)
         return FullSnippet(snippet, content, errors)
     }
 
