@@ -53,9 +53,11 @@ class RulesService(
         }
 
         snippetsId.forEach { id ->
+            val snippet = snippetService.get(id)
             val msg = SnippetMessage(
                 snippetId = id,
                 userId = userId,
+                version = snippet.version,
                 jwtToken = token,
             )
             linterRuleProducer.publishEvent(msg)
@@ -70,9 +72,11 @@ class RulesService(
         val snippetsId: List<Long> = permissionService.getSnippetsId(token, userId).body!!
 
         snippetsId.forEach { id ->
+            val snippet = snippetService.get(id)
             val msg = SnippetMessage(
                 snippetId = id,
                 userId = userId,
+                version = snippet.version,
                 jwtToken = token,
             )
             formatRuleProducer.publishEvent(msg)
