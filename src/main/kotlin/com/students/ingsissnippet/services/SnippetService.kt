@@ -58,7 +58,8 @@ class SnippetService(
         snippetsIds: List<SnippetUserDto>,
         snippetName: String?,
         roles: List<String>?,
-        languages: List<Long>?
+        languages: List<Long>?,
+        compliance: List<Compliance>?
     ): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
 
@@ -70,7 +71,8 @@ class SnippetService(
         val filteredSnippets = snippets.filter { snippet ->
             (snippetName == null || snippet.name.contains(snippetName, ignoreCase = true)) &&
                 (roles.isNullOrEmpty() || roles.contains(snippetIdToRoleMap[snippet.id])) &&
-                (languages.isNullOrEmpty() || languages.contains(snippet.language.id))
+                (languages.isNullOrEmpty() || languages.contains(snippet.language.id)) &&
+                (compliance.isNullOrEmpty() || compliance.contains(snippet.status))
         }
 
         return filteredSnippets.map {
