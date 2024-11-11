@@ -47,7 +47,11 @@ class TestController(
 
     @PostMapping("/{id}/run")
     fun runTests(@RequestHeader("Authorization") token: String, @PathVariable id: Long): ResponseEntity<String> {
-        val test = testService.getTestById(id)
-        return parseService.test(token, test.snippet.id, test.input, test.output)
+        return testService.executeTest(token, id)
+    }
+
+    @PostMapping("/{snippetId}/run-all")
+    fun runAllTests(@RequestHeader("Authorization") token: String, @PathVariable snippetId: Long): ResponseEntity<String> {
+        return testService.executeAllSnippetTests(token, snippetId)
     }
 }
