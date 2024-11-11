@@ -50,11 +50,14 @@ class SnippetController(
         @RequestParam page: Int = 0,
         @RequestParam pageSize: Int = 10,
         @RequestParam userId: String,
+        @RequestParam(required = false) snippetName: String?,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<Map<String, Any>> {
-        val snippets = snippetService.getSnippetsOfUser(page, pageSize, userId, token)
-        val totalCount = 5
-        return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
+        val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
+        val snippets = snippetService.getSnippetsOfUser(page, pageSize, snippetsIds)
+        val filteredSnippets = snippets.filter { it.name.contains(snippetName ?: "", ignoreCase = true) }
+        val totalCount = filteredSnippets.count()
+        return ResponseEntity.ok(mapOf("snippets" to filteredSnippets, "count" to totalCount))
     }
 
     @PostMapping("/")
@@ -112,7 +115,7 @@ class SnippetController(
     }
 
     @PostMapping("/validate/{id}")
-    fun validate(@PathVariable id: Long): String {
+    fun validate(@PathVariable id: Long): List<String> {
         return parseService.validate(id)
     }
 

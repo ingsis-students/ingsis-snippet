@@ -2,6 +2,7 @@ package com.students.ingsissnippet
 
 import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
+import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.SnippetService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -22,6 +23,9 @@ class IngsisSnippetApplicationTests {
 
     @MockBean
     private lateinit var redisFormatRuleProducer: RedisFormatRuleProducer
+
+    @MockBean
+    private lateinit var parseService: ParseService
 
     @Test
     fun contextLoads() {
