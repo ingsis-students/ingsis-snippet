@@ -1,7 +1,6 @@
 package com.students.ingsissnippet.routes
 
 import com.students.ingsissnippet.dtos.request_dtos.DTO
-import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 

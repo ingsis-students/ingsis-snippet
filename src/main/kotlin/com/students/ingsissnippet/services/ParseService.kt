@@ -9,7 +9,6 @@ import com.students.ingsissnippet.dtos.request_dtos.FormatDTO
 import com.students.ingsissnippet.dtos.request_dtos.InterpretDTO
 import com.students.ingsissnippet.dtos.request_dtos.LinterDTO
 import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
-import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
 import org.springframework.context.annotation.Lazy
@@ -60,7 +59,7 @@ class ParseService(
             version = version,
             code = content,
             rules = ObjectMapper().readTree(rules),
-            )
+        )
         val entity = createHTTPEntity(formatDto)
         return executePost(entity, "format")
     }

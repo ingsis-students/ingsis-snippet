@@ -111,8 +111,8 @@ class ParseServiceTest {
 
     @Test
     fun `can format snippet`() {
-        val snippet = parseService.format(1L)
-        assert(snippet.content == "Formatted snippet successfully")
+        val content = parseService.format("1.1", "Formatted snippet successfully", "")
+        assert(content == "Formatted snippet successfully")
     }
 
     @Test
