@@ -41,7 +41,26 @@ class SnippetService(
         println("SNIPPET HERE $snippet")
         val content = assetService.get("snippets", id)
         println("CONTENT HERE $content")
-        return FullSnippet(snippet, content)
+
+        val warningsJson: String = try {
+            if (assetService.exists("lint-warnings", snippet.id)) {
+                assetService.get("lint-warnings", snippet.id)
+            } else {
+                ""
+            }
+        } catch (e: Exception) {
+            println("Error fetching warnings for snippet ${snippet.id}: ${e.message}")
+            ""
+        }
+
+        val warnings = try {
+            jacksonObjectMapper().readValue<List<String>>(warningsJson, object : TypeReference<List<String>>() {})
+        } catch (e: Exception) {
+            println("Error deserializing warnings for snippet ${snippet.id}: ${e.message}")
+            emptyList<String>()
+        }
+
+        return FullSnippet(snippet, content, warnings)
     }
 
     fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
