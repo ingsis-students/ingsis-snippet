@@ -29,13 +29,7 @@ class SnippetController(
     private val parseService: ParseService,
 ) {
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): ResponseEntity<FullSnippet> {
-        val fullSnippet = snippetService.get(id)
-        return ResponseEntity.ok(fullSnippet)
-    }
-
-    @GetMapping
+    @GetMapping("/all")
     fun getAll(
         @RequestParam page: Int = 0,
         @RequestParam pageSize: Int = 10,
@@ -51,15 +45,21 @@ class SnippetController(
         @RequestParam page: Int = 0,
         @RequestParam pageSize: Int = 10,
         @RequestParam userId: String,
-        @RequestParam(required = false) snippetName: String?,
+        @RequestParam(required = false) snippetName: String? = null,
+        @RequestParam(required = false) roles: List<String>? = null,
+        @RequestParam(required = false) languages: List<Long>? = null,
+        @RequestParam(required = false) compliance: List<Compliance>? = null,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<Map<String, Any>> {
         val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
-        val snippets = snippetService.getSnippetsOfUser(page, pageSize, snippetsIds)
-        val filteredSnippets = snippets.filter { it.name.contains(snippetName ?: "", ignoreCase = true) }
+        val (snippets, totalCount) = snippetService.getFilteredSnippets(page, pageSize, snippetsIds, snippetName, roles, languages, compliance)
+        return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
+    }
 
-        val totalCount = filteredSnippets.count()
-        return ResponseEntity.ok(mapOf("snippets" to filteredSnippets, "count" to totalCount))
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): ResponseEntity<FullSnippet> {
+        val fullSnippet = snippetService.get(id)
+        return ResponseEntity.ok(fullSnippet)
     }
 
     @PostMapping("/")

@@ -1,0 +1,18 @@
+@startuml
+
+actor User
+
+User -> PrintscriptUI: click on delete button
+PrintscriptUI -> SnippetService: delete(directory, id)
+alt Si existe el snippet
+    SnippetService -> SnippetRepository: checkIfExists(id, "delete")
+    SnippetService -> SnippetRepository: deleteById(id)
+    SnippetService -> AssetService: delete(directory, id)
+    SnippetService -> PrintscriptUI: Success("Snippet deleted successfully")
+    PrintscriptUI -> User: display success
+else Si no existe el snippet
+    SnippetService -> PrintscriptUI: Error("Snippet not found")
+    PrintscriptUI -> User: display error
+end
+
+@enduml

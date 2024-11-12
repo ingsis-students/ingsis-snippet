@@ -54,16 +54,26 @@ class SnippetService(
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
-    fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRoleAndWarnings> {
-        val pageable = PageRequest.of(page, pageSize)
-
+    fun getFilteredSnippets(
+        page: Int,
+        pageSize: Int,
+        snippetsIds: List<SnippetUserDto>,
+        snippetName: String?,
+        roles: List<String>?,
+        languages: List<Long>?,
+        compliance: List<Compliance>?
+    ): Pair<List<SnippetWithRoleAndWarnings>, Long> {
         val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
+        if (snippetIdToRoleMap.isEmpty()) return Pair(emptyList(), 0)
+        val filteredSnippetIdToRoleMap = if (!roles.isNullOrEmpty()) {
+            snippetIdToRoleMap.filter { entry -> roles.contains(entry.value) }
+        } else {
+            snippetIdToRoleMap
+        }
 
-        if (snippetIdToRoleMap.isEmpty()) return emptyList()
+        val snippets = snippetRepository.findAllById(filteredSnippetIdToRoleMap.keys)
 
-        val snippets = snippetRepository.findByIdIn(snippetIdToRoleMap.keys, pageable).content
-
-        return snippets.map { snippet ->
+        val snippetsWithWarnings = snippets.map { snippet ->
             val warningsJson = assetService.get("lint-warnings", snippet.id)
             val warnings = try {
                 jacksonObjectMapper().readValue<List<String>>(warningsJson, object : TypeReference<List<String>>() {})
@@ -78,6 +88,26 @@ class SnippetService(
                 warnings = warnings,
             )
         }
+        val snippetIdToWarnings = snippetsWithWarnings.associateBy({it.id}, {it.lintWarnings})
+
+        val filteredSnippets = snippets.filter { snippet ->
+            (snippetName == null || snippet.name.contains(snippetName, ignoreCase = true)) &&
+                (languages.isNullOrEmpty() || languages.contains(snippet.language.id)) &&
+                (compliance.isNullOrEmpty() || compliance.contains(snippet.status))
+        }
+
+        val totalCount = filteredSnippets.size.toLong()
+
+        val pagedSnippets = filteredSnippets
+            .drop(page * pageSize)
+            .take(pageSize)
+            .map { snippet ->
+                val role = filteredSnippetIdToRoleMap[snippet.id]!!
+                val warnings = snippetIdToWarnings[snippet.id]!!
+                SnippetWithRoleAndWarnings(snippet, role, warnings)
+            }
+
+        return Pair(pagedSnippets, totalCount)
     }
 
     override fun update(id: Long, content: String, token: String): FullSnippet {

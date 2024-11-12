@@ -1,0 +1,22 @@
+@startuml
+
+actor User
+
+User -> PrintscriptUI: click on share button
+PrintscriptUI -> SnippetService: shareSnippet(token, snippetId, fromEmail, toEmail, snippet)
+SnippetService -> PermissionService: checkIfOwner(snippetId, fromEmail, token)
+alt Si no es el propietario
+    PermissionService -> PrintscriptUI: ResponseEntity(Forbidden, "You are not the owner of the snippet")
+    PrintscriptUI -> User: display errors
+else Es el propietario
+    alt Si se intenta compartir con uno mismo
+        SnippetService -> PrintscriptUI: ResponseEntity(BadRequest, "You can't share a snippet with yourself")
+        PrintscriptUI -> User: display errors
+    else
+        SnippetService -> PermissionService: addSnippetToUser(token, toEmail, snippetId, "Guest")
+        SnippetService -> PrintscriptUI: ResponseEntity(OK, "Snippet shared with $toEmail")
+        PrintscriptUI -> User: display success
+    end
+end
+
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+
+actor User
+
+User -> PrintscriptUI: click on create button
+PrintscriptUI -> SnippetService: create(name, content, languageId, owner, token)
+SnippetService -> LanguageService: getLanguageById(languageId)
+LanguageService --> SnippetService: Language
+SnippetService -> ParseService: validate(token, version, content)
+ParseService --> SnippetService: errors
+alt Si hay errores
+    SnippetService -> PrintscriptUI: FullSnippet(snippet, content, errors)
+    PrintscriptUI -> User: display errors
+else No hay errores
+    SnippetService -> SnippetRepository: save(snippet)
+    SnippetService -> AssetService: put("snippets", snippetId, content)
+    SnippetService -> PermissionService: addSnippetToUser(token, email, snippetId, role = "Owner")
+    SnippetService -> PrintscriptUI: FullSnippet(snippet, content, errors)
+end
+PrintscriptUI -> User: display success
+
+@enduml
