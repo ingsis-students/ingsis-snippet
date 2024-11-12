@@ -88,7 +88,7 @@ class SnippetService(
                 warnings = warnings,
             )
         }
-        val snippetIdToWarnings = snippetsWithWarnings.associateBy({it.id}, {it.lintWarnings})
+        val snippetIdToWarnings = snippetsWithWarnings.associateBy({ it.id }, { it.lintWarnings })
 
         val filteredSnippets = snippets.filter { snippet ->
             (snippetName == null || snippet.name.contains(snippetName, ignoreCase = true)) &&
