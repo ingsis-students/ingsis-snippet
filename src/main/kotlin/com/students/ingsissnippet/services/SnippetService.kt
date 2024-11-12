@@ -52,16 +52,30 @@ class SnippetService(
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
-    fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRole> {
+    fun getFilteredSnippets(
+        page: Int,
+        pageSize: Int,
+        snippetsIds: List<SnippetUserDto>,
+        snippetName: String?,
+        roles: List<String>?,
+        languages: List<Long>?,
+        compliance: List<Compliance>?
+    ): List<SnippetWithRole> {
         val pageable = PageRequest.of(page, pageSize)
 
         val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
-
         if (snippetIdToRoleMap.isEmpty()) return emptyList()
 
         val snippets = snippetRepository.findByIdIn(snippetIdToRoleMap.keys, pageable).content
 
-        return snippets.map {
+        val filteredSnippets = snippets.filter { snippet ->
+            (snippetName == null || snippet.name.contains(snippetName, ignoreCase = true)) &&
+                (roles.isNullOrEmpty() || roles.contains(snippetIdToRoleMap[snippet.id])) &&
+                (languages.isNullOrEmpty() || languages.contains(snippet.language.id)) &&
+                (compliance.isNullOrEmpty() || compliance.contains(snippet.status))
+        }
+
+        return filteredSnippets.map {
             SnippetWithRole(
                 snippet = it,
                 role = snippetIdToRoleMap[it.id] ?: "Default"
@@ -114,6 +128,7 @@ class SnippetService(
         val snippet = get(id)
         val version = snippet.version
         val formatRules = assetService.get("format-rules", userId)
-        return parseService.format(version, content, formatRules)
+        println("por enviar al parseService la solicitud de formateo con reglas: $formatRules")
+        return parseService.format(version, content, formatRules, token)
     }
 }

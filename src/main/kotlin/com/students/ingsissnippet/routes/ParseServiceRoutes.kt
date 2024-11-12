@@ -13,7 +13,7 @@ interface ParseServiceRoutes {
     fun analyze(id: Long): String
 
     /** Route that uses parse service to format a snippet of code */
-    fun format(version: String, content: String, rules: String): String
+    fun format(version: String, content: String, rules: String, token: String): String
 
     /** Route that uses parse service to check if a snippet compiles and returns errors */
     fun validate(token: String, version: String, content: String): List<String>

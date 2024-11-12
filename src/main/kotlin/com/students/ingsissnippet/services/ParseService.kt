@@ -54,13 +54,14 @@ class ParseService(
         return executePost(entity, "analyze")
     }
 
-    override fun format(version: String, content: String, rules: String): String {
-        val formatDto = FormatDTO(
+    override fun format(version: String, content: String, rules: String, token: String): String {
+        val formatDto: DTO = FormatDTO(
             version = version,
             code = content,
             rules = ObjectMapper().readTree(rules),
         )
-        val entity = createHTTPEntity(formatDto)
+        println("reglas pasadas como JsonNode:$rules")
+        val entity = HttpEntity(formatDto, getJsonAuthorizedHeaders(token))
         return executePost(entity, "format")
     }
 
