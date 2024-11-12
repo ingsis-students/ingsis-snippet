@@ -57,6 +57,7 @@ class SnippetController(
         val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
         val snippets = snippetService.getSnippetsOfUser(page, pageSize, snippetsIds)
         val filteredSnippets = snippets.filter { it.name.contains(snippetName ?: "", ignoreCase = true) }
+
         val totalCount = filteredSnippets.count()
         return ResponseEntity.ok(mapOf("snippets" to filteredSnippets, "count" to totalCount))
     }

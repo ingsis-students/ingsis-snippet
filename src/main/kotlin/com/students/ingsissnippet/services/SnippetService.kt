@@ -1,11 +1,13 @@
 package com.students.ingsissnippet.services
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.dtos.request_types.Compliance
-import com.students.ingsissnippet.entities.Snippet
-import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.dtos.response_dtos.SnippetWithRoleAndWarnings
 import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
 import com.students.ingsissnippet.dtos.response_dtos.SnippetUserDto
-import com.students.ingsissnippet.dtos.response_dtos.SnippetWithRole
+import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
+import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
@@ -52,7 +54,7 @@ class SnippetService(
         return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
-    fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRole> {
+    fun getSnippetsOfUser(page: Int, pageSize: Int, snippetsIds: List<SnippetUserDto>): List<SnippetWithRoleAndWarnings> {
         val pageable = PageRequest.of(page, pageSize)
 
         val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
@@ -61,10 +63,19 @@ class SnippetService(
 
         val snippets = snippetRepository.findByIdIn(snippetIdToRoleMap.keys, pageable).content
 
-        return snippets.map {
-            SnippetWithRole(
-                snippet = it,
-                role = snippetIdToRoleMap[it.id] ?: "Default"
+        return snippets.map { snippet ->
+            val warningsJson = assetService.get("lint-warnings", snippet.id)
+            val warnings = try {
+                jacksonObjectMapper().readValue<List<String>>(warningsJson, object : TypeReference<List<String>>() {})
+            } catch (e: Exception) {
+                println("Error deserializing warnings for snippet ${snippet.id}: ${e.message}")
+                emptyList<String>()
+            }
+
+            SnippetWithRoleAndWarnings(
+                snippet = snippet,
+                role = snippetIdToRoleMap[snippet.id] ?: "Default",
+                warnings = warnings,
             )
         }
     }
