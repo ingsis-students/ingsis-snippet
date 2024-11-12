@@ -1,0 +1,26 @@
+@startuml
+
+actor User
+
+User -> PrintscriptUI: click on save button
+PrintscriptUI -> SnippetService: update(id, content, token)
+alt Si existe el snippet
+SnippetService -> SnippetRepository: checkIfExists(id)
+else Si no existe el snippet
+    SnippetService -> PrintscriptUI: Error("Snippet not found")
+    PrintscriptUI -> User: display error
+end
+SnippetService -> SnippetRepository: findById(id)
+SnippetRepository --> SnippetService: snippet
+SnippetService -> ParseService: validate(token, version, content)
+ParseService --> SnippetService: errors
+alt Si hay errores
+    SnippetService -> PrintscriptUI: FullSnippet(snippet, content, errors)
+    PrintscriptUI -> User: display errors
+else No hay errores
+    SnippetService -> AssetService: put("snippets", id, content)
+    SnippetService -> PrintscriptUI: FullSnippet(snippet, content)
+    PrintscriptUI -> User: display success
+end
+
+@enduml
