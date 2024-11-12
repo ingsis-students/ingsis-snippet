@@ -74,7 +74,17 @@ class SnippetService(
         val snippets = snippetRepository.findAllById(filteredSnippetIdToRoleMap.keys)
 
         val snippetsWithWarnings = snippets.map { snippet ->
-            val warningsJson = assetService.get("lint-warnings", snippet.id)
+            val warningsJson: String = try {
+                if (assetService.exists("lint-warnings", snippet.id)) {
+                    assetService.get("lint-warnings", snippet.id)
+                } else {
+                    ""
+                }
+            } catch (e: Exception) {
+                println("Error fetching warnings for snippet ${snippet.id}: ${e.message}")
+                ""
+            }
+
             val warnings = try {
                 jacksonObjectMapper().readValue<List<String>>(warningsJson, object : TypeReference<List<String>>() {})
             } catch (e: Exception) {
@@ -88,6 +98,7 @@ class SnippetService(
                 warnings = warnings,
             )
         }
+
         val snippetIdToWarnings = snippetsWithWarnings.associateBy({ it.id }, { it.lintWarnings })
 
         val filteredSnippets = snippets.filter { snippet ->
