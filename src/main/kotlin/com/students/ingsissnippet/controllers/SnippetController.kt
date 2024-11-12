@@ -46,14 +46,13 @@ class SnippetController(
         @RequestParam pageSize: Int = 10,
         @RequestParam userId: String,
         @RequestParam(required = false) snippetName: String? = null,
-        @RequestParam(required = false) roles: List<String>? = emptyList(),
-        @RequestParam(required = false) languages: List<Long>? = emptyList(),
-        @RequestParam(required = false) compliance: List<Compliance>? = emptyList(),
+        @RequestParam(required = false) roles: List<String>? = null,
+        @RequestParam(required = false) languages: List<Long>? = null,
+        @RequestParam(required = false) compliance: List<Compliance>? = null,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<Map<String, Any>> {
         val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
-        val snippets = snippetService.getFilteredSnippets(page, pageSize, snippetsIds, snippetName, roles, languages, compliance)
-        val totalCount = snippets.size
+        val (snippets, totalCount) = snippetService.getFilteredSnippets(page, pageSize, snippetsIds, snippetName, roles, languages, compliance)
         return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
     }
 

@@ -60,27 +60,33 @@ class SnippetService(
         roles: List<String>?,
         languages: List<Long>?,
         compliance: List<Compliance>?
-    ): List<SnippetWithRole> {
-        val pageable = PageRequest.of(page, pageSize)
-
+    ): Pair<List<SnippetWithRole>, Long> {
         val snippetIdToRoleMap = snippetsIds.associateBy({ it.snippetId }, { it.role })
-        if (snippetIdToRoleMap.isEmpty()) return emptyList()
+        if (snippetIdToRoleMap.isEmpty()) return Pair(emptyList(), 0)
+        val filteredSnippetIdToRoleMap = if (!roles.isNullOrEmpty()) {
+            snippetIdToRoleMap.filter { entry -> roles.contains(entry.value) }
+        } else {
+            snippetIdToRoleMap
+        }
 
-        val snippets = snippetRepository.findByIdIn(snippetIdToRoleMap.keys, pageable).content
-
+        val snippets = snippetRepository.findAllById(filteredSnippetIdToRoleMap.keys)
         val filteredSnippets = snippets.filter { snippet ->
             (snippetName == null || snippet.name.contains(snippetName, ignoreCase = true)) &&
-                (roles.isNullOrEmpty() || roles.contains(snippetIdToRoleMap[snippet.id])) &&
                 (languages.isNullOrEmpty() || languages.contains(snippet.language.id)) &&
                 (compliance.isNullOrEmpty() || compliance.contains(snippet.status))
         }
 
-        return filteredSnippets.map {
-            SnippetWithRole(
-                snippet = it,
-                role = snippetIdToRoleMap[it.id] ?: "Default"
-            )
-        }
+        val totalCount = filteredSnippets.size.toLong()
+
+        val pagedSnippets = filteredSnippets
+            .drop(page * pageSize)
+            .take(pageSize)
+            .map { snippet ->
+                val role = filteredSnippetIdToRoleMap[snippet.id]!!
+                SnippetWithRole(snippet, role)
+            }
+
+        return Pair(pagedSnippets, totalCount)
     }
 
     override fun update(id: Long, content: String, token: String): FullSnippet {
