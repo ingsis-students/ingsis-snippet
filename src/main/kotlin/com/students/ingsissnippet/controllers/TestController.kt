@@ -1,7 +1,6 @@
 package com.students.ingsissnippet.controllers
 
 import com.students.ingsissnippet.dtos.response_dtos.TestDTO
-import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.TestService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestHeader
 @RequestMapping("/api/tests")
 class TestController(
     private val testService: TestService,
-    private val parseService: ParseService,
 ) {
     @GetMapping("/snippet/{snippetId}")
     fun getTestsBySnippetId(@PathVariable snippetId: Long): ResponseEntity<List<TestDTO>> {
