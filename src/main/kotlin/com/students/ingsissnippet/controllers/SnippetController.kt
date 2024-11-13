@@ -132,11 +132,6 @@ class SnippetController(
         return parseService.validate(token, req.version, req.code)
     }
 
-    @PostMapping("/lint/{id}")
-    fun lint(@PathVariable id: Long): String {
-        return parseService.analyze(id)
-    }
-
     @PutMapping("/{id}/status")
     fun updateStatus(
         @PathVariable id: Long,

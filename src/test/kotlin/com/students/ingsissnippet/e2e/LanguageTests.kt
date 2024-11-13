@@ -1,4 +1,4 @@
-package com.students.ingsissnippet.language
+package com.students.ingsissnippet.e2e
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer

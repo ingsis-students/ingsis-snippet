@@ -116,12 +116,6 @@ class ParseServiceTest {
     }
 
     @Test
-    fun `can analyze snippet`() {
-        val content = parseService.analyze(1L)
-        assert(content == "Analyzed snippet successfully")
-    }
-
-    @Test
     fun `can validate snippet`() {
         val content = parseService.validate("", "1.1", "HI")
         assert(content.isNotEmpty())

@@ -8,9 +8,6 @@ interface ParseServiceRoutes {
     /** Route that uses parse service to execute a snippet of code */
     fun execute(id: Long): String
 
-    /** Route that uses parse service to analyze a snippet of code */
-    fun analyze(id: Long): String
-
     /** Route that uses parse service to format a snippet of code */
     fun format(version: String, content: String, rules: String, token: String): String
 

@@ -1,13 +1,11 @@
 package com.students.ingsissnippet.services
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.students.ingsissnippet.constants.PARSE_URL
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import com.students.ingsissnippet.dtos.request_dtos.FormatDTO
 import com.students.ingsissnippet.dtos.request_dtos.InterpretDTO
-import com.students.ingsissnippet.dtos.request_dtos.LinterDTO
 import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
 import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
@@ -38,20 +36,6 @@ class ParseService(
         )
         val entity = createHTTPEntity(interpretDTO)
         return executePost(entity, "interpret")
-    }
-
-    // FIXME Como todavía no sabemos como nos van a mandar las rules lo dejo así
-    override fun analyze(id: Long): String {
-        snippetService.checkIfExists(id, "analyze")
-        val snippet = snippetService.get(id)
-        val rulesJson = getDefaultRule()
-        val linterDTO = LinterDTO(
-            version = snippet.version,
-            code = snippet.content,
-            rules = rulesJson
-        )
-        val entity = createHTTPEntity(linterDTO)
-        return executePost(entity, "analyze")
     }
 
     override fun format(version: String, content: String, rules: String, token: String): String {
@@ -110,25 +94,6 @@ class ParseService(
         )
 
         return response.body ?: emptyList()
-    }
-
-    // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests del linter
-    private fun getDefaultRule(): Map<String, JsonNode> {
-        val jsonNode = objectMapper.readTree(
-            """
-            {
-                "NamingFormatCheck": {
-                    "namingPatternName": "camelCase"
-                }
-            }
-            """.trimIndent()
-        )
-
-        val rules: Map<String, JsonNode> = objectMapper.convertValue(
-            jsonNode,
-            objectMapper.typeFactory.constructMapType(Map::class.java, String::class.java, JsonNode::class.java)
-        )
-        return rules
     }
 
     override fun executePost(entity: HttpEntity<DTO>, route: String): String {
