@@ -54,13 +54,13 @@ class SnippetServiceTest {
     @BeforeEach
     fun setup() {
         val language = Language(
-            id = 1,
+            id = 10,
             name = "printscript",
             extension = "prs",
             version = "1.0",
         )
         val snippet = Snippet(
-            id = 1,
+            id = 10,
             name = "My Snippet",
             owner = "admin",
             language = language,

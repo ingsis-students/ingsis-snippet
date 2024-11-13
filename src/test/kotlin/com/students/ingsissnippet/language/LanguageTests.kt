@@ -5,6 +5,7 @@ import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.entities.Language
 import com.students.ingsissnippet.repositories.LanguageRepository
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
 class LanguageTests {
 
@@ -53,8 +56,14 @@ class LanguageTests {
         languageRepository.save(language)
     }
 
+    @AfterEach
+    fun teardown() {
+        languageRepository.deleteAll()
+    }
+
     @Test
     @WithMockUser
+    @Transactional
     fun `test get all languages`() {
         mockMvc.perform(get("/api/languages/all"))
             .andExpect(status().isOk)
@@ -65,8 +74,10 @@ class LanguageTests {
 
     @Test
     @WithMockUser
+    @Transactional
     fun `test create language`() {
         val newLanguage = Language(
+            id = 3,
             name = "kotlin",
             version = "1.5",
             extension = "kt"

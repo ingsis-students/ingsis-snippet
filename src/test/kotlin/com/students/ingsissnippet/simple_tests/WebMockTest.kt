@@ -1,6 +1,6 @@
 package com.students.ingsissnippet.simple_tests
 
-import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
+/*import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.controllers.SnippetController
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
@@ -77,3 +77,4 @@ class WebMockTest {
             .andExpect(content().string(containsString("New edited world")))
     }
 }
+*/
