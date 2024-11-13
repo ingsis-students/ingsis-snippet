@@ -46,13 +46,11 @@ class TestService(
         }
     }
 
-    fun executeAllSnippetTests(token: String, snippetId: Long): ResponseEntity<Map<String, Int>> {
+    fun executeAllSnippetTests(token: String, snippetId: Long): Map<String, List<String>> {
         val tests = getTestsBySnippetId(snippetId)
-        val responses = tests.map { executeTest(token, it.id) }
-
-        val passedTests = responses.count { it.body == "success" }
-        val failedTests = responses.size - passedTests
-
-        return ResponseEntity.ok(mapOf("passed" to passedTests, "failed" to failedTests))
+        return tests.associate { test ->
+            val errors = parseService.test(token, test.snippet.id, test.input, test.output)
+            test.name to errors
+        }
     }
 }
