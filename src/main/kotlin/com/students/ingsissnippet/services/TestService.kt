@@ -14,9 +14,8 @@ class TestService(
     private val parseService: ParseService,
 ) {
 
-    fun getTestsBySnippetId(snippetId: Long): List<TestDTO> {
-        val tests = testRepository.findBySnippetId(snippetId)
-        return tests.map { TestDTO(it) }
+    fun getTestsBySnippetId(snippetId: Long): List<Test> {
+        return testRepository.findBySnippetId(snippetId)
     }
 
     fun getTestById(id: Long): Test {

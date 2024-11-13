@@ -22,7 +22,7 @@ class TestController(
     @GetMapping("/snippet/{snippetId}")
     fun getTestsBySnippetId(@PathVariable snippetId: Long): ResponseEntity<List<TestDTO>> {
         val tests = testService.getTestsBySnippetId(snippetId)
-        return ResponseEntity.ok(tests)
+        return ResponseEntity.ok(tests.map { TestDTO(it) })
     }
 
     @PostMapping("/snippet/{snippetId}")
