@@ -37,7 +37,13 @@ class TestService(
 
     fun executeTest(token: String, testId: Long): ResponseEntity<String> {
         val test = getTestById(testId)
-        return parseService.test(token, test.snippet.id, test.input, test.output)
+        val results = parseService.test(token, test.snippet.id, test.input, test.output)
+
+        return if (results.isEmpty()) {
+            ResponseEntity.ok("success")
+        } else {
+            ResponseEntity.ok("fail")
+        }
     }
 
     fun executeAllSnippetTests(token: String, snippetId: Long): ResponseEntity<Map<String, Int>> {
