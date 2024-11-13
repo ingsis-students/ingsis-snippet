@@ -12,11 +12,11 @@ import com.students.ingsissnippet.dtos.request_dtos.ValidateDTO
 import com.students.ingsissnippet.dtos.request_dtos.TestParseDTO
 import com.students.ingsissnippet.routes.ParseServiceRoutes
 import org.springframework.context.annotation.Lazy
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -90,7 +90,7 @@ class ParseService(
         snippetId: Long,
         inputs: List<String>,
         outputs: List<String>
-    ): ResponseEntity<String> {
+    ): List<String> {
         val snippet = snippetService.get(snippetId)
         val testDTO = TestParseDTO(
             version = snippet.version,
@@ -100,17 +100,16 @@ class ParseService(
         )
 
         val headers = getJsonAuthorizedHeaders(token)
-
         val entity = HttpEntity(testDTO, headers)
 
         val response = restTemplate.exchange(
             "$PARSE_URL/test",
             HttpMethod.POST,
             entity,
-            String::class.java,
+            object : ParameterizedTypeReference<List<String>>() {}
         )
 
-        return response
+        return response.body ?: emptyList()
     }
 
     // TODO Esto es TEMPORAL, eventualmente vuela, es para probar HTTP requests del linter
