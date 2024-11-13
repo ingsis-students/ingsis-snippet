@@ -2,7 +2,6 @@ package com.students.ingsissnippet.routes
 
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import org.springframework.http.HttpEntity
-import org.springframework.http.ResponseEntity
 
 /** This class is intended to have an overview of the Parse Service */
 interface ParseServiceRoutes {
