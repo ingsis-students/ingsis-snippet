@@ -1,6 +1,6 @@
 package com.students.ingsissnippet.test
 
-/*import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.students.ingsissnippet.config.producers.RedisFormatRuleProducer
 import com.students.ingsissnippet.config.producers.RedisLinterRuleProducer
 import com.students.ingsissnippet.dtos.request_dtos.CreateTestDTO
@@ -73,38 +73,43 @@ class TestTests {
 
     @BeforeEach
     fun setup() {
+        testRepository.deleteAll()
+        snippetRepository.deleteAll()
+        languageRepository.deleteAll()
         val language = Language(
-            id = 1,
             name = "printscript",
             version = "1.0",
             extension = "prs"
         )
 
+        languageRepository.save(language)
         val snippet = Snippet(
-            id = 1,
             name = "Test Snippet",
             owner = "Test Owner",
             status = Compliance.PENDING,
             language = language
         )
+        snippetRepository.save(snippet)
         val testEntity = SnippetTest(
-            id = 1,
             name = "Test Name",
             snippet = snippet
         )
-
-        languageRepository.save(language)
-        snippetRepository.save(snippet)
         testRepository.save(testEntity)
         whenever(parseService.test(anyString(), anyLong(), anyList(), anyList()))
             .thenReturn(listOf())
     }
 
+    @BeforeEach
+    fun printDatabase() {
+        languageRepository.findAll().forEach { println(it) }
+        snippetRepository.findAll().forEach { println(it) }
+        testRepository.findAll().forEach { println(it) }
+    }
+
     @Test
     @WithMockUser
-    @Transactional
     fun `should retrieve all tests for a snippet`() {
-        val snippet = snippetRepository.findById(1).get()
+        val snippet = snippetRepository.findAll()[0]
 
         mockMvc.perform(get("/api/tests/snippet/${snippet.id}"))
             .andExpect(status().isOk)
@@ -115,9 +120,8 @@ class TestTests {
 
     @Test
     @WithMockUser
-    @Transactional
     fun `should add a new test to a snippet`() {
-        val snippet = snippetRepository.findById(1).get()
+        val snippet = snippetRepository.findAll()[0]
 
         val createTestDTO = CreateTestDTO(
             name = "New Test",
@@ -138,9 +142,8 @@ class TestTests {
 
     @Test
     @WithMockUser
-    @Transactional
     fun `should delete a test by ID`() {
-        val test = testRepository.findById(1).get()
+        val test = testRepository.findAll()[0]
 
         mockMvc.perform(delete("/api/tests/${test.id}"))
             .andExpect(status().isNoContent)
@@ -150,10 +153,11 @@ class TestTests {
 
     @Test
     @WithMockUser
-    @Transactional
     fun `should run tests for a snippet and return success`() {
+        val test = testRepository.findAll()[0]
+
         mockMvc.perform(
-            post("/api/tests/{id}/run", 1)
+            post("/api/tests/{id}/run", test.id)
                 .header("Authorization", "Bearer token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -163,11 +167,10 @@ class TestTests {
 
     @Test
     @WithMockUser
-    @Transactional
     fun `should run all tests for a snippet and return pass-fail count`() {
-        val snippet = snippetRepository.findById(1).get()
+        val snippet = snippetRepository.findAll()[0]
 
-        testRepository.save(SnippetTest(id = 2, name = "Test 2", snippet = snippet))
+        testRepository.save(SnippetTest(name = "Test 2", snippet = snippet))
 
         mockMvc.perform(
             post("/api/tests/{snippetId}/run-all", snippet.id)
@@ -179,4 +182,3 @@ class TestTests {
             .andExpect(jsonPath("$.length()").value(2))
     }
 }
-*/

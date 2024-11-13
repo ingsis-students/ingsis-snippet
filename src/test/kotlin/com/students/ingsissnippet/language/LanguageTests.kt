@@ -77,7 +77,6 @@ class LanguageTests {
     @Transactional
     fun `test create language`() {
         val newLanguage = Language(
-            id = 3,
             name = "kotlin",
             version = "1.5",
             extension = "kt"
