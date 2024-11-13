@@ -20,7 +20,7 @@ class TestController(
     @GetMapping("/snippet/{snippetId}")
     fun getTestsBySnippetId(@PathVariable snippetId: Long): ResponseEntity<List<TestDTO>> {
         val tests = testService.getTestsBySnippetId(snippetId)
-        return ResponseEntity.ok(tests)
+        return ResponseEntity.ok(tests.map { TestDTO(it) })
     }
 
     @PostMapping("/snippet/{snippetId}")
@@ -49,7 +49,11 @@ class TestController(
     }
 
     @PostMapping("/{snippetId}/run-all")
-    fun runAllTests(@RequestHeader("Authorization") token: String, @PathVariable snippetId: Long): ResponseEntity<Map<String, Int>> {
-        return testService.executeAllSnippetTests(token, snippetId)
+    fun runAllTests(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable snippetId: Long
+    ): ResponseEntity<Map<String, List<String>>> {
+        val testResults = testService.executeAllSnippetTests(token, snippetId)
+        return ResponseEntity.ok(testResults)
     }
 }

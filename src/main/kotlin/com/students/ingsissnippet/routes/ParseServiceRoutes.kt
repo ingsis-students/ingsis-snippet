@@ -2,7 +2,6 @@ package com.students.ingsissnippet.routes
 
 import com.students.ingsissnippet.dtos.request_dtos.DTO
 import org.springframework.http.HttpEntity
-import org.springframework.http.ResponseEntity
 
 /** This class is intended to have an overview of the Parse Service */
 interface ParseServiceRoutes {
@@ -19,7 +18,7 @@ interface ParseServiceRoutes {
     fun validate(token: String, version: String, content: String): List<String>
 
     /** Route that uses parse service to execute a post request */
-    fun test(token: String, snippetId: Long, inputs: List<String>, outputs: List<String>): ResponseEntity<String>
+    fun test(token: String, snippetId: Long, inputs: List<String>, outputs: List<String>): List<String>
 
     fun executePost(entity: HttpEntity<DTO>, route: String): String
 }
