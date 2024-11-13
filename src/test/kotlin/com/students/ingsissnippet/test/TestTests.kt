@@ -99,13 +99,6 @@ class TestTests {
             .thenReturn(listOf())
     }
 
-    @BeforeEach
-    fun printDatabase() {
-        languageRepository.findAll().forEach { println(it) }
-        snippetRepository.findAll().forEach { println(it) }
-        testRepository.findAll().forEach { println(it) }
-    }
-
     @Test
     @WithMockUser
     fun `should retrieve all tests for a snippet`() {
