@@ -4,14 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.dtos.request_types.Compliance
 import com.students.ingsissnippet.dtos.response_dtos.SnippetWithRoleAndWarnings
-import com.students.ingsissnippet.dtos.response_dtos.SnippetDTO
 import com.students.ingsissnippet.dtos.response_dtos.SnippetUserDto
 import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.entities.Snippet
 import com.students.ingsissnippet.errors.SnippetNotFound
 import com.students.ingsissnippet.repositories.SnippetRepository
 import com.students.ingsissnippet.routes.SnippetServiceRoutes
-import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -35,12 +33,9 @@ class SnippetService(
     }
 
     override fun get(id: Long): FullSnippet {
-        println("ID HERE $id")
         val snippet = snippetRepository.findById(id)
             .orElseThrow { SnippetNotFound("Snippet not found when trying to get it") }
-        println("SNIPPET HERE $snippet")
         val content = assetService.get("snippets", id)
-        println("CONTENT HERE $content")
 
         val warningsJson: String = try {
             if (assetService.exists("lint-warnings", snippet.id)) {
@@ -61,16 +56,6 @@ class SnippetService(
         }
 
         return FullSnippet(snippet, content, warnings)
-    }
-
-    fun getSnippets(page: Int, pageSize: Int, snippetName: String?): List<SnippetDTO> {
-        val pageable = PageRequest.of(page, pageSize)
-        val snippets = if (!snippetName.isNullOrEmpty()) {
-            snippetRepository.findByNameContainingIgnoreCase(snippetName, pageable).content
-        } else {
-            snippetRepository.findAll(pageable).content
-        }
-        return snippets.map { snippet -> SnippetDTO(snippet) }
     }
 
     fun getFilteredSnippets(

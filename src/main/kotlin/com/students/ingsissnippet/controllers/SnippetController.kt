@@ -28,18 +28,6 @@ class SnippetController(
     private val permissionService: PermissionService,
     private val parseService: ParseService,
 ) {
-
-    @GetMapping("/all")
-    fun getAll(
-        @RequestParam page: Int = 0,
-        @RequestParam pageSize: Int = 10,
-        @RequestParam(required = false) snippetName: String?
-    ): ResponseEntity<Map<String, Any>> {
-        val snippets = snippetService.getSnippets(page, pageSize, snippetName)
-        val totalCount = snippetService.countSnippets(snippetName)
-        return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
-    }
-
     @GetMapping("/user")
     fun getSnippetsOfUser(
         @RequestParam page: Int = 0,
@@ -52,9 +40,7 @@ class SnippetController(
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<Map<String, Any>> {
         val snippetsIds = permissionService.getSnippetsOfUser(token, userId)
-        println("variables gotten: $page, $pageSize, $snippetName, $roles, $languages, $compliance")
         val (snippets, totalCount) = snippetService.getFilteredSnippets(page, pageSize, snippetsIds, snippetName, roles, languages, compliance)
-        println("Snippets while getting snippets of user: $snippets")
         return ResponseEntity.ok(mapOf("snippets" to snippets, "count" to totalCount))
     }
 
