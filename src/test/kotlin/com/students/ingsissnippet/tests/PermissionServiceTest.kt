@@ -7,6 +7,7 @@ import com.students.ingsissnippet.dtos.response_dtos.FullSnippet
 import com.students.ingsissnippet.services.ParseService
 import com.students.ingsissnippet.services.PermissionService
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argThat
 import org.mockito.kotlin.eq
@@ -17,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -75,5 +75,32 @@ class PermissionServiceTest {
     fun `can share snippet to user`() {
         val response = permissionService.shareSnippet("token", 1L, "example@gmail.com", "otherexample@gmail.com", FullSnippet())
         assertEquals("Snippet shared with otherexample@gmail.com", response.headers["Share-Status"]?.first())
+    }
+
+    @Test
+    fun `can get snippets of user`() {
+        whenever(
+            restTemplate.exchange(
+                argThat { url: String? -> url?.contains("get-user-snippets") == true },
+                any(),
+                any(),
+                any<Class<List<FullSnippet>>>()
+            )
+        ).thenReturn(null)
+
+        val content = permissionService.getSnippetsOfUser("token", "1")
+        assert(content.isEmpty())
+    }
+
+    @Test
+    fun `mock validate`() {
+        whenever(
+            restTemplate.postForObject(
+                argThat { url: String? -> url?.contains("validate") == true },
+                any<HttpEntity<DTO>>(),
+                eq(String::class.java)
+            )
+        ).thenReturn("Validated")
+        permissionService.validate("token")
     }
 }

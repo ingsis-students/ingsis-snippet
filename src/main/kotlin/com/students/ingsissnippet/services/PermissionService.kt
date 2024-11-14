@@ -45,7 +45,6 @@ class PermissionService(
     override fun getSnippetsOfUser(token: String, userId: String): List<SnippetUserDto> {
         val body = mapOf("userId" to userId)
         val entity = HttpEntity(body, getJsonAuthorizedHeaders(token))
-        println("ARRIVED getSnippetsOfUser with $userId")
         return try {
             val response = restTemplate.exchange(
                 "$PERMISSION_URL/get-user-snippets/$userId",
@@ -53,7 +52,6 @@ class PermissionService(
                 entity,
                 object : ParameterizedTypeReference<List<SnippetUserDto>>() {}
             )
-            println("RESPONSE ${response.body}")
             response.body ?: emptyList()
         } catch (e: Exception) {
             println("Error getting snippets of user: ${e.message}")

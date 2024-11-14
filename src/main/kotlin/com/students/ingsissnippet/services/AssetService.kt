@@ -2,10 +2,12 @@ package com.students.ingsissnippet.services
 
 import com.students.ingsissnippet.constants.ASSETSERVICE_URL
 import com.students.ingsissnippet.routes.AssetServiceRoutes
+import org.springframework.aot.generate.Generated
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
+@Generated
 class AssetService(private val restTemplate: RestTemplate) : AssetServiceRoutes {
     override fun get(directory: String, id: Long): String {
         val response = restTemplate.getForObject(

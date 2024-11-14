@@ -1,5 +1,6 @@
 package com.students.ingsissnippet.security
 
+import org.springframework.aot.generate.Generated
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
+@Generated
 class OAuth2ResourceServerSecurityConfiguration(
     @Value(
         "\${auth0.audience}"

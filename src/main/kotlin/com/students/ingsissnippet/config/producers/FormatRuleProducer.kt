@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsissnippet.config.SnippetMessage
 import kotlinx.coroutines.reactive.awaitSingle
 import org.austral.ingsis.redis.RedisStreamProducer
+import org.springframework.aot.generate.Generated
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -15,6 +16,7 @@ interface FormatRuleProducer {
 }
 @Service
 @Profile("!test")
+@Generated
 class RedisFormatRuleProducer @Autowired constructor(
     @Value("\${stream.format.key}") streamKey: String,
     redis: ReactiveRedisTemplate<String, String>

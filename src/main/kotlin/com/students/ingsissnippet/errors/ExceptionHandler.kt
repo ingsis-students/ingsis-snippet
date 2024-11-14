@@ -1,9 +1,11 @@
 package com.students.ingsissnippet.errors
 
+import org.springframework.aot.generate.Generated
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
+@Generated
 @ControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(SnippetNotFound::class)
